@@ -68,7 +68,7 @@ export const Board = ({lineItems}) => {
     };
 
     return (
-        <div>
+        <Box p={2}>
             {state.lineItems.map((data) => (
                 <Box mb={2} key={data.id}>
                     <LineItem onLineItemChange={(d) => handleLineItemChange(data.id, d)}
@@ -87,7 +87,7 @@ export const Board = ({lineItems}) => {
                     </Button>
                 </Box>
             </Box>
-        </div>
+        </Box>
     );
 };
 
