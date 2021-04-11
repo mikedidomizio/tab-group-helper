@@ -13,7 +13,7 @@ const lineItemsService = new LineItemsService();
 export const Edit = ({error, /*textFieldValue*/}) => {
     const [state, setState] = useState({
         error,
-        textFieldValue: JSON.stringify(lineItemsService.get()),
+        textFieldValue: JSON.stringify(lineItemsService.get(), undefined, 4),
     });
 
     const handleChange = (evt) => {
