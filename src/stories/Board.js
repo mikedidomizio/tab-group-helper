@@ -4,67 +4,39 @@ import PropTypes from 'prop-types';
 import {LineItem} from "./LineItem";
 import Box from '@material-ui/core/Box';
 import {TabService} from "../service/tab.service";
-
-export const newLineItem = () => {
-    return {
-        applyChanges: false,
-        existing: false,
-        id: new Date().getTime(),
-        textMatching: "",
-    }
-};
+import {LineItemsService} from "../service/lineItems.service";
 
 /**
  * Board of line items that we will run against to group Chrome tabs
  */
-export const Board = ({lineItems}) => {
+export const Board = (/*{lineItems}*/) => {
+    const lineItemsService = new LineItemsService();
     const [state, setState] = useState({
-        lineItems,
+        lineItems: lineItemsService.get(),
     });
 
     /**
      * Proceed to run grouping
      */
     const run = async () => {
-        let lineItems = state.lineItems.slice();
+        let lineItems = lineItemsService.get();
         // immediately filter where apply is true, we ignore otherwise
         // lineItems = lineItems.filter(i => i.applyChanges);
-
-
         const returned = await new TabService().getTabsWhereUrlContains('chrome');
         console.log('adding tab', returned[0], 'to group');
         await new TabService().addTabsToGroup([returned[0].id], "test group");
     };
 
     const addLineItem = () => {
-        let lineItems = state.lineItems.slice();
-        setState({
-            lineItems: lineItems.concat([newLineItem()])
-        })
+        setState({ lineItems: lineItemsService.add() });
     };
 
     const deleteLineItem = (lineItemUniqueId) => {
-        let lineItems = state.lineItems.slice();
-        // check to see if line item length is 1, if so we just reset it to empty
-        if (lineItems.length === 1) {
-            setState({lineItems: [newLineItem()]});
-        } else {
-            lineItems = lineItems.filter((item) => item.id !== lineItemUniqueId);
-            setState({lineItems});
-        }
+        setState({ lineItems: lineItemsService.deleteLineItems(lineItemUniqueId) });
     };
 
     const handleLineItemChange = (lineItemUniqueId, lineItemState) => {
-        let lineItems = state.lineItems.slice();
-        lineItems = lineItems.map(i => {
-            if (i.id === lineItemUniqueId) {
-                i = lineItemState;
-            }
-
-            return i;
-        });
-        // update the state of lineItems
-        setState({lineItems});
+        setState({ lineItems: lineItemsService.updateLineItems(lineItemUniqueId, lineItemState) });
     };
 
     return (
@@ -104,5 +76,5 @@ Board.propTypes = {
 };
 
 Board.defaultProps = {
-    lineItems: [newLineItem()],
+    lineItems: [],
 };

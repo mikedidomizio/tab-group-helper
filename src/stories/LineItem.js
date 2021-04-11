@@ -37,7 +37,9 @@ export const LineItem = ({applyChanges, deleteLineItem, existing, id, onLineItem
         <FormGroup row>
             <TextField required name="textMatching"
                        onChange={handleTextChange}
-                       label="URL includes"/>
+                       label="URL includes"
+                       value={textMatching}
+            />
             <FormControlLabel
                 control={
                     <Checkbox

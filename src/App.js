@@ -10,7 +10,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import {Route, Switch, useHistory} from "react-router-dom";
-import {Export} from "./stories/Export";
+import {Edit} from "./stories/Edit";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -62,8 +62,8 @@ function App() {
                             <MenuItem onClick={() => handleOnMenuItemClick('/')}>
                                 Home
                             </MenuItem>
-                            <MenuItem onClick={() => handleOnMenuItemClick('/export')}>
-                                Export
+                            <MenuItem onClick={() => handleOnMenuItemClick('/edit')}>
+                                Manual Edit
                             </MenuItem>
                             {/*<MenuItem onClick={handleImport}>Import</MenuItem>*/}
                             {/*<MenuItem onClick={handleHelp}>Help</MenuItem>*/}
@@ -76,8 +76,8 @@ function App() {
                 </AppBar>
             </div>
             <Switch>
-                <Route path="/export">
-                    <Export/>
+                <Route path="/edit">
+                    <Edit/>
                 </Route>
                 <Route path="/">
                     <Board/>
