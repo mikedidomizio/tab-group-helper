@@ -1,5 +1,5 @@
 {
-  "name": "chrome-tab-group-helper",
+  "name": "tab-group-helper",
   "version": "1.0.0",
   "private": true,
   "dependencies": {

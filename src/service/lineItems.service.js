@@ -18,6 +18,12 @@ export class LineItemsService {
 
     lineItems = this.getFromStorage();
 
+    constructor() {
+        if (this.get().length === 0) {
+            this.add();
+        }
+    }
+
     reset() {
         this.lineItems = [];
         localStorage.setItem(storageKey, JSON.stringify(this.lineItems));

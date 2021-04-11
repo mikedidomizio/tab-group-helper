@@ -1,6 +1,6 @@
-# Chrome Tab Group Helper
+# Tab Group Helper
 
-This extension allows the user to run a set of commands which will automatically group Chrome tabs by title or URL.
+This extension allows the user to run a set of commands which will automatically group tabs by title or URL.
 Including the ability to use regular expressions for more advanced capturing.
 
 Ex.

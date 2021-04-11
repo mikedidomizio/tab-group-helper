@@ -82,7 +82,7 @@ function App() {
                         </Menu>
 
                         <Typography variant="h6" className={classes.title}>
-                            Chrome Tab Group Helper
+                            Tab Group Helper
                         </Typography>
                     </Toolbar>
                 </AppBar>

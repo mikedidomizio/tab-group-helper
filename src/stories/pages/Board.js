@@ -71,7 +71,6 @@ export const Board = (/*{lineItems}*/) => {
         const sortObjectByKeys = (objToSort) => {
             return Object.keys(objToSort).sort().reduce(
                 (obj, key) => {
-                    console.log(key)
                     obj[key] = objToSort[key];
                     return obj;
                 },
@@ -80,8 +79,6 @@ export const Board = (/*{lineItems}*/) => {
         };
         const sortedStringifiedDefaultLineItem = sortObjectByKeys(defaultLineItem);
 
-/*        console.log(state.lineItems)
-        console.log(state.lineItems.slice())*/
         const cleanedUpLineItems = state.lineItems.slice().filter(item => {
             const sortedClonedLineItem = sortObjectByKeys(item);
             // rename the id, deleting it leads to deleting it in the returned object

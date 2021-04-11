@@ -1,13 +1,16 @@
 {
-  "name": "Chrome Auto Grouping",
+  "name": "Tab Group Helper",
   "version": "1.0.0",
   "manifest_version": 3,
-  "description": "Chrome Auto Grouping",
+  "description": "Ability to quickly group tabs by their attributes",
   "action": {
     "default_popup": "popup.html"
   },
   "permissions": [
     "tabs",
     "tabGroups"
-  ]
+  ],
+  "icons": {
+    "128": "icon128.png"
+  }
 }
