@@ -14,11 +14,11 @@ const storageKey = 'lineItems';
  */
 export class LineItemsService {
 
-    #lineItems = this.getFromStorage();
+    lineItems = this.getFromStorage();
 
     reset() {
-        this.#lineItems = [];
-        localStorage.setItem(storageKey, JSON.stringify(this.#lineItems));
+        this.lineItems = [];
+        localStorage.setItem(storageKey, JSON.stringify(this.lineItems));
         return this.get();
     }
 
@@ -36,27 +36,27 @@ export class LineItemsService {
 
     add() {
         const lineItems = this.get().slice();
-        this.#lineItems = lineItems.concat([newLineItem()]);
-        localStorage.setItem(storageKey, JSON.stringify(this.#lineItems));
+        this.lineItems = lineItems.concat([newLineItem()]);
+        localStorage.setItem(storageKey, JSON.stringify(this.lineItems));
         return this.get();
     }
 
     set(lineItemsArr) {
-        this.#lineItems = lineItemsArr.concat();
-        localStorage.setItem(storageKey, JSON.stringify(this.#lineItems));
+        this.lineItems = lineItemsArr.concat();
+        localStorage.setItem(storageKey, JSON.stringify(this.lineItems));
         return this.get();
     }
 
     updateLineItems(lineItemUniqueId, lineItemState) {
         let lineItems = this.get().slice();
-        this.#lineItems = lineItems.map(i => {
+        this.lineItems = lineItems.map(i => {
             if (i.id === lineItemUniqueId) {
                 i = lineItemState;
             }
 
             return i;
         });
-        localStorage.setItem(storageKey, JSON.stringify(this.#lineItems));
+        localStorage.setItem(storageKey, JSON.stringify(this.lineItems));
         return this.get();
     }
 
@@ -66,9 +66,9 @@ export class LineItemsService {
         if (lineItems.length === 1) {
             this.reset();
         } else {
-            this.#lineItems = lineItems.filter((item) => item.id !== lineItemUniqueId);
+            this.lineItems = lineItems.filter((item) => item.id !== lineItemUniqueId);
             // setState({lineItems});
-            localStorage.setItem(storageKey, JSON.stringify(this.#lineItems));
+            localStorage.setItem(storageKey, JSON.stringify(this.lineItems));
         }
         return this.get();
     }
