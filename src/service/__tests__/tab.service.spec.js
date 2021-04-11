@@ -36,6 +36,10 @@ describe('tab service', () => {
             await checkAndExpect("", "title", false, 0);
         });
 
+        it('should return an empty array if text is empty and type is of regex', async() => {
+            await checkAndExpect("", "title", true, 0);
+        });
+
         it('should return an empty array if text when trimmed is empty, preventing accidental grouping unnecessarily', async() => {
             await checkAndExpect(" ", "title", false, 0);
         });

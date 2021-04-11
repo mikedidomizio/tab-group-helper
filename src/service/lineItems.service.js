@@ -3,6 +3,8 @@ export const newLineItem = () => {
         applyChanges: true,
         color: "",
         id: new Date().getTime(),
+        groupTitle: "",
+        matchType: "url",
         text: "",
     }
 };

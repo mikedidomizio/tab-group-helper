@@ -22,10 +22,10 @@ export class TabService {
     async getTabsWhichMatch(text, type, regex = false) {
         const tabs = await this.listAllTabs();
         const cleanedText = text.trim();
-        if (regex) {
-            return tabs.filter(i => i[type].match(new RegExp(cleanedText)));
-        }
         if (cleanedText.length) {
+            if (regex) {
+                return tabs.filter(i => i[type].match(new RegExp(cleanedText)));
+            }
             return tabs.filter(i => i[type].includes(cleanedText));
         }
         // if text length is empty, we return nothing

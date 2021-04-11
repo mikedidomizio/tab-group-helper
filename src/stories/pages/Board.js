@@ -5,7 +5,7 @@ import {LineItem} from "../LineItem";
 import Box from '@material-ui/core/Box';
 import Divider from '@material-ui/core/Divider';
 import {TabService} from "../../service/tab.service";
-import {LineItemsService} from "../../service/lineItems.service";
+import {LineItemsService, newLineItem} from "../../service/lineItems.service";
 import {makeStyles} from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
@@ -63,6 +63,42 @@ export const Board = (/*{lineItems}*/) => {
         }
     };
 
+    // proceeds to remove any line items that match the default (aka have not been edited)
+    const cleanUp = () => {
+        const defaultLineItem = newLineItem();
+        // delete ID because it's always different
+        //delete defaultLineItem.id;
+        const sortObjectByKeys = (objToSort) => {
+            return Object.keys(objToSort).sort().reduce(
+                (obj, key) => {
+                    console.log(key)
+                    obj[key] = objToSort[key];
+                    return obj;
+                },
+                {}
+            )
+        };
+        const sortedStringifiedDefaultLineItem = sortObjectByKeys(defaultLineItem);
+
+/*        console.log(state.lineItems)
+        console.log(state.lineItems.slice())*/
+        const cleanedUpLineItems = state.lineItems.slice().filter(item => {
+            const sortedClonedLineItem = sortObjectByKeys(item);
+            // rename the id, deleting it leads to deleting it in the returned object
+            sortedStringifiedDefaultLineItem.id = item.id;
+            // we sorted both and then stringify to ensure keys are all alphabetical
+            // this is only going to work for shallow objects
+            return JSON.stringify(sortedClonedLineItem) !== JSON.stringify(sortedStringifiedDefaultLineItem);
+        });
+
+        if (cleanedUpLineItems.length) {
+            setState({lineItems: lineItemsService.set(cleanedUpLineItems)});
+        } else {
+            lineItemsService.reset();
+            setState({lineItems: lineItemsService.add()});
+        }
+    };
+
     const addLineItem = () => {
         setState({lineItems: lineItemsService.add()});
     };
@@ -83,16 +119,16 @@ export const Board = (/*{lineItems}*/) => {
     return (
         <Box className={classes.root}>
             <Box className="lineItemsHolder">
-            {state.lineItems.map((data, idx) => (
-                <Box key={data.id}>
-                    <Box p={2} className="line-item">
-                        <LineItem onLineItemChange={(d) => handleLineItemChange(data.id, d)}
-                                  deleteLineItem={deleteLineItem} {...data}/>
+                {state.lineItems.map((data, idx) => (
+                    <Box key={data.id}>
+                        <Box p={2} className="line-item">
+                            <LineItem onLineItemChange={(d) => handleLineItemChange(data.id, d)}
+                                      deleteLineItem={deleteLineItem} {...data}/>
 
+                        </Box>
+                        {state.lineItems.length - 1 !== idx && <Divider light/>}
                     </Box>
-                    {state.lineItems.length - 1 !== idx && <Divider light />}
-                </Box>
-            ))}
+                ))}
             </Box>
             <Box className="bottomButtons">
                 <Button variant="contained"
@@ -103,6 +139,11 @@ export const Board = (/*{lineItems}*/) => {
                 <Box component="span" ml={1}>
                     <Button ml={1} variant="contained" onClick={run} color="primary">
                         Run
+                    </Button>
+                </Box>
+                <Box component="span" ml={1}>
+                    <Button ml={1} variant="contained" onClick={cleanUp} color="primary">
+                        Clean up
                     </Button>
                 </Box>
             </Box>
