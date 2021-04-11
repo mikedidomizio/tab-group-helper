@@ -20,6 +20,10 @@ const requiredChromeVersion = 89;
 const useStyles = makeStyles((theme) => ({
     root: {
         flexGrow: 1,
+        '& .MuiAppBar-root': {
+            position: 'sticky',
+            top: '0px'
+        }
     },
     menuButton: {
         marginRight: theme.spacing(2),
@@ -52,35 +56,33 @@ function App() {
     return (
         <div className="App">
             {correctChromeVersion &&
-            <div>
-                <div className={classes.root}>
-                    <AppBar position="static">
-                        <Toolbar>
-                            <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu"
-                                        onClick={handleOpen}>
-                                <MenuIcon/>
-                            </IconButton>
-                            <Menu
-                                id="simple-menu"
-                                anchorEl={anchorEl}
-                                keepMounted
-                                open={Boolean(anchorEl)}
-                                onClose={handleClose}
-                            >
-                                <MenuItem onClick={() => handleOnMenuItemClick('/')}>
-                                    Home
-                                </MenuItem>
-                                <MenuItem onClick={() => handleOnMenuItemClick('/edit')}>
-                                    Manually Edit
-                                </MenuItem>
-                            </Menu>
+            <div className={classes.root}>
+                <AppBar position="static">
+                    <Toolbar>
+                        <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu"
+                                    onClick={handleOpen}>
+                            <MenuIcon/>
+                        </IconButton>
+                        <Menu
+                            id="simple-menu"
+                            anchorEl={anchorEl}
+                            keepMounted
+                            open={Boolean(anchorEl)}
+                            onClose={handleClose}
+                        >
+                            <MenuItem onClick={() => handleOnMenuItemClick('/')}>
+                                Home
+                            </MenuItem>
+                            <MenuItem onClick={() => handleOnMenuItemClick('/edit')}>
+                                Manually Edit
+                            </MenuItem>
+                        </Menu>
 
-                            <Typography variant="h6" className={classes.title}>
-                                Chrome Tab Group Helper
-                            </Typography>
-                        </Toolbar>
-                    </AppBar>
-                </div>
+                        <Typography variant="h6" className={classes.title}>
+                            Chrome Tab Group Helper
+                        </Typography>
+                    </Toolbar>
+                </AppBar>
                 <Switch>
                     <Route path="/edit">
                         <Edit/>

@@ -10,11 +10,25 @@ import {makeStyles} from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        '& .line-item:nth-child(even)': {
-            backgroundColor: '#fcfcfc'
-        },
+        overflowY: 'scroll',
+        // was just manually tested in Chrome, no fancy calculations
+        height: '536px',
         '& .MuiFormGroup-root:not(:last-child)': {
             marginBottom: theme.spacing(2)
+        },
+        '& .lineItemsHolder': {
+            // this is just to offset the header and keep the sticky to the bottom if not enough items are added
+            minHeight: '468px',
+        },
+        '& .bottomButtons': {
+            position: 'sticky',
+            bottom: '0px',
+            padding: theme.spacing(2),
+            backgroundColor: theme.palette.primary.main,
+
+            '& button': {
+                boxShadow: 'none',
+            }
         }
     }
 }));
@@ -68,17 +82,19 @@ export const Board = (/*{lineItems}*/) => {
 
     return (
         <Box className={classes.root}>
-            {state.lineItems.map((data) => (
+            <Box class="lineItemsHolder">
+            {state.lineItems.map((data, idx) => (
                 <Box>
                     <Box p={2} className="line-item" key={data.id}>
                         <LineItem onLineItemChange={(d) => handleLineItemChange(data.id, d)}
                                   deleteLineItem={deleteLineItem} {...data}/>
 
                     </Box>
-                    <Divider light />
+                    {state.lineItems.length - 1 !== idx && <Divider light />}
                 </Box>
             ))}
-            <Box mt={2}>
+            </Box>
+            <Box class="bottomButtons">
                 <Button variant="contained"
                         onClick={addLineItem}
                         color="primary">

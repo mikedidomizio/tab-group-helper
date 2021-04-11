@@ -16,8 +16,6 @@ import {TabService} from "../service/tab.service";
 const useStyles = makeStyles((theme) => ({
     root: {
         '& .MuiTextField-root': {
-            // width: '25ch',
-            // marginTop: '10px',
         },
         '& .MuiSelect-root': {
             width: '100px'
@@ -28,7 +26,11 @@ const useStyles = makeStyles((theme) => ({
         },
         '& > .tabsMatched': {
             // 132px should be able to handle 100 tabs matched!
-            width: '132px;'
+            width: '132px;',
+            '& label': {
+                // this is to get the text to visually align with the next line checkbox
+                paddingLeft: theme.spacing(1),
+            }
         }
     },
 }));
@@ -120,6 +122,9 @@ export const LineItem = ({applyChanges, color, deleteLineItem, id, groupTitle, m
                            spellCheck="false"
                            value={text}
                 />
+                <FormControl className="tabsMatched">
+                    <InputLabel>{`${stateTabsMatched} tabs matched`}</InputLabel>
+                </FormControl>
             </FormGroup>
             <FormGroup className={classes.root} row>
                 <TextField required name="groupTitle"
@@ -158,9 +163,6 @@ export const LineItem = ({applyChanges, color, deleteLineItem, id, groupTitle, m
                 <IconButton aria-label="delete" onClick={handleDelete}>
                     <DeleteIcon/>
                 </IconButton>
-                <FormControl className="tabsMatched">
-                    <InputLabel>{`${stateTabsMatched} tabs matched`}</InputLabel>
-                </FormControl>
             </FormGroup>
         </div>
     );
