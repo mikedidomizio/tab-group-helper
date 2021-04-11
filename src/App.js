@@ -63,10 +63,8 @@ function App() {
                                 Home
                             </MenuItem>
                             <MenuItem onClick={() => handleOnMenuItemClick('/edit')}>
-                                Manual Edit
+                                Manually Edit
                             </MenuItem>
-                            {/*<MenuItem onClick={handleImport}>Import</MenuItem>*/}
-                            {/*<MenuItem onClick={handleHelp}>Help</MenuItem>*/}
                         </Menu>
 
                         <Typography variant="h6" className={classes.title}>

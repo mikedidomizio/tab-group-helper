@@ -49,6 +49,9 @@ export const Edit = ({error, /*textFieldValue*/}) => {
 
     return (
         <Box p={2}>
+            <Box mb={1}>
+                Manually edit the JSON
+            </Box>
             {state.error && <Alert severity="error">{state.error}</Alert>}
             <TextField
                 placeholder="JSON value of line items, edit with care"

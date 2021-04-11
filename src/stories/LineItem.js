@@ -38,6 +38,8 @@ export const LineItem = ({applyChanges, deleteLineItem, existing, id, onLineItem
             <TextField required name="textMatching"
                        onChange={handleTextChange}
                        label="URL includes"
+                       autoComplete="false"
+                       spellCheck="false"
                        value={textMatching}
             />
             <FormControlLabel

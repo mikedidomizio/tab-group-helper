@@ -19,6 +19,7 @@ export class LineItemsService {
     reset() {
         this.#lineItems = [];
         localStorage.setItem(storageKey, JSON.stringify(this.#lineItems));
+        return this.get();
     }
 
     getFromStorage() {
@@ -26,7 +27,7 @@ export class LineItemsService {
         if (lineItems) {
             return JSON.parse(lineItems);
         }
-        return [];
+        return this.reset();
     }
 
     get() {

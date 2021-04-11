@@ -28,15 +28,20 @@ export const Board = (/*{lineItems}*/) => {
     };
 
     const addLineItem = () => {
-        setState({ lineItems: lineItemsService.add() });
+        setState({lineItems: lineItemsService.add()});
     };
 
     const deleteLineItem = (lineItemUniqueId) => {
-        setState({ lineItems: lineItemsService.deleteLineItems(lineItemUniqueId) });
+        if (lineItemsService.get().length === 1) {
+            lineItemsService.reset();
+            setState({lineItems: lineItemsService.add()});
+        } else {
+            setState({lineItems: lineItemsService.deleteLineItems(lineItemUniqueId)});
+        }
     };
 
     const handleLineItemChange = (lineItemUniqueId, lineItemState) => {
-        setState({ lineItems: lineItemsService.updateLineItems(lineItemUniqueId, lineItemState) });
+        setState({lineItems: lineItemsService.updateLineItems(lineItemUniqueId, lineItemState)});
     };
 
     return (
