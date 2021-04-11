@@ -1,5 +1,6 @@
 import logo from './logo.svg';
 import './App.css';
+import {Board} from "./stories/Board";
 
 function App() {
   return (
@@ -17,6 +18,8 @@ function App() {
         >
           Learn React
         </a>
+
+        <Board></Board>
       </header>
     </div>
   );

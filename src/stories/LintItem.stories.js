@@ -13,5 +13,7 @@ export const Main = Template.bind({});
 Main.args = {
     applyChanges: false,
     existing: false,
+    deleteLineItem: () => console.log('mocking deletion of line item'),
+    onLineItemChange: () => console.log('mocking line item change'),
     textMatching: ""
 };

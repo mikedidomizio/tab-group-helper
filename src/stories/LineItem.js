@@ -1,48 +1,68 @@
-import React, {useState} from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import './button.css';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import TextField from '@material-ui/core/TextField';
+import IconButton from '@material-ui/core/IconButton';
+import DeleteIcon from '@material-ui/icons/Delete';
 
 /**
  * Line item for grouping Chrome tabs
  */
-export const LineItem = ({applyChanges, existing, textMatching}) => {
-    const [state, setState] = useState({
-        applyChanges,
-        existing,
-        textMatching,
-    });
+export const LineItem = ({applyChanges, deleteLineItem, existing, id, onLineItemChange, textMatching}) => {
+    const handleChange = (event) => {
+        onLineItemChange(Object.assign({
+            applyChanges,
+            existing,
+            id,
+            textMatching
+        }, {[event.target.name]: event.target.checked}));
+    };
+
+    const handleTextChange = (event) => {
+        onLineItemChange(Object.assign({
+            applyChanges,
+            existing,
+            id,
+            textMatching
+        }, {[event.target.name]: event.target.value}));
+    };
+
+    const handleDelete = () => {
+        deleteLineItem(id);
+    };
 
     return (
         <FormGroup row>
-            <TextField required id="standard-basic" name="textMatching"
-                       onChange={() => setState({...state, textMatching: state.textMatching})} value={textMatching}
+            <TextField required name="textMatching"
+                       onChange={handleTextChange}
                        label="Text Matching"/>
             <FormControlLabel
                 control={
                     <Checkbox
-                        checked={existing}
-                        onChange={() => setState({...state, existing: state.existing})}
-                        name="existing"
-                        color="primary"
-                    />
-                }
-                label="Change Existing?"
-            />
-            <FormControlLabel
-                control={
-                    <Checkbox
                         checked={applyChanges}
-                        onChange={() => setState({...state, applyChanges: state.applyChanges})}
+                        onChange={handleChange}
                         name="applyChanges"
                         color="primary"
                     />
                 }
                 label="Apply"
             />
+            <FormControlLabel
+                control={
+                    <Checkbox
+                        checked={existing}
+                        onChange={handleChange}
+                        name="existing"
+                        color="primary"
+                    />
+                }
+                label="Change Existing?"
+            />
+            <IconButton aria-label="delete" onClick={handleDelete}>
+                <DeleteIcon/>
+            </IconButton>
         </FormGroup>
     );
 };
