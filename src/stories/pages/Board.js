@@ -3,6 +3,7 @@ import Button from '@material-ui/core/Button';
 import PropTypes from 'prop-types';
 import {LineItem} from "../LineItem";
 import Box from '@material-ui/core/Box';
+import Divider from '@material-ui/core/Divider';
 import {TabService} from "../../service/tab.service";
 import {LineItemsService} from "../../service/lineItems.service";
 import {makeStyles} from "@material-ui/core/styles";
@@ -11,6 +12,9 @@ const useStyles = makeStyles((theme) => ({
     root: {
         '& .line-item:nth-child(even)': {
             backgroundColor: '#fcfcfc'
+        },
+        '& .MuiFormGroup-root:not(:last-child)': {
+            marginBottom: theme.spacing(2)
         }
     }
 }));
@@ -65,9 +69,13 @@ export const Board = (/*{lineItems}*/) => {
     return (
         <Box className={classes.root}>
             {state.lineItems.map((data) => (
-                <Box mb={2} p={2} className="line-item" key={data.id}>
-                    <LineItem onLineItemChange={(d) => handleLineItemChange(data.id, d)}
-                              deleteLineItem={deleteLineItem} {...data}/>
+                <Box>
+                    <Box p={2} className="line-item" key={data.id}>
+                        <LineItem onLineItemChange={(d) => handleLineItemChange(data.id, d)}
+                                  deleteLineItem={deleteLineItem} {...data}/>
+
+                    </Box>
+                    <Divider light />
                 </Box>
             ))}
             <Box mt={2}>

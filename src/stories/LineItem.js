@@ -8,14 +8,19 @@ import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 import {makeStyles} from '@material-ui/core/styles';
 import MenuItem from '@material-ui/core/MenuItem';
+import InputLabel from '@material-ui/core/InputLabel';
+import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import {TabService} from "../service/tab.service";
 
 const useStyles = makeStyles((theme) => ({
     root: {
         '& .MuiTextField-root': {
-            width: '25ch',
+            // width: '25ch',
             // marginTop: '10px',
+        },
+        '& .MuiSelect-root': {
+            width: '100px'
         },
         '& > div:not(:first-child), & > label:not(:first-child)': {
             marginLeft: theme.spacing(1),
@@ -87,23 +92,27 @@ export const LineItem = ({applyChanges, color, deleteLineItem, id, groupTitle, m
     return (
         <div>
             <FormGroup className={classes.root} row>
-                <Select
-                    labelId="Match Type"
-                    id="matchType"
-                    label="Match Type"
-                    name="matchType"
-                    onChange={handleTextChange}
-                    value={matchType}
-                >
-                    <MenuItem key="title" value="title">Title</MenuItem>
-                    <MenuItem key="url" value="url">URL</MenuItem>
-                    <MenuItem key="titleRegex" value="titleRegex">Title regex</MenuItem>
-                    <MenuItem key="urlRegex" value="urlRegex">URL regex</MenuItem>
-                </Select>
+                <FormControl>
+                    <InputLabel id="matchType">Type</InputLabel>
+                    <Select
+                        labelId="Match Type"
+                        id="matchType"
+                        label="Match Type"
+                        name="matchType"
+                        onChange={handleTextChange}
+                        value={matchType}
+                    >
+                        <MenuItem key="title" value="title">Title</MenuItem>
+                        <MenuItem key="url" value="url">URL</MenuItem>
+                        <MenuItem key="titleRegex" value="titleRegex">Title regex</MenuItem>
+                        <MenuItem key="urlRegex" value="urlRegex">URL regex</MenuItem>
+                    </Select>
+                </FormControl>
+
                 <TextField required name="text"
                            onChange={handleTextChange}
                            label="Contains"
-                           autoComplete="false"
+                           autoComplete="new-password"
                            spellCheck="false"
                            value={text}
                 />
@@ -112,20 +121,25 @@ export const LineItem = ({applyChanges, color, deleteLineItem, id, groupTitle, m
                 <TextField required name="groupTitle"
                            onChange={handleTextChange}
                            label="Group Name"
-                           autoComplete="false"
+                           autoComplete="new-password"
                            spellCheck="false"
                            value={groupTitle}
                 />
-                <Select
-                    labelId="color"
-                    id="color"
-                    label="Color"
-                    name="color"
-                    onChange={handleTextChange}
-                    value={color}
-                >
-                    {menuOptions()}
-                </Select>
+                <FormGroup className={classes.root} row>
+                    <FormControl>
+                        <InputLabel id="color">Color</InputLabel>
+                        <Select
+                            labelId="color"
+                            id="color"
+                            label="Color"
+                            name="color"
+                            onChange={handleTextChange}
+                            value={color}
+                        >
+                            {menuOptions()}
+                        </Select>
+                    </FormControl>
+                </FormGroup>
                 <FormControlLabel
                     control={
                         <Checkbox
