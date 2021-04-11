@@ -10,6 +10,8 @@ import {makeStyles} from '@material-ui/core/styles';
 import MenuItem from '@material-ui/core/MenuItem';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
+import Tooltip from '@material-ui/core/Tooltip';
+import Box from '@material-ui/core/Box';
 import Select from '@material-ui/core/Select';
 import {TabService} from "../service/tab.service";
 
@@ -41,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
 export const LineItem = ({applyChanges, color, deleteLineItem, id, groupTitle, matchType, onLineItemChange, text}) => {
     const classes = useStyles();
     const colorOptions = ['', 'grey', 'blue', 'red', 'yellow', 'green', 'pink', 'purple', 'cyan'];
-    const [stateTabsMatched, setTabsMatchedState] = useState(0);
+    const [stateTabsMatched, setTabsMatchedState] = useState([]);
 
     const menuOptions = () => {
         return colorOptions.map(i => {
@@ -52,22 +54,34 @@ export const LineItem = ({applyChanges, color, deleteLineItem, id, groupTitle, m
         });
     };
 
+    const getTabsMatched = () => {
+        if (stateTabsMatched.length === 0) {
+            return (
+                <div>No matches</div>
+            )
+        }
+
+        return stateTabsMatched.map(i => {
+            const type = matchType.includes("title") ? "title" : "url";
+            return (
+                <Box mb={1} key={i.key}>{i[type]}</Box>
+            )
+        });
+    };
+
     const checkMatches = async () => {
         // todo a bit of duplication going on here with the board component
         const regex = matchType.toLowerCase().includes("regex");
         const matchTitle = matchType.includes("title") ? "title" : "url";
         // take the values and update the state/dom to show how many tabs are matched
         const tabsMatched = await new TabService().getTabsWhichMatch(text, matchTitle, regex);
-        if (tabsMatched.length !== setTabsMatchedState.length) {
-            setTabsMatchedState(tabsMatched.length);
+        if (tabsMatched.length !== stateTabsMatched.length) {
+            setTabsMatchedState(tabsMatched);
         }
     };
 
     (async () => checkMatches())();
-
-    useEffect(() => {
-        (async () => checkMatches())()
-    }, [stateTabsMatched]);
+    useEffect(() => async () => await checkMatches(), [stateTabsMatched]);
 
     const handleChange = (event) => {
         onLineItemChange(Object.assign({
@@ -118,19 +132,21 @@ export const LineItem = ({applyChanges, color, deleteLineItem, id, groupTitle, m
                 <TextField required name="text"
                            onChange={handleTextChange}
                            label="Contains"
-                           autoComplete="new-password"
+                           autoComplete="off"
                            spellCheck="false"
                            value={text}
                 />
                 <FormControl className="tabsMatched">
-                    <InputLabel>{`${stateTabsMatched} tabs matched`}</InputLabel>
+                    <Tooltip title={getTabsMatched()} placement="bottom-end">
+                        <InputLabel>{`${stateTabsMatched.length} match`}{stateTabsMatched.length !== 1 && 'es'}</InputLabel>
+                    </Tooltip>
                 </FormControl>
             </FormGroup>
             <FormGroup className={classes.root} row>
                 <TextField required name="groupTitle"
                            onChange={handleTextChange}
                            label="Group Name"
-                           autoComplete="new-password"
+                           autoComplete="off"
                            spellCheck="false"
                            value={groupTitle}
                 />

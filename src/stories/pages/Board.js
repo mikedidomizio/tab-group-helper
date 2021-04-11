@@ -82,10 +82,10 @@ export const Board = (/*{lineItems}*/) => {
 
     return (
         <Box className={classes.root}>
-            <Box class="lineItemsHolder">
+            <Box className="lineItemsHolder">
             {state.lineItems.map((data, idx) => (
-                <Box>
-                    <Box p={2} className="line-item" key={data.id}>
+                <Box key={data.id}>
+                    <Box p={2} className="line-item">
                         <LineItem onLineItemChange={(d) => handleLineItemChange(data.id, d)}
                                   deleteLineItem={deleteLineItem} {...data}/>
 
@@ -94,7 +94,7 @@ export const Board = (/*{lineItems}*/) => {
                 </Box>
             ))}
             </Box>
-            <Box class="bottomButtons">
+            <Box className="bottomButtons">
                 <Button variant="contained"
                         onClick={addLineItem}
                         color="primary">

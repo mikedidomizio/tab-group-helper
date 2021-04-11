@@ -8,10 +8,10 @@ import Typography from '@material-ui/core/Typography';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import IconButton from '@material-ui/core/IconButton';
-import Box from '@material-ui/core/Box';
 import MenuIcon from '@material-ui/icons/Menu';
 import {Route, Switch, useHistory} from "react-router-dom";
 import {Edit} from "./stories/pages/Edit";
+import {Help} from "./stories/pages/Help";
 
 const chromeVersion = /Chrome\/([0-9.]+)/.exec(navigator.userAgent)[1];
 // necessary for the tabGroups API
@@ -76,6 +76,9 @@ function App() {
                             <MenuItem onClick={() => handleOnMenuItemClick('/edit')}>
                                 Manually Edit
                             </MenuItem>
+                            {/*<MenuItem onClick={() => handleOnMenuItemClick('/help')}>*/}
+                            {/*    Help*/}
+                            {/*</MenuItem>*/}
                         </Menu>
 
                         <Typography variant="h6" className={classes.title}>
@@ -86,6 +89,9 @@ function App() {
                 <Switch>
                     <Route path="/edit">
                         <Edit/>
+                    </Route>
+                    <Route path="/help">
+                        <Help/>
                     </Route>
                     <Route path="/">
                         <Board/>
