@@ -44,7 +44,7 @@ export const Edit = ({error, /*textFieldValue*/}) => {
     };
 
     const reset = () => {
-        setState({textFieldValue: JSON.stringify(lineItemsService.get()), error: false});
+        setState({textFieldValue: JSON.stringify(lineItemsService.get(), undefined, 4), error: false});
     };
 
     return (

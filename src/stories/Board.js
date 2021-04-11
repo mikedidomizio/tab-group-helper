@@ -5,11 +5,18 @@ import {LineItem} from "./LineItem";
 import Box from '@material-ui/core/Box';
 import {TabService} from "../service/tab.service";
 import {LineItemsService} from "../service/lineItems.service";
+import {makeStyles} from "@material-ui/core/styles";
+
+const useStyles = makeStyles((theme) => ({
+    root: {
+    }
+}));
 
 /**
  * Board of line items that we will run against to group Chrome tabs
  */
 export const Board = (/*{lineItems}*/) => {
+    const classes = useStyles();
     const lineItemsService = new LineItemsService();
     const [state, setState] = useState({
         lineItems: lineItemsService.get(),
@@ -21,10 +28,14 @@ export const Board = (/*{lineItems}*/) => {
     const run = async () => {
         let lineItems = lineItemsService.get();
         // immediately filter where apply is true, we ignore otherwise
-        // lineItems = lineItems.filter(i => i.applyChanges);
-        const returned = await new TabService().getTabsWhereUrlContains('chrome');
-        console.log('adding tab', returned[0], 'to group');
-        await new TabService().addTabsToGroup([returned[0].id], "test group");
+        // todo work with other options
+        lineItems = lineItems.filter(i => i.applyChanges);
+
+        for (let item of lineItems) {
+            const returned = await new TabService().getTabsWhereUrlContains(item.textMatching);
+            const ids = returned.map(i => i.id);
+            await new TabService().addTabsToGroup(ids, item.groupTitle, item.color);
+        }
     };
 
     const addLineItem = () => {
@@ -45,9 +56,9 @@ export const Board = (/*{lineItems}*/) => {
     };
 
     return (
-        <Box p={2}>
+        <Box className={classes.root} p={2}>
             {state.lineItems.map((data) => (
-                <Box mb={2} key={data.id}>
+                <Box mb={2} className="line-item" key={data.id}>
                     <LineItem onLineItemChange={(d) => handleLineItemChange(data.id, d)}
                               deleteLineItem={deleteLineItem} {...data}/>
                 </Box>
@@ -74,8 +85,10 @@ Board.propTypes = {
      */
     lineItems: PropTypes.arrayOf(PropTypes.exact({
         applyChanges: PropTypes.bool,
+        color: PropTypes.string,
         existing: PropTypes.bool,
         id: PropTypes.number,
+        groupTitle: PropTypes.string,
         textMatching: PropTypes.string
     }))
 };

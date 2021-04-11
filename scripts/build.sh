@@ -10,9 +10,6 @@ build() {
 
     npm run build
 
-    # copy the background file
-    cp ./src/background.js ./build
-
     mkdir -p dist
     cp -r build/* dist
 

@@ -1,13 +1,20 @@
-/* global chrome */
-
 export class TabService {
+
+    getChrome() {
+        // check if have the `tabs` to determine if we're in an extension
+        if (!chrome.tabs) {
+            console.warn('chrome is undefined!');
+            return;
+        }
+        return chrome;
+    }
 
     /**
      * @return {Promise<unknown>}
      */
     async listAllTabs() {
         return new Promise((resolve, /*reject*/) => {
-            chrome.tabs.query(/*queryOptions*/ {}, tabs => resolve(tabs));
+            this.getChrome().tabs.query(/*queryOptions*/ {}, tabs => resolve(tabs));
         });
     }
 
@@ -31,19 +38,21 @@ export class TabService {
      * @param {string} groupName
      * @return {Promise<unknown>}
      */
-    async addTabsToGroup(tabIds, groupName) {
+    async addTabsToGroup(tabIds, groupName, color = null) {
         const groupId = await this.createGroup(null, tabIds);
-        return this.renameGroupById(groupId, groupName);
+        return this.renameGroupById(groupId, groupName, color);
     }
 
     /**
      * @param {number} groupId
      * @param {string} newTitle
+     * @param {"grey" | "blue" | "red" | "yellow" | "green" | "pink" | "purple" | "cyan" | null} color
      * @return {Promise<unknown>}
      */
-    async renameGroupById(groupId, newTitle) {
+    async renameGroupById(groupId, newTitle, color = null) {
         return new Promise((resolve, reject) => {
-            chrome.tabGroups.update(groupId, {
+            this.getChrome().tabGroups.update(groupId, {
+                color,
                 title: newTitle,
             }, tabGroup => resolve(tabGroup));
         });
@@ -57,7 +66,7 @@ export class TabService {
      */
     async createGroup(groupId = null, tabIds, createProperties = {}) {
         return new Promise((resolve, /*reject*/) => {
-            chrome.tabs.group({
+            this.getChrome().tabs.group({
                 groupId,
                 tabIds,
                 createProperties,

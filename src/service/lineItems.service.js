@@ -1,6 +1,7 @@
 export const newLineItem = () => {
     return {
         applyChanges: false,
+        color: "",
         existing: false,
         id: new Date().getTime(),
         textMatching: "",
