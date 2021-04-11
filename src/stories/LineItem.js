@@ -31,7 +31,7 @@ export const LineItem = ({applyChanges, color, deleteLineItem, existing, id, gro
 
     const menuOptions = () => {
         return colorOptions.map(i => {
-            const label = i === '' ? 'color' : i;
+            const label = i === '' ? 'none' : i;
             return (
                 <MenuItem key={i} value={i}>{label}</MenuItem>
             )
