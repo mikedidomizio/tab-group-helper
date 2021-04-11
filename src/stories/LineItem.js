@@ -25,6 +25,10 @@ const useStyles = makeStyles((theme) => ({
         '& > div:not(:first-child), & > label:not(:first-child)': {
             marginLeft: theme.spacing(1),
             marginRight: theme.spacing(1),
+        },
+        '& > .tabsMatched': {
+            // 132px should be able to handle 100 tabs matched!
+            width: '132px;'
         }
     },
 }));
@@ -46,7 +50,7 @@ export const LineItem = ({applyChanges, color, deleteLineItem, id, groupTitle, m
         });
     };
 
-    const checkMatches = async() => {
+    const checkMatches = async () => {
         // todo a bit of duplication going on here with the board component
         const regex = matchType.toLowerCase().includes("regex");
         const matchTitle = matchType.includes("title") ? "title" : "url";
@@ -55,12 +59,12 @@ export const LineItem = ({applyChanges, color, deleteLineItem, id, groupTitle, m
         if (tabsMatched.length !== setTabsMatchedState.length) {
             setTabsMatchedState(tabsMatched.length);
         }
-    }
+    };
 
     (async () => checkMatches())();
 
     useEffect(() => {
-        (async() => checkMatches())()
+        (async () => checkMatches())()
     }, [stateTabsMatched]);
 
     const handleChange = (event) => {
@@ -90,7 +94,7 @@ export const LineItem = ({applyChanges, color, deleteLineItem, id, groupTitle, m
     };
 
     return (
-        <div>
+        <div className={color}>
             <FormGroup className={classes.root} row>
                 <FormControl>
                     <InputLabel id="matchType">Type</InputLabel>
@@ -154,7 +158,9 @@ export const LineItem = ({applyChanges, color, deleteLineItem, id, groupTitle, m
                 <IconButton aria-label="delete" onClick={handleDelete}>
                     <DeleteIcon/>
                 </IconButton>
-                {`${stateTabsMatched} tabs matched`}
+                <FormControl className="tabsMatched">
+                    <InputLabel>{`${stateTabsMatched} tabs matched`}</InputLabel>
+                </FormControl>
             </FormGroup>
         </div>
     );
