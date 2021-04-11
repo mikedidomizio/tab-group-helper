@@ -2,7 +2,6 @@ export const newLineItem = () => {
     return {
         applyChanges: true,
         color: "",
-        existing: false,
         id: new Date().getTime(),
         text: "",
     }

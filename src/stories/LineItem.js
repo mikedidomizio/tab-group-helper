@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
             // marginTop: '10px',
         },
         '& > div:not(:first-child), & > label:not(:first-child)': {
-             marginLeft: theme.spacing(1),
+            marginLeft: theme.spacing(1),
             marginRight: theme.spacing(1),
         }
     },
@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
 /**
  * Line item for grouping Chrome tabs
  */
-export const LineItem = ({applyChanges, color, deleteLineItem, existing, id, groupTitle, matchType, onLineItemChange, text}) => {
+export const LineItem = ({applyChanges, color, deleteLineItem, id, groupTitle, matchType, onLineItemChange, text}) => {
     const classes = useStyles();
     const colorOptions = ['', 'grey', 'blue', 'red', 'yellow', 'green', 'pink', 'purple', 'cyan'];
     const [stateTabsMatched, setTabsMatchedState] = useState(0);
@@ -54,15 +54,14 @@ export const LineItem = ({applyChanges, color, deleteLineItem, existing, id, gro
 
     (async () => checkMatches())();
 
-    useEffect(async() => {
-        await checkMatches()
+    useEffect(() => {
+        (async() => checkMatches())()
     }, [stateTabsMatched]);
 
     const handleChange = (event) => {
         onLineItemChange(Object.assign({
             applyChanges,
             color,
-            existing,
             id,
             groupTitle,
             matchType,
@@ -74,7 +73,6 @@ export const LineItem = ({applyChanges, color, deleteLineItem, existing, id, gro
         onLineItemChange(Object.assign({
             applyChanges,
             color,
-            existing,
             id,
             groupTitle,
             matchType,
@@ -108,18 +106,6 @@ export const LineItem = ({applyChanges, color, deleteLineItem, existing, id, gro
                            autoComplete="false"
                            spellCheck="false"
                            value={text}
-                />
-                <FormControlLabel
-                    control={
-                        <Checkbox
-                            checked={existing}
-                            onChange={handleChange}
-                            label="Change existing?"
-                            name="existing"
-                            color="primary"
-                        />
-                    }
-                    label="Change Existing?"
                 />
             </FormGroup>
             <FormGroup className={classes.root} row>
@@ -170,10 +156,6 @@ LineItem.propTypes = {
      */
     color: PropTypes.string,
     /**
-     * To apply changes to already grouped tabs
-     */
-    existing: PropTypes.bool,
-    /**
      * Group title to create/update
      */
     groupTitle: PropTypes.string,
@@ -190,7 +172,6 @@ LineItem.propTypes = {
 LineItem.defaultProps = {
     applyChanges: false,
     color: "",
-    existing: false,
     groupTitle: "",
     matchType: "url",
     text: "",

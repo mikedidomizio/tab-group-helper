@@ -1,14 +1,18 @@
 import React, {useState} from 'react';
 import Button from '@material-ui/core/Button';
 import PropTypes from 'prop-types';
-import {LineItem} from "./LineItem";
+import {LineItem} from "../LineItem";
 import Box from '@material-ui/core/Box';
-import {TabService} from "../service/tab.service";
-import {LineItemsService} from "../service/lineItems.service";
+import {TabService} from "../../service/tab.service";
+import {LineItemsService} from "../../service/lineItems.service";
 import {makeStyles} from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
-    root: {}
+    root: {
+        '& .line-item:nth-child(even)': {
+            backgroundColor: '#fcfcfc'
+        }
+    }
 }));
 
 /**
@@ -59,9 +63,9 @@ export const Board = (/*{lineItems}*/) => {
     };
 
     return (
-        <Box className={classes.root} p={2}>
+        <Box className={classes.root}>
             {state.lineItems.map((data) => (
-                <Box mb={2} className="line-item" key={data.id}>
+                <Box mb={2} p={2} className="line-item" key={data.id}>
                     <LineItem onLineItemChange={(d) => handleLineItemChange(data.id, d)}
                               deleteLineItem={deleteLineItem} {...data}/>
                 </Box>
@@ -89,7 +93,6 @@ Board.propTypes = {
     lineItems: PropTypes.arrayOf(PropTypes.exact({
         applyChanges: PropTypes.bool,
         color: PropTypes.string,
-        existing: PropTypes.bool,
         id: PropTypes.number,
         groupTitle: PropTypes.string,
         matchType: PropTypes.string,

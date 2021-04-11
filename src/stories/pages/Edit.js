@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import Box from '@material-ui/core/Box';
-import {LineItemsService} from "../service/lineItems.service";
+import {LineItemsService} from "../../service/lineItems.service";
 import {Alert} from '@material-ui/lab';
 import TextField from '@material-ui/core/TextField';
 import Button from "@material-ui/core/Button";
