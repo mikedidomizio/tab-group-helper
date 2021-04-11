@@ -8,8 +8,7 @@ import {LineItemsService} from "../service/lineItems.service";
 import {makeStyles} from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
-    root: {
-    }
+    root: {}
 }));
 
 /**
@@ -32,9 +31,13 @@ export const Board = (/*{lineItems}*/) => {
         lineItems = lineItems.filter(i => i.applyChanges);
 
         for (let item of lineItems) {
-            const returned = await new TabService().getTabsWhereUrlContains(item.textMatching);
+            const regex = item.matchType.toLowerCase().includes("regex");
+            const matchTitle = item.matchType.includes("title") ? "title" : "url";
+            const returned = await new TabService().getTabsWhichMatch(item.text, matchTitle, regex);
             const ids = returned.map(i => i.id);
-            await new TabService().addTabsToGroup(ids, item.groupTitle, item.color);
+            if (ids) {
+                await new TabService().addTabsToGroup(ids, item.groupTitle, item.color);
+            }
         }
     };
 
@@ -89,7 +92,8 @@ Board.propTypes = {
         existing: PropTypes.bool,
         id: PropTypes.number,
         groupTitle: PropTypes.string,
-        textMatching: PropTypes.string
+        matchType: PropTypes.string,
+        text: PropTypes.string
     }))
 };
 

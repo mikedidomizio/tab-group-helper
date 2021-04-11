@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormGroup from '@material-ui/core/FormGroup';
@@ -9,14 +9,16 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import {makeStyles} from '@material-ui/core/styles';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
+import {TabService} from "../service/tab.service";
 
 const useStyles = makeStyles((theme) => ({
     root: {
         '& .MuiTextField-root': {
             width: '25ch',
+            // marginTop: '10px',
         },
         '& > div:not(:first-child), & > label:not(:first-child)': {
-            'margin-left': '20px',
+             marginLeft: theme.spacing(1),
             marginRight: theme.spacing(1),
         }
     },
@@ -25,9 +27,10 @@ const useStyles = makeStyles((theme) => ({
 /**
  * Line item for grouping Chrome tabs
  */
-export const LineItem = ({applyChanges, color, deleteLineItem, existing, id, groupTitle, onLineItemChange, textMatching}) => {
+export const LineItem = ({applyChanges, color, deleteLineItem, existing, id, groupTitle, matchType, onLineItemChange, text}) => {
     const classes = useStyles();
     const colorOptions = ['', 'grey', 'blue', 'red', 'yellow', 'green', 'pink', 'purple', 'cyan'];
+    const [stateTabsMatched, setTabsMatchedState] = useState(0);
 
     const menuOptions = () => {
         return colorOptions.map(i => {
@@ -38,6 +41,23 @@ export const LineItem = ({applyChanges, color, deleteLineItem, existing, id, gro
         });
     };
 
+    const checkMatches = async() => {
+        // todo a bit of duplication going on here with the board component
+        const regex = matchType.toLowerCase().includes("regex");
+        const matchTitle = matchType.includes("title") ? "title" : "url";
+        // take the values and update the state/dom to show how many tabs are matched
+        const tabsMatched = await new TabService().getTabsWhichMatch(text, matchTitle, regex);
+        if (tabsMatched.length !== setTabsMatchedState.length) {
+            setTabsMatchedState(tabsMatched.length);
+        }
+    }
+
+    (async () => checkMatches())();
+
+    useEffect(async() => {
+        await checkMatches()
+    }, [stateTabsMatched]);
+
     const handleChange = (event) => {
         onLineItemChange(Object.assign({
             applyChanges,
@@ -45,7 +65,8 @@ export const LineItem = ({applyChanges, color, deleteLineItem, existing, id, gro
             existing,
             id,
             groupTitle,
-            textMatching
+            matchType,
+            text
         }, {[event.target.name]: event.target.checked}));
     };
 
@@ -56,7 +77,8 @@ export const LineItem = ({applyChanges, color, deleteLineItem, existing, id, gro
             existing,
             id,
             groupTitle,
-            textMatching
+            matchType,
+            text
         }, {[event.target.name]: event.target.value}));
     };
 
@@ -67,16 +89,43 @@ export const LineItem = ({applyChanges, color, deleteLineItem, existing, id, gro
     return (
         <div>
             <FormGroup className={classes.root} row>
-                <TextField required name="textMatching"
+                <Select
+                    labelId="Match Type"
+                    id="matchType"
+                    label="Match Type"
+                    name="matchType"
+                    onChange={handleTextChange}
+                    value={matchType}
+                >
+                    <MenuItem key="title" value="title">Title</MenuItem>
+                    <MenuItem key="url" value="url">URL</MenuItem>
+                    <MenuItem key="titleRegex" value="titleRegex">Title regex</MenuItem>
+                    <MenuItem key="urlRegex" value="urlRegex">URL regex</MenuItem>
+                </Select>
+                <TextField required name="text"
                            onChange={handleTextChange}
-                           label="URL includes"
+                           label="Contains"
                            autoComplete="false"
                            spellCheck="false"
-                           value={textMatching}
+                           value={text}
                 />
+                <FormControlLabel
+                    control={
+                        <Checkbox
+                            checked={existing}
+                            onChange={handleChange}
+                            label="Change existing?"
+                            name="existing"
+                            color="primary"
+                        />
+                    }
+                    label="Change Existing?"
+                />
+            </FormGroup>
+            <FormGroup className={classes.root} row>
                 <TextField required name="groupTitle"
                            onChange={handleTextChange}
-                           label="Group Title"
+                           label="Group Name"
                            autoComplete="false"
                            spellCheck="false"
                            value={groupTitle}
@@ -91,11 +140,6 @@ export const LineItem = ({applyChanges, color, deleteLineItem, existing, id, gro
                 >
                     {menuOptions()}
                 </Select>
-                <IconButton aria-label="delete" onClick={handleDelete}>
-                    <DeleteIcon/>
-                </IconButton>
-            </FormGroup>
-            <FormGroup className={classes.root} row>
                 <FormControlLabel
                     control={
                         <Checkbox
@@ -107,18 +151,10 @@ export const LineItem = ({applyChanges, color, deleteLineItem, existing, id, gro
                     }
                     label="Apply"
                 />
-                <FormControlLabel
-                    control={
-                        <Checkbox
-                            checked={existing}
-                            onChange={handleChange}
-                            label="Change existing?"
-                            name="existing"
-                            color="primary"
-                        />
-                    }
-                    label="Change Existing?"
-                />
+                <IconButton aria-label="delete" onClick={handleDelete}>
+                    <DeleteIcon/>
+                </IconButton>
+                {`${stateTabsMatched} tabs matched`}
             </FormGroup>
         </div>
     );
@@ -142,9 +178,13 @@ LineItem.propTypes = {
      */
     groupTitle: PropTypes.string,
     /**
+     * What the rule should match
+     */
+    matchType: PropTypes.string,
+    /**
      * What text to match (accepts strings with wildcards and will support regex in the future)
      */
-    textMatching: PropTypes.string
+    text: PropTypes.string
 };
 
 LineItem.defaultProps = {
@@ -152,5 +192,6 @@ LineItem.defaultProps = {
     color: "",
     existing: false,
     groupTitle: "",
-    textMatching: "",
+    matchType: "url",
+    text: "",
 };

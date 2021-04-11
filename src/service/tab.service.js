@@ -1,41 +1,37 @@
 export class TabService {
 
-    getChrome() {
-        // check if have the `tabs` to determine if we're in an extension
-        if (!chrome.tabs) {
-            console.warn('chrome is undefined!');
-            return;
-        }
-        return chrome;
-    }
-
     /**
      * @return {Promise<unknown>}
      */
     async listAllTabs() {
         return new Promise((resolve, /*reject*/) => {
-            this.getChrome().tabs.query(/*queryOptions*/ {}, tabs => resolve(tabs));
+            try {
+                chrome.tabs.query(/*queryOptions*/ {}, tabs => resolve(tabs));
+            } catch(e){
+                // todo error handling
+            }
         });
     }
 
     /**
-     * @param {string} url
+     * @param {string} text
+     * @param {"url" | "title"} type
+     * @param {boolean} regex
      * @return {Promise<*>}
      */
-    async getTabsWhereUrlContains(url) {
+    async getTabsWhichMatch(text, type, regex = false) {
         const tabs = await this.listAllTabs();
-        return tabs.filter(i => {
-            // title
-            // url
-            // and other stuff
-            return i.url.includes(url);
-        });
+        if (regex) {
+            return tabs.filter(i => i[type].match(new RegExp(text)));
+        }
+        return tabs.filter(i => i[type].includes(text));
     }
 
     /**
      *
      * @param {number[]} tabIds
      * @param {string} groupName
+     * @param {string} color
      * @return {Promise<unknown>}
      */
     async addTabsToGroup(tabIds, groupName, color = null) {
@@ -51,10 +47,14 @@ export class TabService {
      */
     async renameGroupById(groupId, newTitle, color = null) {
         return new Promise((resolve, reject) => {
-            this.getChrome().tabGroups.update(groupId, {
-                color,
-                title: newTitle,
-            }, tabGroup => resolve(tabGroup));
+            try {
+                chrome.tabGroups.update(groupId, {
+                    color,
+                    title: newTitle,
+                }, tabGroup => resolve(tabGroup));
+            } catch(e) {
+                // todo error handling
+            }
         });
     }
 
@@ -66,11 +66,15 @@ export class TabService {
      */
     async createGroup(groupId = null, tabIds, createProperties = {}) {
         return new Promise((resolve, /*reject*/) => {
-            this.getChrome().tabs.group({
-                groupId,
-                tabIds,
-                createProperties,
-            }, groupId => resolve(groupId))
+            try {
+                chrome.tabs.group({
+                    groupId,
+                    tabIds,
+                    createProperties,
+                }, groupId => resolve(groupId))
+            } catch(e) {
+                // todo error handling
+            }
         });
     }
 
