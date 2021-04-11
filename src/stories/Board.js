@@ -3,6 +3,7 @@ import Button from '@material-ui/core/Button';
 import PropTypes from 'prop-types';
 import {LineItem} from "./LineItem";
 import Box from '@material-ui/core/Box';
+import {TabService} from "../service/tab.service";
 
 export const newLineItem = () => {
     return {
@@ -24,9 +25,15 @@ export const Board = ({lineItems}) => {
     /**
      * Proceed to run grouping
      */
-    const run = () => {
-        const {lineItems} = state;
-        console.log(lineItems);
+    const run = async () => {
+        let lineItems = state.lineItems.slice();
+        // immediately filter where apply is true, we ignore otherwise
+        // lineItems = lineItems.filter(i => i.applyChanges);
+
+
+        const returned = await new TabService().getTabsWhereUrlContains('chrome');
+        console.log('adding tab', returned[0], 'to group');
+        await new TabService().addTabsToGroup([returned[0].id], "test group");
     };
 
     const addLineItem = () => {

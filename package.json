@@ -1,6 +1,6 @@
 {
-  "name": "extension3",
-  "version": "0.1.0",
+  "name": "chrome-auto-grouping",
+  "version": "1.0.0",
   "private": true,
   "dependencies": {
     "@material-ui/core": "^4.11.3",
@@ -28,6 +28,10 @@
       "react-app",
       "react-app/jest"
     ],
+    "env": {
+      "browser": true,
+      "webextensions": true
+    },
     "overrides": [
       {
         "files": [
