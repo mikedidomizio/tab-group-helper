@@ -4,11 +4,11 @@ export class TabService {
      * @return {Promise<unknown>}
      */
     async listAllTabs() {
-        return new Promise((resolve, /*reject*/) => {
+        return new Promise((resolve, reject) => {
             try {
                 chrome.tabs.query(/*queryOptions*/ {}, tabs => resolve(tabs));
-            } catch(e){
-                // todo error handling
+            } catch (e) {
+                reject(e)
             }
         });
     }
@@ -59,8 +59,8 @@ export class TabService {
                     color,
                     title: newTitle,
                 }, tabGroup => resolve(tabGroup));
-            } catch(e) {
-                // todo error handling
+            } catch (e) {
+                reject(e)
             }
         });
     }
@@ -72,15 +72,15 @@ export class TabService {
      * @return {Promise<number>}    returns the groupId
      */
     async createGroup(groupId = null, tabIds, createProperties = null) {
-        return new Promise((resolve, /*reject*/) => {
+        return new Promise((resolve, reject) => {
             try {
                 chrome.tabs.group({
                     groupId,
                     tabIds,
                     createProperties,
                 }, groupId => resolve(groupId))
-            } catch(e) {
-                // todo error handling
+            } catch (e) {
+                reject(e);
             }
         });
     }
@@ -93,7 +93,7 @@ export class TabService {
      * @return {Promise<number | null>}
      */
     async getGroupIdByTitle(title) {
-        return new Promise((resolve, /*reject*/) => {
+        return new Promise((resolve, reject) => {
             try {
                 chrome.tabGroups.query({
                     title,
@@ -103,8 +103,8 @@ export class TabService {
                     }
                     resolve(null);
                 })
-            } catch(e) {
-                // todo error handling
+            } catch (e) {
+                reject(e)
             }
         });
     }
