@@ -4,7 +4,7 @@
   "manifest_version": 3,
   "description": "Ability to quickly group tabs by their attributes",
   "action": {
-    "default_popup": "popup.html"
+    "default_popup": "index.html"
   },
   "permissions": [
     "tabs",
