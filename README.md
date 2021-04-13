@@ -15,9 +15,13 @@ This is written in React and uses Storybook for component isolation development
 This will launch the extension in your browser.  At this time the global `chrome` requests will throw errors but this 
 is good enough for a lot of development.
 
+### Hot Reloading extension
+
+`yarn watch`
+
+Will build the extension, load the `./build` directory as an unpacked extension.  This will hot reload changes.
+
 ### Building the extension
 
-`yarn build-ext` will build the extension into the `./build` directory with the manifest.  Loading the unpacked folder into
-Chrome extensions will add it.  Although the extension does not have hot reloading while developing, running the command again
-should automatically reload the extension in your browser
+`yarn build-ext` will build the extension into the `./dist` directory with the manifest.  Loading the directory as an unpacked extension into Chrome.
   
