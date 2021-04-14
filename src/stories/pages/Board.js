@@ -7,10 +7,10 @@ import Divider from '@material-ui/core/Divider';
 import {TabService} from "../../service/tab.service";
 import {LineItemsService, newLineItem} from "../../service/lineItems.service";
 import {makeStyles} from "@material-ui/core/styles";
+import {BottomBar} from "../BottomBar";
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        overflowY: 'scroll',
         // was just manually tested in Chrome, no fancy calculations
         height: '536px',
         '& .MuiFormGroup-root:not(:last-child)': {
@@ -19,16 +19,8 @@ const useStyles = makeStyles((theme) => ({
         '& .lineItemsHolder': {
             // this is just to offset the header and keep the sticky to the bottom if not enough items are added
             minHeight: '468px',
-        },
-        '& .bottomButtons': {
-            position: 'sticky',
-            bottom: '0px',
-            padding: theme.spacing(2),
-            backgroundColor: theme.palette.primary.main,
-
-            '& button': {
-                boxShadow: 'none',
-            }
+            height: '468px',
+            overflowY: 'scroll'
         }
     }
 }));
@@ -135,7 +127,7 @@ export const Board = (/*{lineItems}*/) => {
                     </Box>
                 ))}
             </Box>
-            <Box className="bottomButtons">
+            <BottomBar>
                 <Button variant="contained"
                         onClick={addLineItem}
                         color="primary">
@@ -156,7 +148,7 @@ export const Board = (/*{lineItems}*/) => {
                         Clear Groups
                     </Button>
                 </Box>
-            </Box>
+            </BottomBar>
         </Box>
     );
 };
