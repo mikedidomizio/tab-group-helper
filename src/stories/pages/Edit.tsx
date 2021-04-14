@@ -1,5 +1,12 @@
-import React, {useState} from 'react';
-import {LineItemsService} from '../../service/lineItems.service';
+import React, {
+    AllHTMLAttributes, ChangeEvent,
+    ChangeEventHandler,
+    EventHandler,
+    FunctionComponent,
+    ReactElement, SyntheticEvent,
+    useState
+} from 'react';
+import {LineItem, LineItemsService} from '../../service/lineItems.service';
 import {Alert} from '@material-ui/lab';
 import {Box, Button, TextField, Typography} from '@material-ui/core';
 import {BottomBar} from '../BottomBar';
@@ -7,7 +14,7 @@ import {makeStyles} from "@material-ui/core/styles";
 
 const lineItemsService = new LineItemsService();
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((/*theme*/) => ({
     root: {
         // was just manually tested in Chrome, no fancy calculations
         height: '536px',
@@ -21,15 +28,15 @@ const useStyles = makeStyles((theme) => ({
 /**
  * Edit line items manually
  */
-export const Edit = ({error, /*textFieldValue*/}) => {
+export const Edit: FunctionComponent<any> = ({error, /*textFieldValue*/}): ReactElement => {
     const classes = useStyles();
     const [state, setState] = useState({
         error,
         textFieldValue: JSON.stringify(lineItemsService.get(), undefined, 4),
     });
 
-    const handleChange = (evt) => {
-        const textFieldValue = evt.target.value;
+    const handleChange = (evt: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
+        const textFieldValue = evt.currentTarget.value;
 
         try {
             const parsed = JSON.parse(textFieldValue);
@@ -50,16 +57,16 @@ export const Edit = ({error, /*textFieldValue*/}) => {
      * @param lineItems
      * @return {boolean}
      */
-    const hasDuplicateIds = (lineItems) => {
+    const hasDuplicateIds = (lineItems: LineItem[]): boolean => {
         const ids = lineItems.map(i => i.id);
         return new Set(ids).size !== ids.length
     };
 
-    const reset = () => {
+    const reset = (): void => {
         setState({textFieldValue: JSON.stringify(lineItemsService.get(), undefined, 4), error: false});
     };
 
-    const beautify = () => {
+    const beautify = (): void => {
         if (!state.error) {
             setState({textFieldValue: JSON.stringify(lineItemsService.get(), undefined, 4), error: false});
         }

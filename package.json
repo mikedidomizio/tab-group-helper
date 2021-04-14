@@ -41,8 +41,9 @@
         ],
         "rules": {
           "no-use-before-define": "off",
-          "@typescript-eslint/no-use-before-define": ["error"],
-
+          "@typescript-eslint/no-use-before-define": [
+            "error"
+          ],
           "import/no-anonymous-default-export": "off"
         }
       }
@@ -81,6 +82,7 @@
     "@storybook/preset-create-react-app": "^3.1.7",
     "@storybook/react": "^6.2.1",
     "@types/chrome": "^0.0.134",
+    "@types/react": "^17.0.3",
     "babel-loader": "8.1.0",
     "babel-preset-react-app": "^8.0.0",
     "case-sensitive-paths-webpack-plugin": "^2.4.0",

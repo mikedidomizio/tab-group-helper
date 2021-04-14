@@ -1,11 +1,11 @@
-import React, {useState} from 'react';
+import React, {FunctionComponent, ReactElement, useState} from 'react';
 import Button from '@material-ui/core/Button';
 import PropTypes from 'prop-types';
 import {LineItem} from "../LineItem";
 import Box from '@material-ui/core/Box';
 import Divider from '@material-ui/core/Divider';
 import {TabService} from "../../service/tab.service";
-import {LineItemsService, newLineItem} from "../../service/lineItems.service";
+import {LineItem as LItem, LineItemsService, newLineItem} from "../../service/lineItems.service";
 import {makeStyles} from "@material-ui/core/styles";
 import {BottomBar} from "../BottomBar";
 
@@ -28,13 +28,13 @@ const useStyles = makeStyles((theme) => ({
 /**
  * Board of line items that we will run against to group Chrome tabs
  */
-export const Board = (/*{lineItems}*/) => {
+export const Board: FunctionComponent<any> = (/*{lineItems}*/): ReactElement => {
     const classes = useStyles();
-    const lineItemsService = new LineItemsService();
-    const [state, setState] = useState({
+    const lineItemsService: LineItemsService = new LineItemsService();
+    const tabsService: TabService = new TabService();
+    const [state, setState] = useState<{ lineItems: LItem[] }>({
         lineItems: lineItemsService.get(),
     });
-    const tabsService = new TabService();
 
     /**
      * Proceed to run grouping
@@ -48,32 +48,38 @@ export const Board = (/*{lineItems}*/) => {
         for (let item of lineItems) {
             const regex = item.matchType.toLowerCase().includes("regex");
             const matchTitle = item.matchType.includes("title") ? "title" : "url";
-            const returned = await new TabService().getTabsWhichMatch(item.text, matchTitle, regex);
-            const ids = returned.map(i => i.id);
-            if (ids) {
-                const color = item.color !== "" ? item.color : undefined;
-                await tabsService.addTabsToGroup(ids, item.groupTitle, color);
+            const returned: chrome.tabs.Tab[] = await new TabService().getTabsWhichMatch(item.text, matchTitle, regex);
+            // if id for some reason is undefined, we return -1
+            // not exactly sure what would happen there if an error is thrown or it continues if trying to add
+            // -1 tab to a group
+            const ids: number[] = returned.map(i => i.id ? i.id : -1);
+            if (ids.length) {
+                // todo needed for empty vars?
+                // const color = item.color !== undefined ? item.color : undefined;
+                await tabsService.addTabsToGroup(ids, item.groupTitle, item.color);
             }
         }
     };
 
     // proceeds to remove any line items that match the default (aka have not been edited)
-    const cleanUp = () => {
+    const cleanUp = (): void => {
         const defaultLineItem = newLineItem();
+
         // delete ID because it's always different
-        //delete defaultLineItem.id;
-        const sortObjectByKeys = (objToSort) => {
+        function sortObjectByKeys<T>(objToSort: T): T {
             return Object.keys(objToSort).sort().reduce(
-                (obj, key) => {
+                (obj: any, key) => {
+                    // @ts-ignore
                     obj[key] = objToSort[key];
                     return obj;
                 },
                 {}
             )
-        };
-        const sortedStringifiedDefaultLineItem = sortObjectByKeys(defaultLineItem);
+        }
 
-        const cleanedUpLineItems = state.lineItems.slice().filter(item => {
+        const sortedStringifiedDefaultLineItem = sortObjectByKeys<LItem>(defaultLineItem);
+
+        const cleanedUpLineItems = state.lineItems.slice().filter((item: LItem) => {
             const sortedClonedLineItem = sortObjectByKeys(item);
             // rename the id, deleting it leads to deleting it in the returned object
             sortedStringifiedDefaultLineItem.id = item.id;
@@ -93,15 +99,13 @@ export const Board = (/*{lineItems}*/) => {
     /**
      * Removes all current groups
      */
-    const clearGroups = async () => {
-        await tabsService.clearGroups();
-    };
+    const clearGroups = async () => await tabsService.clearGroups();
 
     const addLineItem = () => {
         setState({lineItems: lineItemsService.add()});
     };
 
-    const deleteLineItem = (lineItemUniqueId) => {
+    const deleteLineItem = (lineItemUniqueId: number): void => {
         if (lineItemsService.get().length === 1) {
             lineItemsService.reset();
             setState({lineItems: lineItemsService.add()});
@@ -110,7 +114,7 @@ export const Board = (/*{lineItems}*/) => {
         }
     };
 
-    const handleLineItemChange = (lineItemUniqueId, lineItemState) => {
+    const handleLineItemChange = (lineItemUniqueId: number, lineItemState: LItem) => {
         setState({lineItems: lineItemsService.updateLineItems(lineItemUniqueId, lineItemState)});
     };
 
@@ -120,7 +124,7 @@ export const Board = (/*{lineItems}*/) => {
                 {state.lineItems.map((data, idx) => (
                     <Box key={data.id}>
                         <Box p={2} className="line-item">
-                            <LineItem onLineItemChange={(d) => handleLineItemChange(data.id, d)}
+                            <LineItem onLineItemChange={(d: LItem) => handleLineItemChange(data.id, d)}
                                       deleteLineItem={deleteLineItem} {...data}/>
 
                         </Box>
@@ -135,20 +139,20 @@ export const Board = (/*{lineItems}*/) => {
                     Add Item
                 </Button>
                 <Box component="span" ml={1}>
-                    <Button ml={1} variant="contained" onClick={run} color="primary">
+                    <Button variant="contained" onClick={run} color="primary">
                         Run
                     </Button>
                 </Box>
-                {/*<Box component="span" ml={1}>
-                    <Button ml={1} variant="contained" onClick={cleanUp} color="primary">
+                <Box component="span" ml={1}>
+                    <Button variant="contained" onClick={cleanUp} color="primary">
                         Clean up
                     </Button>
                 </Box>
                 <Box component="span" ml={1}>
-                    <Button ml={1} variant="contained" onClick={clearGroups} color="primary">
+                    <Button variant="contained" onClick={clearGroups} color="primary">
                         Clear Groups
                     </Button>
-                </Box>*/}
+                </Box>
             </BottomBar>
         </Box>
     );
