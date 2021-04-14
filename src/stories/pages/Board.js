@@ -51,7 +51,8 @@ export const Board = (/*{lineItems}*/) => {
             const returned = await new TabService().getTabsWhichMatch(item.text, matchTitle, regex);
             const ids = returned.map(i => i.id);
             if (ids) {
-                await tabsService.addTabsToGroup(ids, item.groupTitle, item.color);
+                const color = item.color !== "" ? item.color : undefined;
+                await tabsService.addTabsToGroup(ids, item.groupTitle, color);
             }
         }
     };
@@ -138,7 +139,7 @@ export const Board = (/*{lineItems}*/) => {
                         Run
                     </Button>
                 </Box>
-                <Box component="span" ml={1}>
+                {/*<Box component="span" ml={1}>
                     <Button ml={1} variant="contained" onClick={cleanUp} color="primary">
                         Clean up
                     </Button>
@@ -147,7 +148,7 @@ export const Board = (/*{lineItems}*/) => {
                     <Button ml={1} variant="contained" onClick={clearGroups} color="primary">
                         Clear Groups
                     </Button>
-                </Box>
+                </Box>*/}
             </BottomBar>
         </Box>
     );

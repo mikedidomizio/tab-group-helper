@@ -1,6 +1,6 @@
 import './App.css';
-import {Board} from "./stories/pages/Board";
 import React, {useCallback} from "react";
+import {Board} from "./stories/pages/Board";
 import {makeStyles} from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
