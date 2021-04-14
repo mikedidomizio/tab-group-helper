@@ -4,7 +4,7 @@ import {TabService} from "../tab.service";
 jest.setTimeout(30000);
 
 // will be useful if we ever expand on what attributes we can match
-const generateFakeTab = (title, url) => {
+const generateFakeTab = (title: string, url: string) => {
     return {
         title,
         url,
@@ -13,7 +13,7 @@ const generateFakeTab = (title, url) => {
 
 describe('tab service', () => {
 
-    let tabsService;
+    let tabsService: TabService;
 
     beforeAll(function () {
         global.chrome = chrome;
@@ -29,7 +29,7 @@ describe('tab service', () => {
             chrome.tabs.query.yields([generateFakeTab("react - good times", "react.com"), generateFakeTab("facebook", "facebook.com")]);
         });
 
-        const checkAndExpect = async (text, type, regex, num) =>
+        const checkAndExpect = async (text: string, type: string, regex: boolean, num: number) =>
             expect((await tabsService.getTabsWhichMatch(text, type, regex)).length).toBe(num);
 
         it('should return an empty array if the text sent is zero length', async () => {

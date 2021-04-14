@@ -12,8 +12,6 @@ import {Box, Button, TextField, Typography} from '@material-ui/core';
 import {BottomBar} from '../BottomBar';
 import {makeStyles} from "@material-ui/core/styles";
 
-const lineItemsService = new LineItemsService();
-
 const useStyles = makeStyles((/*theme*/) => ({
     root: {
         // was just manually tested in Chrome, no fancy calculations
@@ -29,6 +27,7 @@ const useStyles = makeStyles((/*theme*/) => ({
  * Edit line items manually
  */
 export const Edit: FunctionComponent<any> = ({error, /*textFieldValue*/}): ReactElement => {
+    const lineItemsService = new LineItemsService();
     const classes = useStyles();
     const [state, setState] = useState({
         error,
@@ -36,7 +35,7 @@ export const Edit: FunctionComponent<any> = ({error, /*textFieldValue*/}): React
     });
 
     const handleChange = (evt: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
-        const textFieldValue = evt.currentTarget.value;
+        const textFieldValue = evt.target.value;
 
         try {
             const parsed = JSON.parse(textFieldValue);
