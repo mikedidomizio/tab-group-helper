@@ -1,6 +1,5 @@
-import React from 'react';
+import React, {FunctionComponent, ReactElement} from 'react';
 import './button.css';
-import Button from "@material-ui/core/Button";
 import Box from "@material-ui/core/Box";
 import {makeStyles} from "@material-ui/core/styles";
 
@@ -20,15 +19,13 @@ const useStyles = makeStyles((theme) => ({
 /**
  * Bottom style navigation bar
  */
-export const BottomBar = (props) => {
+export const BottomBar: FunctionComponent<any> = (props: React.PropsWithChildren<any>): ReactElement => {
     const classes = useStyles();
     return (
-        <Box className={classes.root}>
-           {props.children}
-        </Box>
+        <Box className ={classes.root} >
+            {props.children}
+            < /Box>
     );
 };
 
 BottomBar.propTypes = {};
-
-Button.defaultProps = {};
