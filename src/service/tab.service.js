@@ -109,4 +109,20 @@ export class TabService {
         });
     }
 
+    /**
+     * Clear all groups
+     */
+    async clearGroups() {
+        // https://developer.chrome.com/docs/extensions/reference/tabs/#method-ungroup
+        const allTabs = await this.listAllTabs();
+        const allTabsIds = allTabs.map(i => i.id);
+        return new Promise((resolve, reject) => {
+            try {
+                chrome.tabs.ungroup(allTabsIds, resolve);
+            } catch(e) {
+                reject(e);
+            }
+        });
+
+    }
 }
