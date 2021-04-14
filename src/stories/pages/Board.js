@@ -42,6 +42,7 @@ export const Board = (/*{lineItems}*/) => {
     const [state, setState] = useState({
         lineItems: lineItemsService.get(),
     });
+    const tabsService = new TabService();
 
     /**
      * Proceed to run grouping
@@ -58,7 +59,7 @@ export const Board = (/*{lineItems}*/) => {
             const returned = await new TabService().getTabsWhichMatch(item.text, matchTitle, regex);
             const ids = returned.map(i => i.id);
             if (ids) {
-                await new TabService().addTabsToGroup(ids, item.groupTitle, item.color);
+                await tabsService.addTabsToGroup(ids, item.groupTitle, item.color);
             }
         }
     };
@@ -94,6 +95,13 @@ export const Board = (/*{lineItems}*/) => {
             lineItemsService.reset();
             setState({lineItems: lineItemsService.add()});
         }
+    };
+
+    /**
+     * Removes all current groups
+     */
+    const clearGroups = async () => {
+        await tabsService.clearGroups();
     };
 
     const addLineItem = () => {
@@ -141,6 +149,11 @@ export const Board = (/*{lineItems}*/) => {
                 <Box component="span" ml={1}>
                     <Button ml={1} variant="contained" onClick={cleanUp} color="primary">
                         Clean up
+                    </Button>
+                </Box>
+                <Box component="span" ml={1}>
+                    <Button ml={1} variant="contained" onClick={clearGroups} color="primary">
+                        Clear Groups
                     </Button>
                 </Box>
             </Box>
