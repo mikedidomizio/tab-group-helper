@@ -1,12 +1,23 @@
-export const newLineItem = () => {
-    return {
+/// <reference types="@types/chrome" />
+
+export interface LineItem {
+    applyChanges: boolean,
+    color?: chrome.tabGroups.ColorEnum,
+    id: number,
+    groupTitle: string,
+    matchType: string, // todo
+    text: string;
+}
+
+export const newLineItem = (): LineItem => {
+    return Object.seal({
         applyChanges: true,
-        color: "",
+        color: undefined,
         id: new Date().getTime(),
         groupTitle: "",
         matchType: "url",
         text: "",
-    }
+    })
 };
 
 const storageKey = 'lineItems';
@@ -16,7 +27,7 @@ const storageKey = 'lineItems';
  */
 export class LineItemsService {
 
-    lineItems = this.getFromStorage();
+    lineItems: LineItem[] = this.getFromStorage();
 
     constructor() {
         if (this.get().length === 0) {
@@ -24,13 +35,13 @@ export class LineItemsService {
         }
     }
 
-    reset() {
+    reset(): LineItem[] {
         this.lineItems = [];
         localStorage.setItem(storageKey, JSON.stringify(this.lineItems));
         return this.get();
     }
 
-    getFromStorage() {
+    getFromStorage(): LineItem[] {
         const lineItems = localStorage.getItem(storageKey);
         if (lineItems) {
             return JSON.parse(lineItems);
@@ -38,24 +49,24 @@ export class LineItemsService {
         return this.reset();
     }
 
-    get() {
+    get(): LineItem[] {
         return this.getFromStorage();
     }
 
-    add() {
+    add(): LineItem[] {
         const lineItems = this.get().slice();
         this.lineItems = lineItems.concat([newLineItem()]);
         localStorage.setItem(storageKey, JSON.stringify(this.lineItems));
         return this.get();
     }
 
-    set(lineItemsArr) {
+    set(lineItemsArr: any[]): LineItem[] {
         this.lineItems = lineItemsArr.concat();
         localStorage.setItem(storageKey, JSON.stringify(this.lineItems));
         return this.get();
     }
 
-    updateLineItems(lineItemUniqueId, lineItemState) {
+    updateLineItems(lineItemUniqueId: number, lineItemState: any): LineItem[] {
         let lineItems = this.get().slice();
         this.lineItems = lineItems.map(i => {
             if (i.id === lineItemUniqueId) {
@@ -68,7 +79,7 @@ export class LineItemsService {
         return this.get();
     }
 
-    deleteLineItems(lineItemUniqueId) {
+    deleteLineItems(lineItemUniqueId: number): LineItem[] {
         const lineItems = this.get().slice();
         // check to see if line item length is 1, if so we just reset it to empty
         if (lineItems.length === 1) {
