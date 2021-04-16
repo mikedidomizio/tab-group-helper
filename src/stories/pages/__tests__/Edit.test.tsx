@@ -7,7 +7,7 @@ import Enzyme, {mount, ReactWrapper} from 'enzyme';
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 
 beforeAll(() => {
-    // mock localStorage
+    // mock localStorage // todo this is possibly removable
     (global.localStorage as any) = {
         getItem: [],
         setItem: jest.fn(), // not used
@@ -21,7 +21,7 @@ afterEach(() => {
 
 Enzyme.configure({adapter: new Adapter()});
 
-test('should render the application properly', () => {
+test('should render the component properly', () => {
     render(<Edit/>);
     const element = screen.getByText(/Manually edit/i);
     expect(element).toBeInTheDocument();
