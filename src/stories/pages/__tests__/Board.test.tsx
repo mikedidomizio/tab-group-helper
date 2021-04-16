@@ -5,6 +5,7 @@ import Enzyme, {mount, ReactWrapper} from 'enzyme';
 // https://github.com/enzymejs/enzyme/issues/2429#issuecomment-679265564
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import {Board} from "../Board";
+// @ts-ignore
 import chrome from 'sinon-chrome/extensions';
 import {TabService} from "../../../service/tab.service";
 import {LineItem} from "../../../service/lineItems.service";
@@ -157,4 +158,12 @@ test('deleting the only line item will delete the current line item and leave a 
 
     // check that the value is now reset
     await waitFor(() => expect(getInputByLabel(`Contains\\s`).props().value).toBe(''));
+});
+
+test('clear groups should make a chrome api request to clear all active groups', async() => {
+    chrome.tabs.query.yields([{id: 123, url: "Hello-World.com"} as Partial<LineItem>]);
+    const ungroupFn = jest.fn();
+    chrome.tabs.ungroup = ungroupFn;
+    await waitFor(() => getButtonByText('Clear Groups').simulate('click'));
+    expect(ungroupFn).toHaveBeenCalledWith([123], expect.anything());
 });
