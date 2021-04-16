@@ -1,4 +1,4 @@
-import chrome from 'sinon-chrome/extensions'
+import chrome from 'sinon-chrome/extensions';
 import {TabService} from "../tab.service";
 
 jest.setTimeout(30000);
