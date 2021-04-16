@@ -56,6 +56,21 @@ test('beautify button should clean up the JSON', () => {
     wrapper.unmount();
 });
 
+test('beautify button should not clean up the JSON if the JSON is invalid', () => {
+    // bad JSON
+    const val = '[ { "id": 776575BAD } ]';
+    getTextArea().simulate('change', {target: {value: val}});
+    const button = wrapper.findWhere(node => {
+        return (
+            node.type() === 'button' &&
+            node.text() === 'Beautify'
+        );
+    });
+    button.simulate('click');
+    expect(getTextArea().props().value).toEqual(val);
+    wrapper.unmount();
+});
+
 test('should show error if matching ids exist', () => {
     const val = '[ { "id": 123 }, { "id": 123 } ]';
     getTextArea().simulate('change', {target: {value: val}});
