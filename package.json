@@ -78,7 +78,8 @@
   "jest": {
     "collectCoverageFrom": [
       "src/**/*.{js,jsx,ts,tsx}",
-      "!src/**/*.stories.{js,jsx,ts,tsx}"
+      "!src/**/*.stories.{js,jsx,ts,tsx}",
+      "!src/reportWebVitals.js"
     ],
     "coverageReporters": ["lcov"],
     "coverageThreshold": {
