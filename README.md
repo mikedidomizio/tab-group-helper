@@ -1,5 +1,7 @@
 # Tab Group Helper
 
+[![codecov](https://codecov.io/gh/mikedidomizio/tab-group-helper/branch/master/graph/badge.svg?token=RNZY19LBKL)](https://codecov.io/gh/mikedidomizio/tab-group-helper)
+
 This extension allows the user to run a set of commands which will automatically group tabs by title or URL.
 Including the ability to use regular expressions for more advanced capturing.
 
