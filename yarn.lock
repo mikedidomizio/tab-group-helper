@@ -2105,6 +2105,13 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
+"@sinonjs/fake-timers@^7.0.4":
+  version "7.0.5"
+  resolved "https://registry.npmjs.org/@sinonjs/fake-timers/-/fake-timers-7.0.5.tgz#558a7f8145a01366c44b3dcbdd7172c05c461564"
+  integrity sha512-fUt6b15bjV/VW93UP5opNXJxdwZSbK1EdiwnhN7XrQrcpaOhMJpZ/CjwFpM3THpxwA+YviBUJKSuEqKlCK5alw==
+  dependencies:
+    "@sinonjs/commons" "^1.7.0"
+
 "@sinonjs/formatio@^3.2.1":
   version "3.2.2"
   resolved "https://registry.npmjs.org/@sinonjs/formatio/-/formatio-3.2.2.tgz#771c60dfa75ea7f2d68e3b94c7e888a78781372c"
@@ -3014,7 +3021,7 @@
   dependencies:
     "@types/node" "*"
 
-"@types/chrome@^0.0.134":
+"@types/chrome@*", "@types/chrome@^0.0.134":
   version "0.0.134"
   resolved "https://registry.npmjs.org/@types/chrome/-/chrome-0.0.134.tgz#79aa318d3491f4c5627c5bab60179eaa713c16eb"
   integrity sha512-NlYHk+a0Bq6kTvGT4s2w1G3UuDBeoZJYJL1wzmEIusBKYyDDtdl37kOz3Hzb/NEC2KNdnOBVoYLS2opQYsF1Vw==
@@ -3281,6 +3288,21 @@
   version "0.16.1"
   resolved "https://registry.npmjs.org/@types/scheduler/-/scheduler-0.16.1.tgz#18845205e86ff0038517aab7a18a62a6b9f71275"
   integrity sha512-EaCxbanVeyxDRTQBkdLb3Bvl/HK7PBK6UJjsSixB0iHKoWxE5uu2Q/DgtpOhPIojN0Zl1whvOd7PoHs2P0s5eA==
+
+"@types/sinon-chrome@^2.2.10":
+  version "2.2.10"
+  resolved "https://registry.npmjs.org/@types/sinon-chrome/-/sinon-chrome-2.2.10.tgz#d131e25d5a06f9f2e37d71a2099e8dd74e4c1de9"
+  integrity sha512-Ckhubh9oEmVoOE6vkXjFdiK0Q4gCpXl433JDfMne6Mrz8v3PjEGt9xKK0foyAdRtViLgUp1IBOW9koDqclEY2Q==
+  dependencies:
+    "@types/chrome" "*"
+    "@types/sinon" "*"
+
+"@types/sinon@*":
+  version "10.0.0"
+  resolved "https://registry.npmjs.org/@types/sinon/-/sinon-10.0.0.tgz#eecc3847af03d45ffe53d55aaaaf6ecb28b5e584"
+  integrity sha512-jDZ55oCKxqlDmoTBBbBBEx+N8ZraUVhggMZ9T5t+6/Dh8/4NiOjSUfpLrPiEwxQDlAe3wpAkoXhWvE6LibtsMQ==
+  dependencies:
+    "@sinonjs/fake-timers" "^7.0.4"
 
 "@types/source-list-map@*":
   version "0.1.2"

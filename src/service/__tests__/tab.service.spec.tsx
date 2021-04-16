@@ -1,3 +1,4 @@
+// @ts-ignore
 import chrome from 'sinon-chrome/extensions';
 import {TabService} from "../tab.service";
 

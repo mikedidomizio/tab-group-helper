@@ -79,9 +79,12 @@
     "collectCoverageFrom": [
       "src/**/*.{js,jsx,ts,tsx}",
       "!src/**/*.stories.{js,jsx,ts,tsx}",
-      "!src/reportWebVitals.js"
+      "!src/reportWebVitals.js",
+      "!src/index.js"
     ],
-    "coverageReporters": ["lcov"],
+    "coverageReporters": [
+      "lcov"
+    ],
     "coverageThreshold": {
       "global": {
         "branches": 20,
@@ -101,6 +104,7 @@
     "@types/chrome": "^0.0.134",
     "@types/enzyme": "^3.10.8",
     "@types/react": "^17.0.3",
+    "@types/sinon-chrome": "^2.2.10",
     "@wojtekmaj/enzyme-adapter-react-17": "^0.6.1",
     "babel-loader": "8.1.0",
     "babel-preset-react-app": "^8.0.0",
