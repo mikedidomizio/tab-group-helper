@@ -85,7 +85,7 @@ export class TabService {
      * @param {object} createProperties
      * @return {Promise<number>}    returns the groupId
      */
-    async createGroup(groupId: number | undefined, tabIds: number[] = [], createProperties: { windowId?: number} | undefined = undefined): Promise<number> {
+    async createGroup(groupId: number | undefined, tabIds: number[] = [], createProperties: { windowId?: number } | undefined = undefined): Promise<number> {
         return new Promise((resolve, reject) => {
             try {
                 chrome.tabs.group({
@@ -127,13 +127,13 @@ export class TabService {
      * Clear all groups
      */
     async clearGroups(): Promise<void> {
-        const allTabs = await this.listAllTabs();
-        const allTabsIds = allTabs.map(i => i.id);
-        return new Promise((resolve, reject) => {
+        return new Promise(async (resolve, reject) => {
             try {
+                const allTabs = await this.listAllTabs();
+                const allTabsIds = allTabs.map(i => i.id);
                 // @ts-ignore
                 chrome.tabs.ungroup(allTabsIds, resolve);
-            } catch(e) {
+            } catch (e) {
                 reject(e);
             }
         });
