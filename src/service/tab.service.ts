@@ -21,7 +21,7 @@ export class TabService {
      * @param {boolean} regex
      * @return {Promise<Tab[]>}
      */
-    async getTabsWhichMatch(text: string, type: chrome.tabs.Tab["title"] | chrome.tabs.Tab["url"], regex = false): Promise<chrome.tabs.Tab[]> {
+    async getTabsWhichMatch(text: string, type: chrome.tabs.Tab['title'] | chrome.tabs.Tab['url'], regex = false): Promise<chrome.tabs.Tab[]> {
         const tabs = await this.listAllTabs();
         const cleanedText = text.trim();
         if (cleanedText.length) {
@@ -69,7 +69,7 @@ export class TabService {
                 // an error can be thrown if color is `undefined`, but it's acceptable
                 // here we check if the message contains that and if so, we don't reject so we don't see
                 // an error thrown
-                if (e.message.includes(`property 'color': Value must be one of`)) {
+                if (e.message.includes('property \'color\': Value must be one of')) {
                     // todo perhaps it should grab a list of groups and return it instead of an empty array
                     console.warn('Error thrown due to color not being set, empty results returned');
                     resolve([] as unknown as chrome.tabGroups.TabGroup);

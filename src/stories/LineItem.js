@@ -13,7 +13,7 @@ import FormControl from '@material-ui/core/FormControl';
 import Tooltip from '@material-ui/core/Tooltip';
 import Box from '@material-ui/core/Box';
 import Select from '@material-ui/core/Select';
-import {TabService} from "../service/tab.service";
+import {TabService} from '../service/tab.service';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -62,7 +62,7 @@ export const LineItem = ({applyChanges, color, deleteLineItem, id, groupTitle, m
         }
 
         return stateTabsMatched.map(i => {
-            const type = matchType.includes("title") ? "title" : "url";
+            const type = matchType.includes('title') ? 'title' : 'url';
             return (
                 <Box mb={1} key={i.key}>{i[type]}</Box>
             )
@@ -71,8 +71,8 @@ export const LineItem = ({applyChanges, color, deleteLineItem, id, groupTitle, m
 
     const checkMatches = async () => {
         // todo a bit of duplication going on here with the board component
-        const regex = matchType.toLowerCase().includes("regex");
-        const matchTitle = matchType.includes("title") ? "title" : "url";
+        const regex = matchType.toLowerCase().includes('regex');
+        const matchTitle = matchType.includes('title') ? 'title' : 'url';
         // take the values and update the state/dom to show how many tabs are matched
         const tabsMatched = await new TabService().getTabsWhichMatch(text, matchTitle, regex);
         if (tabsMatched.length !== stateTabsMatched.length) {
@@ -81,7 +81,7 @@ export const LineItem = ({applyChanges, color, deleteLineItem, id, groupTitle, m
     };
 
     (async () => checkMatches())();
-    useEffect(() => async () => await checkMatches(), [stateTabsMatched]);
+    useEffect(() => async () => await checkMatches(), [stateTabsMatched]); // eslint-disable-line react-hooks/exhaustive-deps
 
     const handleChange = (event) => {
         onLineItemChange(Object.assign({
@@ -209,8 +209,8 @@ LineItem.propTypes = {
 
 LineItem.defaultProps = {
     applyChanges: false,
-    color: "",
-    groupTitle: "",
-    matchType: "url",
-    text: "",
+    color: '',
+    groupTitle: '',
+    matchType: 'url',
+    text: '',
 };

@@ -1,6 +1,6 @@
 import './App.css';
-import React, {useCallback} from "react";
-import {Board} from "./stories/pages/Board";
+import React, {useCallback} from 'react';
+import {Board} from './stories/pages/Board';
 import {makeStyles} from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -9,9 +9,9 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
-import {BrowserRouter, Route, Switch, useHistory} from "react-router-dom";
-import {Edit} from "./stories/pages/Edit";
-import {Help} from "./stories/pages/Help";
+import {BrowserRouter, Route, Switch, useHistory} from 'react-router-dom';
+import {Edit} from './stories/pages/Edit';
+import {Help} from './stories/pages/Help';
 
 const useStyles = makeStyles((theme) => ({
     root: {

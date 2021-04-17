@@ -1,6 +1,6 @@
 import {render, screen} from '@testing-library/react';
 import {Edit} from '../Edit';
-import React from "react";
+import React from 'react';
 import Enzyme, {mount, ReactWrapper} from 'enzyme';
 // workaround since enzyme hasn't released for React 17.  So we use this person's workaround
 // https://github.com/enzymejs/enzyme/issues/2429#issuecomment-679265564
