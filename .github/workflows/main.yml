@@ -26,4 +26,4 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           fail_ci_if_error: true # optional (default = false)
-          verbose: true # optional (default = false)
+          verbose: false # optional (default = false)
