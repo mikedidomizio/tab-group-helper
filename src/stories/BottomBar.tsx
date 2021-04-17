@@ -1,7 +1,7 @@
 import React, {FunctionComponent, PropsWithChildren, ReactElement} from 'react';
 import './button.css';
-import Box from "@material-ui/core/Box";
-import {makeStyles} from "@material-ui/core/styles";
+import Box from '@material-ui/core/Box';
+import {makeStyles} from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
     root: {

@@ -14,9 +14,9 @@ export const newLineItem = (): LineItem => {
         applyChanges: true,
         color: undefined,
         id: new Date().getTime(),
-        groupTitle: "",
-        matchType: "url",
-        text: "",
+        groupTitle: '',
+        matchType: 'url',
+        text: '',
     })
 };
 

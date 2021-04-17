@@ -1,13 +1,13 @@
 import React, {FunctionComponent, ReactElement, useState} from 'react';
 import Button from '@material-ui/core/Button';
 import PropTypes from 'prop-types';
-import {LineItem} from "../LineItem";
+import {LineItem} from '../LineItem';
 import Box from '@material-ui/core/Box';
 import Divider from '@material-ui/core/Divider';
-import {TabService} from "../../service/tab.service";
-import {LineItem as LItem, LineItemsService, newLineItem} from "../../service/lineItems.service";
-import {makeStyles} from "@material-ui/core/styles";
-import {BottomBar} from "../BottomBar";
+import {TabService} from '../../service/tab.service';
+import {LineItem as LItem, LineItemsService, newLineItem} from '../../service/lineItems.service';
+import {makeStyles} from '@material-ui/core/styles';
+import {BottomBar} from '../BottomBar';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -46,8 +46,8 @@ export const Board: FunctionComponent<any> = (/*{lineItems}*/): ReactElement => 
         lineItems = lineItems.filter(i => i.applyChanges);
 
         for (let item of lineItems) {
-            const regex = item.matchType.toLowerCase().includes("regex");
-            const matchTitle = item.matchType.includes("title") ? "title" : "url";
+            const regex = item.matchType.toLowerCase().includes('regex');
+            const matchTitle = item.matchType.includes('title') ? 'title' : 'url';
             const returned: chrome.tabs.Tab[] = await new TabService().getTabsWhichMatch(item.text, matchTitle, regex);
             // if id for some reason is undefined, we return -1
             // not exactly sure what would happen there if an error is thrown or it continues if trying to add

@@ -1,6 +1,6 @@
 // @ts-ignore
 import chrome from 'sinon-chrome/extensions';
-import {TabService} from "../tab.service";
+import {TabService} from '../tab.service';
 
 jest.setTimeout(30000);
 
@@ -27,47 +27,47 @@ describe('tab service', () => {
     describe('getTabsWhichMatch', () => {
 
         beforeAll(() => {
-            chrome.tabs.query.yields([generateFakeTab("react - good times", "react.com"), generateFakeTab("facebook", "facebook.com")]);
+            chrome.tabs.query.yields([generateFakeTab('react - good times', 'react.com'), generateFakeTab('facebook', 'facebook.com')]);
         });
 
         const checkAndExpect = async (text: string, type: string, regex: boolean, num: number) =>
             expect((await tabsService.getTabsWhichMatch(text, type, regex)).length).toBe(num);
 
         it('should return an empty array if the text sent is zero length', async () => {
-            await checkAndExpect("", "title", false, 0);
+            await checkAndExpect('', 'title', false, 0);
         });
 
         it('should return an empty array if text is empty and type is of regex', async() => {
-            await checkAndExpect("", "title", true, 0);
+            await checkAndExpect('', 'title', true, 0);
         });
 
         it('should return an empty array if text when trimmed is empty, preventing accidental grouping unnecessarily', async() => {
-            await checkAndExpect(" ", "title", false, 0);
+            await checkAndExpect(' ', 'title', false, 0);
         });
 
         it('should match titles which contain text', async () => {
-            await checkAndExpect("react", "title", false, 1);
+            await checkAndExpect('react', 'title', false, 1);
         });
 
         it('should match url which contain text', async () => {
-            await checkAndExpect("react.co", "url", false, 1);
+            await checkAndExpect('react.co', 'url', false, 1);
         });
 
         it('should regex match url which contain text', async () => {
-            await checkAndExpect("reac|face", "url", true, 2);
+            await checkAndExpect('reac|face', 'url', true, 2);
         });
 
         it('should regex match title which contain text', async () => {
-            await checkAndExpect("reac|face", "title", true, 2);
+            await checkAndExpect('reac|face', 'title', true, 2);
         });
 
         it('should allow more complex regular expressions', async () => {
             // title
-            await checkAndExpect("^(reac|face)", "title", true, 2);
-            await checkAndExpect("^(reac|facetruck)", "title", true, 1);
-            await checkAndExpect("(times|book)$", "title", true, 2);
+            await checkAndExpect('^(reac|face)', 'title', true, 2);
+            await checkAndExpect('^(reac|facetruck)', 'title', true, 1);
+            await checkAndExpect('(times|book)$', 'title', true, 2);
             // url
-            await checkAndExpect(".com$", "url", true, 2);
+            await checkAndExpect('.com$', 'url', true, 2);
         });
 
     });

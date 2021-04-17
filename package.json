@@ -19,6 +19,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "build-ext": "sh ./scripts/build.sh",
+    "lint": "eslint ./src/**/*.{js,jsx,ts,tsx}",
     "watch": "node ./scripts/watch.js",
     "test": "react-scripts test",
     "test:coverage": "react-scripts test --coverage",
@@ -39,16 +40,17 @@
       {
         "files": [
           "**/*.stories.*"
-        ],
-        "rules": {
-          "no-use-before-define": "off",
-          "@typescript-eslint/no-use-before-define": [
-            "error"
-          ],
-          "import/no-anonymous-default-export": "off"
-        }
+        ]
       }
     ],
+    "rules": {
+      "@typescript-eslint/no-use-before-define": [
+        "error"
+      ],
+      "quotes": ["warn", "single"],
+      "import/no-anonymous-default-export": "off",
+      "no-use-before-define": "off"
+    },
     "ignorePatterns": [
       "node_modules/**",
       "."

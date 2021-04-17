@@ -1,14 +1,14 @@
 import {render, screen, waitFor} from '@testing-library/react';
-import React from "react";
+import React from 'react';
 import Enzyme, {mount, ReactWrapper} from 'enzyme';
 // workaround since enzyme hasn't released for React 17.  So we use this person's workaround
 // https://github.com/enzymejs/enzyme/issues/2429#issuecomment-679265564
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
-import {Board} from "../Board";
+import {Board} from '../Board';
 // @ts-ignore
 import chrome from 'sinon-chrome/extensions';
-import {TabService} from "../../../service/tab.service";
-import {LineItem} from "../../../service/lineItems.service";
+import {TabService} from '../../../service/tab.service';
+import {LineItem} from '../../../service/lineItems.service';
 
 Enzyme.configure({adapter: new Adapter()});
 
@@ -96,20 +96,20 @@ test('clean up should remove all non-edited (default) line items', () => {
 });
 
 test('clean up should leave any edited line items', () => {
-    getInputByLabel(`Contains\\s`).simulate('change', {target: {name: 'text', value: 'Hello'}});
+    getInputByLabel('Contains\\s').simulate('change', {target: {name: 'text', value: 'Hello'}});
     getButtonByText('Add Item').simulate('click');
     getButtonByText('Clean up').simulate('click');
-    expect(getInputByLabel(`Contains\\s`).props().value).toBe('Hello');
+    expect(getInputByLabel('Contains\\s').props().value).toBe('Hello');
 });
 
 test('run should call the tabs service with each valid line item', async () => {
-    chrome.tabs.query.yields([{id: 123, url: "Hello-World.com"} as Partial<LineItem>]);
+    chrome.tabs.query.yields([{id: 123, url: 'Hello-World.com'} as Partial<LineItem>]);
     // sinon-chrome package doesn't have query therefore we mock it
     chrome.tabGroups = {
         query: () => {}
     };
     let addTabsSpy = jest.spyOn(TabService.prototype, 'addTabsToGroup');
-    await waitFor(() => getInputByLabel(`Contains\\s`).simulate('change', {target: {name: 'text', value: 'Hello'}}));
+    await waitFor(() => getInputByLabel('Contains\\s').simulate('change', {target: {name: 'text', value: 'Hello'}}));
     getButtonByText('Run').simulate('click');
     await waitFor(() => expect(addTabsSpy).toHaveBeenCalledWith([123], '', ''));
     await waitFor(() => expect(addTabsSpy).toHaveBeenCalledTimes(1));
@@ -139,10 +139,10 @@ test('deleting a line item should remove a line item', () => {
 });
 
 test('deleting the only line item will delete the current line item and leave a blank one', async() => {
-    getInputByLabel(`Contains\\s`).simulate('change', {target: {name: 'text', value: 'Hello'}});
+    getInputByLabel('Contains\\s').simulate('change', {target: {name: 'text', value: 'Hello'}});
 
     // check that the value was updated
-    await waitFor(() => expect(getInputByLabel(`Contains\\s`).props().value).toBe('Hello'));
+    await waitFor(() => expect(getInputByLabel('Contains\\s').props().value).toBe('Hello'));
 
     // delete the line item
     wrapper.findWhere(node => {
@@ -157,11 +157,11 @@ test('deleting the only line item will delete the current line item and leave a 
     }).simulate('click');
 
     // check that the value is now reset
-    await waitFor(() => expect(getInputByLabel(`Contains\\s`).props().value).toBe(''));
+    await waitFor(() => expect(getInputByLabel('Contains\\s').props().value).toBe(''));
 });
 
 test('clear groups should make a chrome api request to clear all active groups', async() => {
-    chrome.tabs.query.yields([{id: 123, url: "Hello-World.com"} as Partial<LineItem>]);
+    chrome.tabs.query.yields([{id: 123, url: 'Hello-World.com'} as Partial<LineItem>]);
     const ungroupFn = jest.fn();
     chrome.tabs.ungroup = ungroupFn;
     await waitFor(() => getButtonByText('Clear Groups').simulate('click'));

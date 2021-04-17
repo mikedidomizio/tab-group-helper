@@ -1,7 +1,7 @@
 import React from 'react';
 import Box from '@material-ui/core/Box';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import {Accordion, AccordionDetails, AccordionSummary, makeStyles, Typography} from "@material-ui/core";
+import {Accordion, AccordionDetails, AccordionSummary, makeStyles, Typography} from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
     root: {

@@ -15,5 +15,5 @@ Main.args = {
     existing: false,
     deleteLineItem: () => console.log('mocking deletion of line item'),
     onLineItemChange: () => console.log('mocking line item change'),
-    text: ""
+    text: ''
 };

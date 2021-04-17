@@ -1,16 +1,9 @@
-import React, {
-    AllHTMLAttributes, ChangeEvent,
-    ChangeEventHandler,
-    EventHandler,
-    FunctionComponent,
-    ReactElement, SyntheticEvent,
-    useState
-} from 'react';
+import React, {ChangeEvent, FunctionComponent, ReactElement, useState} from 'react';
 import {LineItem, LineItemsService} from '../../service/lineItems.service';
 import {Alert} from '@material-ui/lab';
 import {Box, Button, TextField, Typography} from '@material-ui/core';
 import {BottomBar} from '../BottomBar';
-import {makeStyles} from "@material-ui/core/styles";
+import {makeStyles} from '@material-ui/core/styles';
 
 const useStyles = makeStyles((/*theme*/) => ({
     root: {
