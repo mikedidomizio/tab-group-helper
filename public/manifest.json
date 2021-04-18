@@ -1,8 +1,8 @@
 {
   "name": "Tab Group Helper",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "manifest_version": 3,
-  "description": "Ability to quickly group tabs by their attributes",
+  "description": "Allow quick grouping of tabs by their attributes like title or URL",
   "action": {
     "default_popup": "index.html"
   },
