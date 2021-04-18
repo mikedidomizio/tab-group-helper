@@ -2,6 +2,7 @@
 
 export interface LineItem {
     applyChanges: boolean,
+    caseSensitive: boolean,
     color?: chrome.tabGroups.ColorEnum,
     id: number,
     groupTitle: string,
@@ -12,6 +13,7 @@ export interface LineItem {
 export const newLineItem = (): LineItem => {
     return Object.seal({
         applyChanges: true,
+        caseSensitive: false,
         color: undefined,
         id: new Date().getTime(),
         groupTitle: '',

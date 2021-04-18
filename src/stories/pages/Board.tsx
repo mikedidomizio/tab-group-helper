@@ -47,8 +47,9 @@ export const Board: FunctionComponent<any> = (/*{lineItems}*/): ReactElement => 
 
         for (let item of lineItems) {
             const regex = item.matchType.toLowerCase().includes('regex');
+            const {caseSensitive} = item;
             const matchTitle = item.matchType.includes('title') ? 'title' : 'url';
-            const returned: chrome.tabs.Tab[] = await new TabService().getTabsWhichMatch(item.text, matchTitle, regex);
+            const returned: chrome.tabs.Tab[] = await new TabService().getTabsWhichMatch(item.text, matchTitle, caseSensitive, regex);
             // if id for some reason is undefined, we return -1
             // not exactly sure what would happen there if an error is thrown or it continues if trying to add
             // -1 tab to a group

@@ -1,24 +1,27 @@
-import React, {useEffect, useState} from 'react';
+import React, {ChangeEvent, SetStateAction, useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
-import Checkbox from '@material-ui/core/Checkbox';
-import FormGroup from '@material-ui/core/FormGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import TextField from '@material-ui/core/TextField';
-import IconButton from '@material-ui/core/IconButton';
+import {
+    Box,
+    Checkbox,
+    FormControl,
+    FormControlLabel,
+    FormGroup,
+    IconButton,
+    InputLabel,
+    MenuItem,
+    Select,
+    TextField,
+    Tooltip,
+    Typography
+} from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import {makeStyles} from '@material-ui/core/styles';
-import MenuItem from '@material-ui/core/MenuItem';
-import InputLabel from '@material-ui/core/InputLabel';
-import FormControl from '@material-ui/core/FormControl';
-import Tooltip from '@material-ui/core/Tooltip';
-import Box from '@material-ui/core/Box';
-import Select from '@material-ui/core/Select';
 import {TabService} from '../service/tab.service';
+import {LineItem as LItem} from '../service/lineItems.service';
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        '& .MuiTextField-root': {
-        },
+        '& .MuiTextField-root': {},
         '& .MuiSelect-root': {
             width: '100px'
         },
@@ -26,6 +29,7 @@ const useStyles = makeStyles((theme) => ({
             marginLeft: theme.spacing(1),
             marginRight: theme.spacing(1),
         },
+        // todo needed?
         '& > .tabsMatched': {
             // 132px should be able to handle 100 tabs matched!
             width: '132px;',
@@ -37,13 +41,18 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
+interface LineItemProps extends LItem {
+    deleteLineItem: Function;
+    onLineItemChange: Function;
+}
+
 /**
  * Line item for grouping Chrome tabs
  */
-export const LineItem = ({applyChanges, color, deleteLineItem, id, groupTitle, matchType, onLineItemChange, text}) => {
+export const LineItem = ({applyChanges, caseSensitive, color, deleteLineItem, id, groupTitle, matchType, onLineItemChange, text}: LineItemProps) => {
     const classes = useStyles();
     const colorOptions = ['', 'grey', 'blue', 'red', 'yellow', 'green', 'pink', 'purple', 'cyan'];
-    const [stateTabsMatched, setTabsMatchedState] = useState([]);
+    const [stateTabsMatched, setTabsMatchedState]: [chrome.tabs.Tab[], SetStateAction<any>] = useState([]);
 
     const menuOptions = () => {
         return colorOptions.map(i => {
@@ -61,10 +70,10 @@ export const LineItem = ({applyChanges, color, deleteLineItem, id, groupTitle, m
             )
         }
 
-        return stateTabsMatched.map(i => {
+        return stateTabsMatched.map((i: chrome.tabs.Tab) => {
             const type = matchType.includes('title') ? 'title' : 'url';
             return (
-                <Box mb={1} key={i.key}>{i[type]}</Box>
+                <Box mb={1} key={i.id}>{i[type]}</Box>
             )
         });
     };
@@ -74,35 +83,34 @@ export const LineItem = ({applyChanges, color, deleteLineItem, id, groupTitle, m
         const regex = matchType.toLowerCase().includes('regex');
         const matchTitle = matchType.includes('title') ? 'title' : 'url';
         // take the values and update the state/dom to show how many tabs are matched
-        const tabsMatched = await new TabService().getTabsWhichMatch(text, matchTitle, regex);
+        const tabsMatched = await new TabService().getTabsWhichMatch(text, matchTitle, caseSensitive, regex);
         if (tabsMatched.length !== stateTabsMatched.length) {
             setTabsMatchedState(tabsMatched);
         }
     };
 
     (async () => checkMatches())();
+    // @ts-ignore
     useEffect(() => async () => await checkMatches(), [stateTabsMatched]); // eslint-disable-line react-hooks/exhaustive-deps
 
-    const handleChange = (event) => {
-        onLineItemChange(Object.assign({
+    const getLineItemValues = (): LItem => {
+        return {
             applyChanges,
+            caseSensitive,
             color,
             id,
             groupTitle,
             matchType,
             text
-        }, {[event.target.name]: event.target.checked}));
+        }
     };
 
-    const handleTextChange = (event) => {
-        onLineItemChange(Object.assign({
-            applyChanges,
-            color,
-            id,
-            groupTitle,
-            matchType,
-            text
-        }, {[event.target.name]: event.target.value}));
+    const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+        onLineItemChange(Object.assign(getLineItemValues(), {[event.target.name]: event.target.checked}));
+    };
+
+    const handleTextChange = (event: ChangeEvent<any>) => {
+        onLineItemChange(Object.assign(getLineItemValues(), {[event.target.name]: event.target.value}));
     };
 
     const handleDelete = () => {
@@ -136,11 +144,17 @@ export const LineItem = ({applyChanges, color, deleteLineItem, id, groupTitle, m
                            spellCheck="false"
                            value={text}
                 />
-                <FormControl className="tabsMatched">
-                    <Tooltip title={getTabsMatched()} placement="bottom-end">
-                        <InputLabel>{`${stateTabsMatched.length} match`}{stateTabsMatched.length !== 1 && 'es'}</InputLabel>
-                    </Tooltip>
-                </FormControl>
+                <FormControlLabel
+                    control={
+                        <Checkbox
+                            checked={caseSensitive}
+                            onChange={handleChange}
+                            name="caseSensitive"
+                            color="primary"
+                        />
+                    }
+                    label="Case Sensitive"
+                />
             </FormGroup>
             <FormGroup className={classes.root} row>
                 <TextField required name="groupTitle"
@@ -179,6 +193,14 @@ export const LineItem = ({applyChanges, color, deleteLineItem, id, groupTitle, m
                 <IconButton aria-label="delete" onClick={handleDelete}>
                     <DeleteIcon/>
                 </IconButton>
+
+
+            </FormGroup>
+            <FormGroup className={classes.root} row>
+                <Tooltip title={getTabsMatched()} placement="bottom-end">
+
+                    <InputLabel>{`${stateTabsMatched.length} match`}{stateTabsMatched.length !== 1 && 'es'}</InputLabel>
+                </Tooltip>
             </FormGroup>
         </div>
     );

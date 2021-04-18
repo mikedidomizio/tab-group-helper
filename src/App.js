@@ -9,7 +9,7 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
-import {BrowserRouter, Route, Switch, useHistory} from 'react-router-dom';
+import {Route, Switch, useHistory} from 'react-router-dom';
 import {Edit} from './stories/pages/Edit';
 import {Help} from './stories/pages/Help';
 
@@ -86,19 +86,17 @@ function App() {
                         </Typography>
                     </Toolbar>
                 </AppBar>
-                <BrowserRouter>
-                    <Switch>
-                        <Route path="/edit">
-                            <Edit/>
-                        </Route>
-                        <Route path="/help">
-                            <Help/>
-                        </Route>
-                        <Route path="/">
-                            <Board/>
-                        </Route>
-                    </Switch>
-                </BrowserRouter>
+                <Switch>
+                    <Route path="/edit">
+                        <Edit/>
+                    </Route>
+                    <Route path="/help">
+                        <Help/>
+                    </Route>
+                    <Route path="/">
+                        <Board/>
+                    </Route>
+                </Switch>
             </div>
             }
 
