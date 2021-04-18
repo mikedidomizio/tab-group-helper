@@ -1,6 +1,7 @@
 // @ts-ignore
 import chrome from 'sinon-chrome/extensions';
 import {TabService} from '../tab.service';
+import {ChromeTabsAttributes} from '../lineItems.service';
 
 jest.setTimeout(30000);
 
@@ -132,58 +133,58 @@ describe('tab service', () => {
 
         describe('success path', () => {
 
-            const checkAndExpect = async (text: string, type: string, caseSensitive: boolean, regex: boolean, num: number) =>
+            const checkAndExpect = async (text: string, type: ChromeTabsAttributes, caseSensitive: boolean, regex: boolean, num: number) =>
                 expect((await tabsService.getTabsWhichMatch(text, type, caseSensitive, regex)).length).toBe(num);
 
             it('should be case sensitive if case sensitive is set and have strict matching', async () => {
-                await checkAndExpect('React', 'title', true, false, 0);
+                await checkAndExpect('React', ChromeTabsAttributes.title, true, false, 0);
             });
 
             it('should return an empty array if the text sent is zero length', async () => {
-                await checkAndExpect('', 'title', false, false, 0);
+                await checkAndExpect('', ChromeTabsAttributes.title, false, false, 0);
             });
 
             it('should return an empty array if text is empty and type is of regex', async () => {
-                await checkAndExpect('', 'title', false, true, 0);
+                await checkAndExpect('', ChromeTabsAttributes.title, false, true, 0);
             });
 
             it('should return an empty array if text when trimmed is empty, preventing accidental grouping unnecessarily', async () => {
-                await checkAndExpect(' ', 'title', false, false, 0);
+                await checkAndExpect(' ', ChromeTabsAttributes.title, false, false, 0);
             });
 
             it('should match titles which contain text', async () => {
-                await checkAndExpect('react', 'title', false, false, 1);
+                await checkAndExpect('react', ChromeTabsAttributes.title, false, false, 1);
             });
 
             it('should match url which contain text', async () => {
-                await checkAndExpect('react.co', 'url', false, false, 1);
+                await checkAndExpect('react.co', ChromeTabsAttributes.url, false, false, 1);
             });
 
             it('should regex match url which contain text', async () => {
-                await checkAndExpect('Reac|Face', 'url', false, true, 2);
+                await checkAndExpect('Reac|Face', ChromeTabsAttributes.url, false, true, 2);
             });
 
             it('should regex match title which contain text', async () => {
-                await checkAndExpect('reac|Face', 'title', false, true, 2);
+                await checkAndExpect('reac|Face', ChromeTabsAttributes.title, false, true, 2);
             });
 
             it('should regex match url which contain text and return empty if case sensitive is set', async () => {
-                await checkAndExpect('reac|Face', 'url', true, true, 1);
+                await checkAndExpect('reac|Face', ChromeTabsAttributes.url, true, true, 1);
             });
 
             it('should allow more complex regular expressions', async () => {
                 // title
-                await checkAndExpect('^(reac|face)', 'title', false, true, 2);
-                await checkAndExpect('^(reac|facetruck)', 'title', false, true, 1);
-                await checkAndExpect('(times|book)$', 'title', false, true, 2);
+                await checkAndExpect('^(reac|face)', ChromeTabsAttributes.title, false, true, 2);
+                await checkAndExpect('^(reac|facetruck)', ChromeTabsAttributes.title, false, true, 1);
+                await checkAndExpect('(times|book)$', ChromeTabsAttributes.title, false, true, 2);
                 // url
-                await checkAndExpect('.com$', 'url', false, true, 2);
+                await checkAndExpect('.com$', ChromeTabsAttributes.url, false, true, 2);
             });
 
         });
 
         it('should not match a type that doesn\'t exist on that tab', async () => {
-            await tabsService.getTabsWhichMatch('reac', 'unknown', false, true);
+            await tabsService.getTabsWhichMatch('reac', undefined as unknown as ChromeTabsAttributes, false, true);
         });
 
     });

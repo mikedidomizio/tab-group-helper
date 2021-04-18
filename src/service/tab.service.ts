@@ -1,5 +1,7 @@
 /// <reference types="@types/chrome" />
 
+import {ChromeTabsAttributes} from './lineItems.service';
+
 export class TabService {
 
     /**
@@ -22,7 +24,7 @@ export class TabService {
      * @param {boolean} regex
      * @return {Promise<Tab[]>}
      */
-    async getTabsWhichMatch(text: string, type: chrome.tabs.Tab['title'] | chrome.tabs.Tab['url'], caseSensitive = false, regex = false): Promise<chrome.tabs.Tab[]> {
+    async getTabsWhichMatch(text: string, type: ChromeTabsAttributes, caseSensitive = false, regex = false): Promise<chrome.tabs.Tab[]> {
         const tabs = await this.listAllTabs();
         let cleanedText = text.trim();
         cleanedText = caseSensitive ? cleanedText : cleanedText.toLowerCase();
@@ -49,7 +51,7 @@ export class TabService {
             return tabs.filter(i => {
                 // @ts-ignore
                 const val = caseSensitive ? i[type] : i[type].toLowerCase();
-                return val.includes(cleanedText);
+                return (val as ChromeTabsAttributes).includes(cleanedText);
             });
         }
         // if text length is empty, we return nothing
