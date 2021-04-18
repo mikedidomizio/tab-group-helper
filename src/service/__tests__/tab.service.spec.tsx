@@ -29,13 +29,14 @@ describe('tab service', () => {
         it('should not throw an error if no color is specified', async() => {
             chrome.tabGroups = {
                 update: () => {
-                    throw new Error(`property 'color': Value must be one of`);
+                    throw new Error('property \'color\': Value must be one of');
                 },
                 query: (t: string, callback: Function) => callback([{id: 123}, {id: 234}]),
             };
             chrome.tabs.group = (t: string, callback: Function) => callback([{id: 123}, {id: 234}]);
 
             const tabGroup = await tabsService.addTabsToGroup([], 'myGroup');
+            expect(tabGroup).toBeDefined();
         });
 
     });
