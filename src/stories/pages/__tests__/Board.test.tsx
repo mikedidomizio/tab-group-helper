@@ -111,7 +111,7 @@ test('run should call the tabs service with each valid line item', async () => {
     let addTabsSpy = jest.spyOn(TabService.prototype, 'addTabsToGroup');
     await waitFor(() => getInputByLabel('Contains\\s').simulate('change', {target: {name: 'text', value: 'Hello'}}));
     getButtonByText('Run').simulate('click');
-    await waitFor(() => expect(addTabsSpy).toHaveBeenCalledWith([123], '', ''));
+    await waitFor(() => expect(addTabsSpy).toHaveBeenCalledWith([123], '', undefined));
     await waitFor(() => expect(addTabsSpy).toHaveBeenCalledTimes(1));
 });
 

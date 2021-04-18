@@ -53,9 +53,8 @@ export const Board: FunctionComponent<any> = (/*{lineItems}*/): ReactElement => 
             // -1 tab to a group
             const ids: number[] = returned.map(i => i.id ? i.id : -1);
             if (ids.length) {
-                // todo needed for empty vars?
-                // const color = item.color !== undefined ? item.color : undefined;
-                await tabsService.addTabsToGroup(ids, item.groupTitle, item.color);
+                const color = item.color !== '' ? item.color : undefined;
+                await tabsService.addTabsToGroup(ids, item.groupTitle, color);
             }
         }
     };
