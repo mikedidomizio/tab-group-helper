@@ -27,39 +27,6 @@
     "storybook": "start-storybook -p 6006 -s public",
     "build-storybook": "build-storybook -s public"
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ],
-    "env": {
-      "browser": true,
-      "webextensions": true
-    },
-    "overrides": [
-      {
-        "files": [
-          "**/*.stories.*"
-        ]
-      }
-    ],
-    "rules": {
-      "@typescript-eslint/no-use-before-define": [
-        "error"
-      ],
-      "quotes": ["warn", "single"],
-      "import/no-anonymous-default-export": "off",
-      "no-use-before-define": "off"
-    },
-    "ignorePatterns": [
-      "node_modules/**",
-      "."
-    ],
-    "plugins": [
-      "@typescript-eslint"
-    ],
-    "parser": "@typescript-eslint/parser"
-  },
   "browserslist": {
     "production": [
       ">0.2%",

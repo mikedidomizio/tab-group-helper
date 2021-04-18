@@ -18,10 +18,15 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - run: yarn install
-      - run: yarn test:coverage
+
+      - name: Lint
+        run: yarn lint
+
+      - name: Unit tests
+        run: yarn test:coverage
 
       # use hash for safety reasons, using master/tags can introduce security risks into workflow
-      - name: Push Code Coverage
+      - name: Push code coverage
         uses: codecov/codecov-action@2838b54ec211d3f145409dbf867d4b3f22af4637
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
