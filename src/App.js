@@ -50,7 +50,7 @@ function App() {
     const handleOnMenuItemClick = useCallback((url) => {
         history.push(url);
         handleClose();
-    }, [history]);
+    }, []);
 
     const correctChromeVersion = () => parseInt(chromeVersion) >= requiredChromeVersion;
 
