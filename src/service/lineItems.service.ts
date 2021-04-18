@@ -8,7 +8,7 @@ export enum ChromeTabsAttributes {
 export interface LineItem {
     applyChanges: boolean,
     caseSensitive: boolean,
-    color?: chrome.tabGroups.ColorEnum,
+    color: chrome.tabGroups.ColorEnum | '',
     id: number,
     groupTitle: string,
     matchType: ChromeTabsAttributes,
@@ -20,7 +20,7 @@ export const newLineItem = (): LineItem => {
     return Object.seal({
         applyChanges: true,
         caseSensitive: false,
-        color: undefined,
+        color: '' as chrome.tabGroups.ColorEnum,
         id: new Date().getTime(),
         groupTitle: '',
         matchType: ChromeTabsAttributes.url,
