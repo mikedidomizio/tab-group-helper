@@ -18,7 +18,7 @@
     "@typescript-eslint/no-use-before-define": [
       "error"
     ],
-    "quotes": ["warn", "single"],
+    "quotes": ["warn", "single", { "allowTemplateLiterals": true }],
     "import/no-anonymous-default-export": "off",
     "no-use-before-define": "off"
   },

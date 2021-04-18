@@ -16,6 +16,13 @@ config.entry.app = config.entry.app.filter(
 config.output.path = paths.appBuild;
 paths.publicUrl = paths.appBuild + '/';
 
+function copyPublicFolder() {
+    fs.copySync(paths.appPublic, paths.appBuild, {
+        dereference: true,
+        filter: file => file !== paths.appHtml
+    });
+}
+
 webpack(config).watch({}, (err, stats) => {
     if (err) {
         console.error(err);
@@ -29,10 +36,3 @@ webpack(config).watch({}, (err, stats) => {
         })
     );
 });
-
-function copyPublicFolder() {
-    fs.copySync(paths.appPublic, paths.appBuild, {
-        dereference: true,
-        filter: file => file !== paths.appHtml
-    });
-}
