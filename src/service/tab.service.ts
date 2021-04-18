@@ -18,27 +18,39 @@ export class TabService {
     /**
      * @param {string} text
      * @param {"url" | "title"} type
+     * @param {boolean} caseSensitive
      * @param {boolean} regex
      * @return {Promise<Tab[]>}
      */
-    async getTabsWhichMatch(text: string, type: chrome.tabs.Tab['title'] | chrome.tabs.Tab['url'], regex = false): Promise<chrome.tabs.Tab[]> {
+    async getTabsWhichMatch(text: string, type: chrome.tabs.Tab['title'] | chrome.tabs.Tab['url'], caseSensitive = false, regex = false): Promise<chrome.tabs.Tab[]> {
         const tabs = await this.listAllTabs();
-        const cleanedText = text.trim();
+        let cleanedText = text.trim();
+        cleanedText = caseSensitive ? cleanedText : cleanedText.toLowerCase();
+
         if (cleanedText.length) {
             if (regex) {
                 return tabs.filter((i: chrome.tabs.Tab) => {
 
                     // @ts-ignore
                     if (i[type]) {
-                        // @ts-ignore
-                        return i[type].match(new RegExp(cleanedText))
+                        if (caseSensitive) {
+                            // @ts-ignore
+                            return i[type].match(new RegExp(cleanedText));
+                        } else {
+                            // @ts-ignore
+                            return i[type].match(new RegExp(cleanedText, 'i'));
+                        }
                     }
 
                     return false;
                 });
             }
-            // @ts-ignore
-            return tabs.filter(i => i[type].includes(cleanedText));
+
+            return tabs.filter(i => {
+                // @ts-ignore
+                const val = caseSensitive ? i[type] : i[type].toLowerCase();
+                return val.includes(cleanedText);
+            });
         }
         // if text length is empty, we return nothing
         return [];
