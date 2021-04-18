@@ -42,14 +42,12 @@ export const Board: FunctionComponent<any> = (/*{lineItems}*/): ReactElement => 
     const run = async () => {
         let lineItems = lineItemsService.get();
         // immediately filter where apply is true, we ignore otherwise
-        // todo work with other options
         lineItems = lineItems.filter(i => i.applyChanges);
 
         for (let item of lineItems) {
-            const regex = item.matchType.toLowerCase().includes('regex');
+            const regex = item.regex;
             const {caseSensitive} = item;
-            const matchTitle = item.matchType.includes('title') ? 'title' : 'url';
-            const returned: chrome.tabs.Tab[] = await new TabService().getTabsWhichMatch(item.text, matchTitle, caseSensitive, regex);
+            const returned: chrome.tabs.Tab[] = await new TabService().getTabsWhichMatch(item.text, item.matchType, caseSensitive, regex);
             // if id for some reason is undefined, we return -1
             // not exactly sure what would happen there if an error is thrown or it continues if trying to add
             // -1 tab to a group

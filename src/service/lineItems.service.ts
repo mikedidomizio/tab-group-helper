@@ -1,12 +1,18 @@
 /// <reference types="@types/chrome" />
 
+export enum ChromeTabsAttributes {
+    title = 'title',
+    url = 'url'
+}
+
 export interface LineItem {
     applyChanges: boolean,
     caseSensitive: boolean,
     color?: chrome.tabGroups.ColorEnum,
     id: number,
     groupTitle: string,
-    matchType: string, // todo
+    matchType: ChromeTabsAttributes,
+    regex: boolean,
     text: string;
 }
 
@@ -17,7 +23,8 @@ export const newLineItem = (): LineItem => {
         color: undefined,
         id: new Date().getTime(),
         groupTitle: '',
-        matchType: 'url',
+        matchType: ChromeTabsAttributes.url,
+        regex: false,
         text: '',
     })
 };

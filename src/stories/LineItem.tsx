@@ -11,13 +11,12 @@ import {
     MenuItem,
     Select,
     TextField,
-    Tooltip,
-    Typography
+    Tooltip
 } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import {makeStyles} from '@material-ui/core/styles';
 import {TabService} from '../service/tab.service';
-import {LineItem as LItem} from '../service/lineItems.service';
+import {ChromeTabsAttributes, LineItem as LItem} from '../service/lineItems.service';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -49,7 +48,7 @@ interface LineItemProps extends LItem {
 /**
  * Line item for grouping Chrome tabs
  */
-export const LineItem = ({applyChanges, caseSensitive, color, deleteLineItem, id, groupTitle, matchType, onLineItemChange, text}: LineItemProps) => {
+export const LineItem = ({applyChanges, caseSensitive, color, deleteLineItem, id, groupTitle, matchType, onLineItemChange, regex, text}: LineItemProps) => {
     const classes = useStyles();
     const colorOptions = ['', 'grey', 'blue', 'red', 'yellow', 'green', 'pink', 'purple', 'cyan'];
     const [stateTabsMatched, setTabsMatchedState]: [chrome.tabs.Tab[], SetStateAction<any>] = useState([]);
@@ -71,19 +70,16 @@ export const LineItem = ({applyChanges, caseSensitive, color, deleteLineItem, id
         }
 
         return stateTabsMatched.map((i: chrome.tabs.Tab) => {
-            const type = matchType.includes('title') ? 'title' : 'url';
+            const val = (i as any)[matchType];
             return (
-                <Box mb={1} key={i.id}>{i[type]}</Box>
+                <Box mb={1} key={i.id}>{val}</Box>
             )
         });
     };
 
     const checkMatches = async () => {
-        // todo a bit of duplication going on here with the board component
-        const regex = matchType.toLowerCase().includes('regex');
-        const matchTitle = matchType.includes('title') ? 'title' : 'url';
         // take the values and update the state/dom to show how many tabs are matched
-        const tabsMatched = await new TabService().getTabsWhichMatch(text, matchTitle, caseSensitive, regex);
+        const tabsMatched = await new TabService().getTabsWhichMatch(text, matchType, caseSensitive, regex);
         if (tabsMatched.length !== stateTabsMatched.length) {
             setTabsMatchedState(tabsMatched);
         }
@@ -101,6 +97,7 @@ export const LineItem = ({applyChanges, caseSensitive, color, deleteLineItem, id
             id,
             groupTitle,
             matchType,
+            regex,
             text
         }
     };
@@ -132,8 +129,6 @@ export const LineItem = ({applyChanges, caseSensitive, color, deleteLineItem, id
                     >
                         <MenuItem key="title" value="title">Title</MenuItem>
                         <MenuItem key="url" value="url">URL</MenuItem>
-                        <MenuItem key="titleRegex" value="titleRegex">Title regex</MenuItem>
-                        <MenuItem key="urlRegex" value="urlRegex">URL regex</MenuItem>
                     </Select>
                 </FormControl>
 
@@ -154,6 +149,17 @@ export const LineItem = ({applyChanges, caseSensitive, color, deleteLineItem, id
                         />
                     }
                     label="Case Sensitive"
+                />
+                <FormControlLabel
+                    control={
+                        <Checkbox
+                            checked={regex}
+                            onChange={handleChange}
+                            name="regex"
+                            color="primary"
+                        />
+                    }
+                    label="Regex"
                 />
             </FormGroup>
             <FormGroup className={classes.root} row>
@@ -233,6 +239,6 @@ LineItem.defaultProps = {
     applyChanges: false,
     color: '',
     groupTitle: '',
-    matchType: 'url',
+    matchType: ChromeTabsAttributes.url,
     text: '',
 };
