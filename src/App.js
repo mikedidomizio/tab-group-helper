@@ -9,9 +9,8 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
-import {Route, Switch, useHistory} from 'react-router-dom';
 import {Edit} from './stories/pages/Edit';
-import {Help} from './stories/pages/Help';
+import {createMemoryHistory} from 'history'
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -29,13 +28,15 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
+// leave outside the app to continue working
+const history = createMemoryHistory();
+
 function App() {
     const chromeVersion = /Chrome\/([0-9.]+)/.exec(navigator.userAgent)[1];
     // necessary for the tabGroups API
     const requiredChromeVersion = 89;
 
     const classes = useStyles();
-    const history = useHistory();
     const [anchorEl, setAnchorEl] = React.useState(null);
 
     const handleOpen = (event) => {
@@ -86,17 +87,8 @@ function App() {
                         </Typography>
                     </Toolbar>
                 </AppBar>
-                <Switch>
-                    <Route path="/edit">
-                        <Edit/>
-                    </Route>
-                    <Route path="/help">
-                        <Help/>
-                    </Route>
-                    <Route path="/">
-                        <Board/>
-                    </Route>
-                </Switch>
+                {history.location.pathname === '/edit' && <Edit/>}
+                {history.location.pathname === '/' && <Board/>}
             </div>
             }
 

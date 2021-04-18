@@ -50,7 +50,7 @@ interface LineItemProps extends LItem {
  */
 export const LineItem = ({applyChanges, caseSensitive, color, deleteLineItem, id, groupTitle, matchType, onLineItemChange, regex, text}: LineItemProps) => {
     const classes = useStyles();
-    const colorOptions = ['', 'grey', 'blue', 'red', 'yellow', 'green', 'pink', 'purple', 'cyan'];
+    const colorOptions: Array<chrome.tabGroups.ColorEnum | ''> = ['', 'grey', 'blue', 'red', 'yellow', 'green', 'pink', 'purple', 'cyan'];
     const [stateTabsMatched, setTabsMatchedState]: [chrome.tabs.Tab[], SetStateAction<any>] = useState([]);
 
     const menuOptions = () => {
