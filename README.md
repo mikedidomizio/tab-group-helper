@@ -12,12 +12,10 @@ For instance if you have a number of "GitHub" and "GitLab" tabs open and want to
 
 ## Development
 
-This is written in React and uses Storybook for component isolation development
+This is written in React and uses Storybook for component isolation development.  Components are deployed to GitHub pages
+and can be viewed [here](https://mikedidomizio.github.io/tab-group-helper)
 
-`yarn install && yarn start`
-
-This will launch the extension in your browser.  At this time the global `chrome` requests will throw errors but this 
-is good enough for a lot of development.
+To get started with development, run `yarn install` to get the dependencies.
 
 ### Hot Reloading extension
 
@@ -28,4 +26,3 @@ Will build the extension, load the `./build` directory as an unpacked extension.
 ### Building the extension
 
 `yarn build-ext` will build the extension into the `./dist` directory with the manifest.  Loading the directory as an unpacked extension into Chrome.
-  

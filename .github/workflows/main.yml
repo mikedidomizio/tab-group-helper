@@ -1,15 +1,15 @@
 name: Build
 
-on: [push, pull_request]
+on: [ push, pull_request ]
 
 jobs:
-  build:
 
+  build:
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        node-version: [12.x]
+        node-version: [ 12.x ]
 
     steps:
       - uses: actions/checkout@v2
@@ -17,10 +17,78 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - run: yarn install
+
+      - name: Cache node_modules
+        uses: actions/cache@v2
+        id: node_modules-cache
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-yarn-v2-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-v2-
+
+      - name: Install dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: yarn install --frozen-lockfile
+
+  lint:
+    needs: [ build ]
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [ 12.x ]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Restore node_modules
+        uses: actions/cache@v2
+        id: node_modules-cache
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-yarn-v2-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-v2-
+
+      - name: Install dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: yarn install --frozen-lockfile
 
       - name: Lint
         run: yarn lint
+
+  code_coverage:
+    needs: [ build ]
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [ 12.x ]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Restore node_modules
+        uses: actions/cache@v2
+        id: node_modules-cache
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-yarn-v2-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-v2-
+
+      - name: Install dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: yarn install --frozen-lockfile
 
       - name: Unit tests
         run: yarn test:coverage
@@ -32,3 +100,37 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           fail_ci_if_error: true # optional (default = false)
           verbose: false # optional (default = false)
+
+  deploy_storybook:
+    needs: [ code_coverage, lint ]
+    # only on master/push
+    if: ${{ github.ref == 'refs/heads/master' && github.event_name == 'push' }}
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [ 12.x ]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Restore node_modules
+        uses: actions/cache@v2
+        id: node_modules-cache
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-yarn-v2-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-v2-
+
+      - name: Install dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: yarn install --frozen-lockfile
+
+      # deploy to GitHub pages which only occurs on master/push
+      - name: Deploy GitHub Storybook pages
+        run: git remote add gh-token "https://github.com:mikedidomizio/tab-group-helper.git" && yarn deploy-storybook
