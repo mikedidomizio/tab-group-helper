@@ -16,10 +16,18 @@ const useStyles = makeStyles((/*theme*/) => ({
     }
 }));
 
+
+export interface EditProps {
+    /**
+     * Error value that is displayed in the UI.  By default this text/value is not visible
+     */
+    error?: string;
+}
+
 /**
  * Edit line items manually
  */
-export const Edit: FunctionComponent<any> = ({error, /*textFieldValue*/}): ReactElement => {
+export const Edit: FunctionComponent<EditProps> = ({error}): ReactElement => {
     const lineItemsService = new LineItemsService();
     const classes = useStyles();
     const [state, setState] = useState({
@@ -55,12 +63,12 @@ export const Edit: FunctionComponent<any> = ({error, /*textFieldValue*/}): React
     };
 
     const reset = (): void => {
-        setState({textFieldValue: JSON.stringify(lineItemsService.get(), undefined, 4), error: false});
+        setState({textFieldValue: JSON.stringify(lineItemsService.get(), undefined, 4), error: ''});
     };
 
     const beautify = (): void => {
         if (!state.error) {
-            setState({textFieldValue: JSON.stringify(lineItemsService.get(), undefined, 4), error: false});
+            setState({textFieldValue: JSON.stringify(lineItemsService.get(), undefined, 4), error: ''});
         }
     };
 
@@ -100,9 +108,6 @@ export const Edit: FunctionComponent<any> = ({error, /*textFieldValue*/}): React
     );
 };
 
-Edit.propTypes = {};
-
 Edit.defaultProps = {
-    error: false,
-    textFieldValue: [],
+    error: ''
 };

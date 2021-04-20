@@ -1,5 +1,4 @@
-import React, {ChangeEvent, SetStateAction, useEffect, useState} from 'react';
-import PropTypes from 'prop-types';
+import React, {ChangeEvent, FunctionComponent, ReactElement, SetStateAction, useEffect, useState} from 'react';
 import {
     Box,
     Checkbox,
@@ -22,33 +21,61 @@ const useStyles = makeStyles((theme) => ({
     root: {
         '& .MuiTextField-root': {},
         '& .MuiSelect-root': {
-            width: '100px'
+            width: '60px'
         },
-        '& > div:not(:first-child), & > label:not(:first-child)': {
-            marginLeft: theme.spacing(1),
+        '& .MuiFormGroup-root:not(:last-child)': {
+            marginBottom: theme.spacing(2)
+        },
+        '& .MuiFormControl-root': {
             marginRight: theme.spacing(1),
-        },
-        // todo needed?
-        '& > .tabsMatched': {
-            // 132px should be able to handle 100 tabs matched!
-            width: '132px;',
-            '& label': {
-                // this is to get the text to visually align with the next line checkbox
-                paddingLeft: theme.spacing(1),
-            }
         }
     },
 }));
 
 interface LineItemProps extends LItem {
-    deleteLineItem: Function;
-    onLineItemChange: Function;
+    /**
+     * Calls parent to delete remove
+     */
+    deleteLineItem: (args: number) => void;
+    /**
+     * On prop change, it calls the parent component
+     */
+    onLineItemChange: (args: LItem) => void;
+}
+
+/*
+type Test = { args: LineItemProps } & typeof defaultProps
+const defaultProps = {
+    age: 21,
+};
+*/
+
+const defaultProps: LItem = {
+    applyChanges: true,
+    caseSensitive: false,
+    color: '',
+    groupTitle: '',
+    id: -1,
+    matchType: ChromeTabsAttributes.url,
+    regex: true,
+    text: '',
 }
 
 /**
  * Line item for grouping Chrome tabs
  */
-export const LineItem = ({applyChanges, caseSensitive, color, deleteLineItem, id, groupTitle, matchType, onLineItemChange, regex, text}: LineItemProps) => {
+export const LineItem: FunctionComponent<LineItemProps> = ({
+                                                               applyChanges,
+                                                               caseSensitive,
+                                                               color,
+                                                               deleteLineItem,
+                                                               id,
+                                                               groupTitle,
+                                                               matchType,
+                                                               onLineItemChange,
+                                                               regex,
+                                                               text
+                                                           }: LineItemProps & typeof defaultProps): ReactElement => {
     const classes = useStyles();
     const colorOptions: Array<chrome.tabGroups.ColorEnum | ''> = ['', 'grey', 'blue', 'red', 'yellow', 'green', 'pink', 'purple', 'cyan'];
     const [stateTabsMatched, setTabsMatchedState]: [chrome.tabs.Tab[], SetStateAction<any>] = useState([]);
@@ -110,13 +137,9 @@ export const LineItem = ({applyChanges, caseSensitive, color, deleteLineItem, id
         onLineItemChange(Object.assign(getLineItemValues(), {[event.target.name]: event.target.value}));
     };
 
-    const handleDelete = () => {
-        deleteLineItem(id);
-    };
-
     return (
-        <div className={color}>
-            <FormGroup className={classes.root} row>
+        <div className={classes.root}>
+            <FormGroup row>
                 <FormControl>
                     <InputLabel id="matchType">Type</InputLabel>
                     <Select
@@ -196,7 +219,7 @@ export const LineItem = ({applyChanges, caseSensitive, color, deleteLineItem, id
                     }
                     label="Apply"
                 />
-                <IconButton aria-label="delete" onClick={handleDelete}>
+                <IconButton aria-label="delete" onClick={() => deleteLineItem(id)}>
                     <DeleteIcon/>
                 </IconButton>
 
@@ -212,33 +235,4 @@ export const LineItem = ({applyChanges, caseSensitive, color, deleteLineItem, id
     );
 };
 
-LineItem.propTypes = {
-    /**
-     * Whether the changes should be applied the next time we group
-     */
-    applyChanges: PropTypes.bool,
-    /**
-     * The color to apply to the group
-     */
-    color: PropTypes.string,
-    /**
-     * Group title to create/update
-     */
-    groupTitle: PropTypes.string,
-    /**
-     * What the rule should match
-     */
-    matchType: PropTypes.string,
-    /**
-     * What text to match (accepts strings with wildcards and will support regex in the future)
-     */
-    text: PropTypes.string
-};
-
-LineItem.defaultProps = {
-    applyChanges: false,
-    color: '',
-    groupTitle: '',
-    matchType: ChromeTabsAttributes.url,
-    text: '',
-};
+LineItem.defaultProps = defaultProps;
