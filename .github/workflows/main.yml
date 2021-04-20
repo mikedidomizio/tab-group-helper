@@ -134,3 +134,5 @@ jobs:
       # deploy to GitHub pages which only occurs on master/push
       - name: Deploy GitHub Storybook pages
         run: git remote add gh-token "https://github.com:mikedidomizio/tab-group-helper.git" && yarn deploy-storybook
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
