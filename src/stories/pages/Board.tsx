@@ -1,6 +1,5 @@
 import React, {FunctionComponent, ReactElement, useState} from 'react';
 import Button from '@material-ui/core/Button';
-import PropTypes from 'prop-types';
 import {LineItem} from '../LineItem';
 import Box from '@material-ui/core/Box';
 import Divider from '@material-ui/core/Divider';
@@ -9,13 +8,10 @@ import {LineItem as LItem, LineItemsService, newLineItem} from '../../service/li
 import {makeStyles} from '@material-ui/core/styles';
 import {BottomBar} from '../BottomBar';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((/*theme*/) => ({
     root: {
         // was just manually tested in Chrome, no fancy calculations
         height: '536px',
-        '& .MuiFormGroup-root:not(:last-child)': {
-            marginBottom: theme.spacing(2)
-        },
         '& .lineItemsHolder': {
             // this is just to offset the header and keep the sticky to the bottom if not enough items are added
             minHeight: '468px',
@@ -25,10 +21,13 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
+export interface BoardProps {
+}
+
 /**
  * Board of line items that we will run against to group Chrome tabs
  */
-export const Board: FunctionComponent<any> = (/*{lineItems}*/): ReactElement => {
+export const Board: FunctionComponent = (): ReactElement => {
     const classes = useStyles();
     const lineItemsService: LineItemsService = new LineItemsService();
     const tabsService: TabService = new TabService();
@@ -154,20 +153,6 @@ export const Board: FunctionComponent<any> = (/*{lineItems}*/): ReactElement => 
             </BottomBar>
         </Box>
     );
-};
-
-Board.propTypes = {
-    /**
-     * Array of line items to possibly apply grouping changes
-     */
-    lineItems: PropTypes.arrayOf(PropTypes.exact({
-        applyChanges: PropTypes.bool,
-        color: PropTypes.string,
-        id: PropTypes.number,
-        groupTitle: PropTypes.string,
-        matchType: PropTypes.string,
-        text: PropTypes.string
-    }))
 };
 
 Board.defaultProps = {
