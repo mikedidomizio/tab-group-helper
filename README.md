@@ -1,6 +1,6 @@
 # Tab Group Helper
 
-![Build Status](https://github.com/mikedidomizio/tab-group-helper/actions/workflows/main.yml/badge.svg)
+[<img src="https://github.com/mikedidomizio/tab-group-helper/actions/workflows/main.yml/badge.svg" alt="Build Status">](https://github.com/mikedidomizio/tab-group-helper/actions/workflows/main.yml)
 [![codecov](https://codecov.io/gh/mikedidomizio/tab-group-helper/branch/master/graph/badge.svg?token=RNZY19LBKL)](https://codecov.io/gh/mikedidomizio/tab-group-helper)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/839bbee00ab645b384a4e387bd40c5b0)](https://www.codacy.com/gh/mikedidomizio/tab-group-helper/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=mikedidomizio/tab-group-helper&amp;utm_campaign=Badge_Grade)
 

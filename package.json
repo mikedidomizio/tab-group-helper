@@ -4,6 +4,10 @@
   "description": "Allow quick grouping of tabs by their attributes like title or URL",
   "version": "1.1.0",
   "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mikedidomizio/tab-group-helper"
+  },
   "dependencies": {
     "@material-ui/core": "^4.11.3",
     "@material-ui/icons": "^4.11.2",
