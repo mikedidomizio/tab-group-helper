@@ -28,6 +28,8 @@ describe('tab service', () => {
     describe('addTabsToGroup', () => {
 
         it('should not throw an error if no color is specified', async () => {
+            // prevents jest from spitting out an unnecessary console warning
+            jest.spyOn(console, 'warn').mockImplementation(() => {});
             chrome.tabGroups = {
                 update: () => {
                     throw new Error('property \'color\': Value must be one of');
