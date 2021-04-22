@@ -4,6 +4,26 @@ on: [ push, pull_request ]
 
 jobs:
 
+  # Ensures that versions match on pull request to master to ensure we're not going to end up with mismatched versions
+  prepare_publish:
+    if: ${{ github.ref == 'refs/heads/master' && github.event_name == 'pull_request' }}
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [ 12.x ]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Prepare Publish script
+        run: yarn prep-publish
+
+  # Builds and caches the node_modules for future jobs
   build:
     runs-on: ubuntu-latest
 
@@ -31,6 +51,7 @@ jobs:
         if: steps.cache.outputs.cache-hit != 'true'
         run: yarn install --frozen-lockfile
 
+  # Runs linter, fails on errors
   lint:
     needs: [ build ]
     runs-on: ubuntu-latest
@@ -62,6 +83,7 @@ jobs:
       - name: Lint
         run: yarn lint
 
+  # Runs code coverage and pushes to third party which will update pull request if exists
   code_coverage:
     needs: [ build ]
     runs-on: ubuntu-latest
@@ -101,6 +123,7 @@ jobs:
           fail_ci_if_error: true # optional (default = false)
           verbose: false # optional (default = false)
 
+  # Deploy storybook to github pages
   deploy_storybook:
     needs: [ code_coverage, lint ]
     # only on master/push
@@ -137,6 +160,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
+  # Builds the zip file artifact for debugging or for pushing to the web store
   build_zip:
     needs: [ code_coverage, lint ]
     runs-on: ubuntu-latest
