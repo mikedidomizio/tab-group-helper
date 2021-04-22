@@ -136,3 +136,40 @@ jobs:
         run: git remote add gh-token "https://github.com:mikedidomizio/tab-group-helper.git" && yarn deploy-storybook
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
+
+  build_zip:
+    needs: [ code_coverage, lint ]
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [ 12.x ]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Restore node_modules
+        uses: actions/cache@v2
+        id: node_modules-cache
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-yarn-v2-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-v2-
+
+      - name: Install dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: yarn install --frozen-lockfile
+
+      - name: Build extension
+        run: yarn build-ext
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: extension
+          path: ./dist
