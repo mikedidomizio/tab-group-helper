@@ -1,5 +1,7 @@
 {
   "name": "tab-group-helper",
+  "prettyName": "Tab Group Helper",
+  "description": "Allow quick grouping of tabs by their attributes like title or URL",
   "version": "1.1.0",
   "private": true,
   "dependencies": {
@@ -26,7 +28,10 @@
     "eject": "react-scripts eject",
     "storybook": "start-storybook -p 6006 -s public",
     "build-storybook": "build-storybook -s public",
-    "deploy-storybook": "storybook-to-ghpages --out tmp/storybook --ci"
+    "deploy-storybook": "storybook-to-ghpages --out tmp/storybook --ci",
+
+    "build-manifest": "node ./scripts/build-manifest.js",
+    "prep-publish": "node ./scripts/prepare-publish.js"
   },
   "browserslist": {
     "production": [
