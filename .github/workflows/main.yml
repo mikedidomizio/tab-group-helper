@@ -4,9 +4,10 @@ on: [ push, pull_request ]
 
 jobs:
 
-  # Ensures that versions match on pull request to master to ensure we're not going to end up with mismatched versions
+  # Ensures that versions match on pull request to master to ensure we're not going to end up with mismatched versions (master)
   prepare_publish:
-    if: ${{ github.ref == 'refs/heads/master' && github.event_name == 'pull_request' }}
+    # if the target branch is master. We want to make sure we're not merging anything into master that's unpublishable
+    if: ${{ github.base_ref == 'master' && github.event_name == 'pull_request' }}
     runs-on: ubuntu-latest
 
     strategy:
@@ -123,10 +124,9 @@ jobs:
           fail_ci_if_error: true # optional (default = false)
           verbose: false # optional (default = false)
 
-  # Deploy storybook to github pages
+  # Deploy storybook to github pages (master/push)
   deploy_storybook:
     needs: [ code_coverage, lint ]
-    # only on master/push
     if: ${{ github.ref == 'refs/heads/master' && github.event_name == 'push' }}
     runs-on: ubuntu-latest
 
