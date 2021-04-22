@@ -2,15 +2,11 @@ import './App.css';
 import React, {useCallback} from 'react';
 import {Board} from './stories/pages/Board';
 import {makeStyles} from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
-import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
+import {AppBar, IconButton, Menu, MenuItem, Toolbar, Typography} from '@material-ui/core';
+import {GitHub, Menu as MenuIcon} from '@material-ui/icons';
 import {Edit} from './stories/pages/Edit';
-import {createMemoryHistory} from 'history'
+import {createMemoryHistory} from 'history';
+import packageJSON from '../package.json';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -46,6 +42,10 @@ function App() {
     const handleClose = () => {
         setAnchorEl(null);
     };
+
+    const handleOpenGithubRepoPage = () => {
+        chrome.tabs.create({url: packageJSON.repository.url});
+    }
 
     const handleOnMenuItemClick = useCallback((url) => {
         history.push(url);
@@ -83,8 +83,17 @@ function App() {
                         </Menu>
 
                         <Typography variant="h6" className={classes.title}>
-                            Tab Group Helper
+                            {packageJSON.prettyName}
                         </Typography>
+
+                        <Typography variant="h6" className={classes.menuButton}>
+                            {packageJSON.version}
+                        </Typography>
+                        <IconButton edge="start" color="inherit" aria-label="github"
+                                    onClick={handleOpenGithubRepoPage}
+                        >
+                            <GitHub/>
+                        </IconButton>
                     </Toolbar>
                 </AppBar>
                 {history.location.pathname === '/edit' && <Edit/>}
