@@ -226,8 +226,7 @@ export const LineItem: FunctionComponent<LineItemProps> = ({
 
             </FormGroup>
             <FormGroup className={classes.root} row>
-                <Tooltip title={getTabsMatched()} placement="bottom-end">
-
+                <Tooltip title={getTabsMatched()} placement="bottom-start">
                     <InputLabel>{`${stateTabsMatched.length} match`}{stateTabsMatched.length !== 1 && 'es'}</InputLabel>
                 </Tooltip>
             </FormGroup>
