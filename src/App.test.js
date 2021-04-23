@@ -2,7 +2,6 @@ import {render, screen} from '@testing-library/react';
 import App from './App';
 import chrome from 'sinon-chrome/extensions'
 import Enzyme, {mount} from 'enzyme';
-import React from 'react';
 import packageJSON from '../package.json';
 
 // workaround since enzyme hasn't released for React 17.  So we use this person's workaround
