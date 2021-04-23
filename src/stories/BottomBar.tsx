@@ -8,10 +8,6 @@ const useStyles = makeStyles((theme) => ({
         bottom: '0px',
         padding: theme.spacing(2),
         backgroundColor: theme.palette.primary.main,
-
-        '& button': {
-            boxShadow: 'none !important',
-        }
     }
 }));
 

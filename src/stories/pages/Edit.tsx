@@ -1,9 +1,10 @@
 import React, {ChangeEvent, FunctionComponent, ReactElement, useState} from 'react';
 import {LineItem, LineItemsService} from '../../service/lineItems.service';
 import {Alert} from '@material-ui/lab';
-import {Box, Button, TextField, Typography} from '@material-ui/core';
+import {Box, TextField, Typography} from '@material-ui/core';
 import {BottomBar} from '../BottomBar';
 import {makeStyles} from '@material-ui/core/styles';
+import {BottomBarButton} from '../BottomBarButton';
 
 const useStyles = makeStyles((/*theme*/) => ({
     root: {
@@ -91,18 +92,11 @@ export const Edit: FunctionComponent<EditProps> = ({error}): ReactElement => {
                 />
             </Box>
             <BottomBar>
-                <Button variant="contained"
-                        onClick={reset}
-                        color="primary">
-                    Reset to last saved state
-                </Button>
-                <Box component="span" ml={1}>
-                    <Button variant="contained"
-                            onClick={beautify}
-                            color="primary">
-                        Beautify
-                    </Button>
-                </Box>
+                <BottomBarButton onClick={reset}
+                                 tooltip="When an error occurs, clicking this will reset it to the last saved/valid state">Reset
+                    to last saved state</BottomBarButton>
+                <BottomBarButton onClick={beautify}
+                                 tooltip="Cleans up the JSON above">Beautify</BottomBarButton>
             </BottomBar>
         </Box>
     );

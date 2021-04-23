@@ -1,12 +1,11 @@
 import React, {FunctionComponent, ReactElement, useState} from 'react';
-import Button from '@material-ui/core/Button';
 import {LineItem} from '../LineItem';
-import Box from '@material-ui/core/Box';
-import Divider from '@material-ui/core/Divider';
 import {TabService} from '../../service/tab.service';
 import {LineItem as LItem, LineItemsService, newLineItem} from '../../service/lineItems.service';
 import {makeStyles} from '@material-ui/core/styles';
 import {BottomBar} from '../BottomBar';
+import {Box, Divider} from '@material-ui/core';
+import {BottomBarButton} from '../BottomBarButton';
 
 const useStyles = makeStyles((/*theme*/) => ({
     root: {
@@ -130,26 +129,10 @@ export const Board: FunctionComponent = (): ReactElement => {
                 ))}
             </Box>
             <BottomBar>
-                <Button variant="contained"
-                        onClick={addLineItem}
-                        color="primary">
-                    Add Item
-                </Button>
-                <Box component="span" ml={1}>
-                    <Button variant="contained" onClick={run} color="primary">
-                        Run
-                    </Button>
-                </Box>
-                <Box component="span" ml={1}>
-                    <Button variant="contained" onClick={cleanUp} color="primary">
-                        Clean up
-                    </Button>
-                </Box>
-                <Box component="span" ml={1}>
-                    <Button variant="contained" onClick={clearGroups} color="primary">
-                        Clear Groups
-                    </Button>
-                </Box>
+                <BottomBarButton onClick={addLineItem} tooltip="Adds a new line item">Add Item</BottomBarButton>
+                <BottomBarButton onClick={run} tooltip="Runs one by one through the line items that you have set above">Run</BottomBarButton>
+                <BottomBarButton onClick={cleanUp} tooltip="Removes items that are the default for quick removal">Clean up</BottomBarButton>
+                <BottomBarButton onClick={clearGroups} tooltip="Clears all groups in your browser">Clear Groups</BottomBarButton>
             </BottomBar>
         </Box>
     );
