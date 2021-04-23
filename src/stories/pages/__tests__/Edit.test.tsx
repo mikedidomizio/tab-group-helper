@@ -1,10 +1,9 @@
 import {render, screen} from '@testing-library/react';
 import {Edit} from '../Edit';
 import React from 'react';
-import Enzyme, {mount, ReactWrapper} from 'enzyme';
-// workaround since enzyme hasn't released for React 17.  So we use this person's workaround
-// https://github.com/enzymejs/enzyme/issues/2429#issuecomment-679265564
-import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
+import {mount, ReactWrapper} from 'enzyme';
+import '../../../__tests-helpers__/enzyme-adapter';
+import {getButtonByText} from '../../../__tests-helpers__/functions';
 
 beforeAll(() => {
     // mock localStorage // todo this is possibly removable
@@ -17,9 +16,8 @@ beforeAll(() => {
 
 afterEach(() => {
     jest.clearAllMocks();
+    wrapper.unmount();
 });
-
-Enzyme.configure({adapter: new Adapter()});
 
 test('should render the component properly', () => {
     render(<Edit/>);
@@ -37,52 +35,35 @@ beforeEach(() => {
 
 test('should show valid JSON objects for for each line item', () => {
     expect(JSON.parse(getTextArea().props().value).length).toBe(1);
-    wrapper.unmount();
 });
 
 test('beautify button should clean up the JSON', () => {
     // badly misaligned JSON
     const val = '[ { "id":    776575 }      ]';
     getTextArea().simulate('change', {target: {value: val}});
-    const button = wrapper.findWhere(node => {
-        return (
-            node.type() === 'button' &&
-            node.text() === 'Beautify'
-        );
-    });
-    button.simulate('click');
+    getButtonByText(wrapper, 'Beautify').simulate('click');
     const cleanedUpVal = JSON.stringify(JSON.parse(val), undefined, 4);
     expect(getTextArea().props().value).toEqual(cleanedUpVal);
-    wrapper.unmount();
 });
 
 test('beautify button should not clean up the JSON if the JSON is invalid', () => {
     // bad JSON
     const val = '[ { "id": 776575BAD } ]';
     getTextArea().simulate('change', {target: {value: val}});
-    const button = wrapper.findWhere(node => {
-        return (
-            node.type() === 'button' &&
-            node.text() === 'Beautify'
-        );
-    });
-    button.simulate('click');
+    getButtonByText(wrapper,'Beautify').simulate('click');
     expect(getTextArea().props().value).toEqual(val);
-    wrapper.unmount();
 });
 
-test('should show error if matching ids exist', () => {
-    const val = '[ { "id": 123 }, { "id": 123 } ]';
-    getTextArea().simulate('change', {target: {value: val}});
-    expect(wrapper.html()).toContain('Cannot have duplicate IDs');
-    wrapper.unmount()
-});
+describe('error testing', () => {
 
-test('should show error JSON text is invalid', () => {
-    const val = '[ { "id": 123 }, /// ]';
-    getTextArea().simulate('change', {target: {value: val}});
-    expect(wrapper.html()).toContain('Issue with JSON');
-    wrapper.unmount()
+    const simulateAndExpectError =
+    (val: string, error: string) => {
+        getTextArea().simulate('change', {target: {value: val}});
+        expect(wrapper.html()).toContain(error);
+    };
+
+    test('should show error if matching ids exist', () => simulateAndExpectError('[ { "id": 123 }, { "id": 123 } ]', 'Cannot have duplicate IDs'));
+    test('should show error JSON text is invalid', () => simulateAndExpectError('[ { "id": 123 }, /// ]', 'Issue with JSON'));
 });
 
 test('reset button should return/beautify JSON into the previously saved value (state)', () => {
@@ -100,5 +81,4 @@ test('reset button should return/beautify JSON into the previously saved value (
     });
     button.simulate('click');
     expect(getTextArea().props().value).toEqual(savedStateValue);
-    wrapper.unmount();
 });

@@ -87,10 +87,14 @@ export const Board: FunctionComponent = (): ReactElement => {
         if (cleanedUpLineItems.length) {
             setState({lineItems: lineItemsService.set(cleanedUpLineItems)});
         } else {
-            lineItemsService.reset();
-            setState({lineItems: lineItemsService.add()});
+            clearResetAndSetState();
         }
     };
+
+    const clearResetAndSetState = () => {
+        lineItemsService.reset();
+        setState({lineItems: lineItemsService.add()});
+    }
 
     /**
      * Removes all current groups
@@ -103,8 +107,7 @@ export const Board: FunctionComponent = (): ReactElement => {
 
     const deleteLineItem = (lineItemUniqueId: number): void => {
         if (lineItemsService.get().length === 1) {
-            lineItemsService.reset();
-            setState({lineItems: lineItemsService.add()});
+            clearResetAndSetState();
         } else {
             setState({lineItems: lineItemsService.deleteLineItems(lineItemUniqueId)});
         }
