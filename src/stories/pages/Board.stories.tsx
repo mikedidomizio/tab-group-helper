@@ -14,6 +14,11 @@ export default {
     title: 'pages/Board',
     component: Board,
     subcomponents: { LineItem },
+    parameters: {
+        viewport: {
+            defaultViewport: 'chromeExtension'
+        },
+    },
 };
 
 const Template = (args: any) => <Board {...args} />;
