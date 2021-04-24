@@ -3,10 +3,11 @@ import React, {useCallback} from 'react';
 import {Board} from './stories/pages/Board';
 import {makeStyles} from '@material-ui/core/styles';
 import {AppBar, IconButton, Menu, MenuItem, Toolbar, Typography} from '@material-ui/core';
-import {GitHub, Menu as MenuIcon} from '@material-ui/icons';
+import {Menu as MenuIcon} from '@material-ui/icons';
 import {Edit} from './stories/pages/Edit';
 import {createMemoryHistory} from 'history';
 import packageJSON from '../package.json';
+import {Help} from './stories/pages/Help';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -35,17 +36,8 @@ function App() {
     const classes = useStyles();
     const [anchorEl, setAnchorEl] = React.useState(null);
 
-    const handleOpen = (event) => {
-        setAnchorEl(event.currentTarget);
-    };
-
-    const handleClose = () => {
-        setAnchorEl(null);
-    };
-
-    const handleOpenGithubRepoPage = () => {
-        chrome.tabs.create({url: packageJSON.repository.url});
-    }
+    const handleOpen = (event) => setAnchorEl(event.currentTarget);
+    const handleClose = () => setAnchorEl(null);
 
     const handleOnMenuItemClick = useCallback((url) => {
         history.push(url);
@@ -77,26 +69,18 @@ function App() {
                             <MenuItem onClick={() => handleOnMenuItemClick('/edit')}>
                                 Manually Edit
                             </MenuItem>
-                            {/*<MenuItem onClick={() => handleOnMenuItemClick('/help')}>*/}
-                            {/*    Help*/}
-                            {/*</MenuItem>*/}
+                            <MenuItem onClick={() => handleOnMenuItemClick('/help')}>
+                                Help
+                            </MenuItem>
                         </Menu>
 
                         <Typography variant="h6" className={classes.title}>
                             {packageJSON.prettyName}
                         </Typography>
-
-                        <Typography variant="h6" className={classes.menuButton}>
-                            {packageJSON.version}
-                        </Typography>
-                        <IconButton edge="start" color="inherit" aria-label="github"
-                                    onClick={handleOpenGithubRepoPage}
-                        >
-                            <GitHub/>
-                        </IconButton>
                     </Toolbar>
                 </AppBar>
                 {history.location.pathname === '/edit' && <Edit/>}
+                {history.location.pathname === '/help' && <Help/>}
                 {history.location.pathname === '/' && <Board/>}
             </div>
             }
