@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-interface LineItemProps extends LItem {
+export interface LineItemProps extends LItem {
     /**
      * Calls parent to delete remove
      */
@@ -42,13 +42,6 @@ interface LineItemProps extends LItem {
      */
     onLineItemChange: (args: LItem) => void;
 }
-
-/*
-type Test = { args: LineItemProps } & typeof defaultProps
-const defaultProps = {
-    age: 21,
-};
-*/
 
 const defaultProps: LItem = {
     applyChanges: true,
