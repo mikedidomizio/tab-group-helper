@@ -75,8 +75,8 @@ test('header menu links should update the history which will change the page', (
             expect(pathFn).toHaveBeenCalledWith(expectedPath);
         };
 
-        menuLinkClickAndExpect('Home', '/board');
-        menuLinkClickAndExpect('Edit', '/edit');
+        menuLinkClickAndExpect('Home', '/');
+        menuLinkClickAndExpect('Manually Edit', '/edit');
         menuLinkClickAndExpect('Help', '/help');
         wrapper.unmount();
     });

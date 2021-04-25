@@ -129,12 +129,12 @@ export const LineItem: FunctionComponent<LineItemProps> = ({
         }
     };
 
-    const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-        onLineItemChange(Object.assign(getLineItemValues(), {[event.target.name]: event.target.checked}));
-    };
-
-    const handleTextChange = (event: ChangeEvent<any>) => {
-        onLineItemChange(Object.assign(getLineItemValues(), {[event.target.name]: event.target.value}));
+    /**
+     * @param event
+     * @param targetType which value to assign, which is different between text fields and checkboxes
+     */
+    const handleChange = (event: ChangeEvent<any>, targetType: 'value' | 'checked') => {
+        onLineItemChange(Object.assign(getLineItemValues(), {[event.target.name]: event.target[targetType]}));
     };
 
     return (
@@ -147,7 +147,7 @@ export const LineItem: FunctionComponent<LineItemProps> = ({
                         id="matchType"
                         label="Match Type"
                         name="matchType"
-                        onChange={handleTextChange}
+                        onChange={(evt: ChangeEvent<any>) => handleChange(evt, 'value')}
                         value={matchType}
                     >
                         <MenuItem key="title" value="title">Title</MenuItem>
@@ -156,7 +156,7 @@ export const LineItem: FunctionComponent<LineItemProps> = ({
                 </FormControl>
 
                 <TextField required name="text"
-                           onChange={handleTextChange}
+                           onChange={(evt: ChangeEvent<any>) => handleChange(evt, 'value')}
                            label="Contains"
                            autoComplete="off"
                            spellCheck="false"
@@ -166,7 +166,7 @@ export const LineItem: FunctionComponent<LineItemProps> = ({
                     control={
                         <Checkbox
                             checked={caseSensitive}
-                            onChange={handleChange}
+                            onChange={(evt: ChangeEvent<any>) => handleChange(evt, 'checked')}
                             name="caseSensitive"
                             color="primary"
                         />
@@ -177,7 +177,7 @@ export const LineItem: FunctionComponent<LineItemProps> = ({
                     control={
                         <Checkbox
                             checked={regex}
-                            onChange={handleChange}
+                            onChange={(evt: ChangeEvent<any>) => handleChange(evt, 'checked')}
                             name="regex"
                             color="primary"
                         />
@@ -187,7 +187,7 @@ export const LineItem: FunctionComponent<LineItemProps> = ({
             </FormGroup>
             <FormGroup className={classes.root} row>
                 <TextField required name="groupTitle"
-                           onChange={handleTextChange}
+                           onChange={(evt: ChangeEvent<any>) => handleChange(evt, 'value')}
                            label="Group Name"
                            autoComplete="off"
                            spellCheck="false"
@@ -201,7 +201,7 @@ export const LineItem: FunctionComponent<LineItemProps> = ({
                             id="color"
                             label="Color"
                             name="color"
-                            onChange={handleTextChange}
+                            onChange={(evt: ChangeEvent<any>) => handleChange(evt, 'value')}
                             value={color}
                         >
                             {menuOptions()}
@@ -212,7 +212,7 @@ export const LineItem: FunctionComponent<LineItemProps> = ({
                     control={
                         <Checkbox
                             checked={applyChanges}
-                            onChange={handleChange}
+                            onChange={(evt: ChangeEvent<any>) => handleChange(evt, 'checked')}
                             name="applyChanges"
                             color="primary"
                         />
