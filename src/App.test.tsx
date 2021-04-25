@@ -40,15 +40,6 @@ beforeEach(() => {
     });
 })
 
-test('should render the application properly', () => {
-    jest.isolateModules(() => {
-        const App = require('./App').default;
-        render(<App/>);
-        const element = screen.getByText(/Add Item/i);
-        expect(element).toBeInTheDocument();
-    });
-});
-
 test('should show an error message if Chrome version is not adequate', () => {
     jest.isolateModules(() => {
         const App = require('./App').default;
