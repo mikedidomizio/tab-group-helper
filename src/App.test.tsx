@@ -40,15 +40,6 @@ beforeEach(() => {
     });
 })
 
-test('should render the application properly', () => {
-    jest.isolateModules(() => {
-        const App = require('./App').default;
-        render(<App/>);
-        const element = screen.getByText(/Add Item/i);
-        expect(element).toBeInTheDocument();
-    });
-});
-
 test('should show an error message if Chrome version is not adequate', () => {
     jest.isolateModules(() => {
         const App = require('./App').default;
@@ -60,19 +51,24 @@ test('should show an error message if Chrome version is not adequate', () => {
     });
 });
 
-test('help header link should update the history which will change the page', () => {
+test('header menu links should update the history which will change the page', () => {
     jest.isolateModules(() => {
         const App = require('./App').default;
         wrapper = mount(<App/>);
-        wrapper.find('header button').simulate('click');
-        wrapper.findWhere(node => {
-            return (
-                node.type() === 'li' &&
-                node.text() === 'Help'
-            );
-        }).simulate('click');
-        expect(pathFn).toHaveBeenCalledWith('/help');
-        expect(pathFn).toBeCalledTimes(1);
+        const menuLinkClickAndExpect = (linkName: string, expectedPath: string) => {
+            wrapper.find('header button').simulate('click');
+            wrapper.findWhere(node => {
+                return (
+                    node.type() === 'li' &&
+                    node.text() === linkName
+                );
+            }).simulate('click');
+            expect(pathFn).toHaveBeenCalledWith(expectedPath);
+        };
+
+        menuLinkClickAndExpect('Home', '/');
+        menuLinkClickAndExpect('Manually Edit', '/edit');
+        menuLinkClickAndExpect('Help', '/help');
         wrapper.unmount();
     });
 });

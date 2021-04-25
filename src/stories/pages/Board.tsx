@@ -23,6 +23,32 @@ const useStyles = makeStyles((/*theme*/) => ({
 export interface BoardProps {
 }
 
+const cleanUpLineItems = (lineItems: LItem[]): LItem[] => {
+    const defaultLineItem = newLineItem();
+
+    // delete ID because it's always different
+    function sortObjectByKeys<T>(objToSort: T): T {
+        return Object.keys(objToSort).sort().reduce(
+            (obj: any, key) => {
+                // @ts-ignore
+                obj[key] = objToSort[key];
+                return obj;
+            },
+            {}
+        )
+    }
+
+    const sortedStringifiedDefaultLineItem = sortObjectByKeys<LItem>(defaultLineItem);
+    return lineItems.slice().filter((item: LItem) => {
+        const sortedClonedLineItem = sortObjectByKeys(item);
+        // rename the id, deleting it leads to deleting it in the returned object
+        sortedStringifiedDefaultLineItem.id = item.id;
+        // we sorted both and then stringify to ensure keys are all alphabetical
+        // this is only going to work for shallow objects
+        return JSON.stringify(sortedClonedLineItem) !== JSON.stringify(sortedStringifiedDefaultLineItem);
+    });
+}
+
 /**
  * Board of line items that we will run against to group Chrome tabs
  */
@@ -59,31 +85,7 @@ export const Board: FunctionComponent = (): ReactElement => {
 
     // proceeds to remove any line items that match the default (aka have not been edited)
     const cleanUp = (): void => {
-        const defaultLineItem = newLineItem();
-
-        // delete ID because it's always different
-        function sortObjectByKeys<T>(objToSort: T): T {
-            return Object.keys(objToSort).sort().reduce(
-                (obj: any, key) => {
-                    // @ts-ignore
-                    obj[key] = objToSort[key];
-                    return obj;
-                },
-                {}
-            )
-        }
-
-        const sortedStringifiedDefaultLineItem = sortObjectByKeys<LItem>(defaultLineItem);
-
-        const cleanedUpLineItems = state.lineItems.slice().filter((item: LItem) => {
-            const sortedClonedLineItem = sortObjectByKeys(item);
-            // rename the id, deleting it leads to deleting it in the returned object
-            sortedStringifiedDefaultLineItem.id = item.id;
-            // we sorted both and then stringify to ensure keys are all alphabetical
-            // this is only going to work for shallow objects
-            return JSON.stringify(sortedClonedLineItem) !== JSON.stringify(sortedStringifiedDefaultLineItem);
-        });
-
+        const cleanedUpLineItems = cleanUpLineItems(state.lineItems);
         if (cleanedUpLineItems.length) {
             setState({lineItems: lineItemsService.set(cleanedUpLineItems)});
         } else {

@@ -23,11 +23,6 @@ beforeEach(() => {
     localStorage.clear();
     wrapper = mount(<Board/>);
     getInputByLabel = (fieldText: string) => getLineItems().findWhere(node => {
-        return (
-            node.type() === 'div' &&
-            node.hasClass('line-item')
-        );
-    }).findWhere(node => {
         const re = new RegExp(fieldText);
         return (
             node.type() === 'div' &&
@@ -64,32 +59,14 @@ test('should have a line item', () => {
 
 test('should add another line item on clicking the add item button', () => {
     getButtonByText(wrapper, 'Add Item').simulate('click');
-    const lineItem = wrapper.findWhere(node => {
-        return (
-            node.type() === 'div' &&
-            node.hasClass('line-item')
-        );
-    });
-    expect(lineItem.length).toBe(2);
+    expect(getLineItems().length).toBe(2);
 });
 
 test('clean up should remove all non-edited (default) line items', () => {
     getButtonByText(wrapper, 'Add Item').simulate('click');
-    const lineItem = wrapper.findWhere(node => {
-        return (
-            node.type() === 'div' &&
-            node.hasClass('line-item')
-        );
-    });
-    expect(lineItem.length).toBe(2);
+    expect(getLineItems().length).toBe(2);
     getButtonByText(wrapper, 'Clean up').simulate('click');
-    const lineItemAfter = wrapper.findWhere(node => {
-        return (
-            node.type() === 'div' &&
-            node.hasClass('line-item')
-        );
-    });
-    expect(lineItemAfter.length).toBe(1);
+    expect(getLineItems().length).toBe(1);
 });
 
 test('clean up should leave any edited line items', () => {
