@@ -4,7 +4,7 @@ import {LineItem, LineItemProps} from '../LineItem';
 // @ts-ignore
 import chrome from 'sinon-chrome/extensions';
 import '../../__tests-helpers__/enzyme-adapter';
-import {ChromeTabsAttributes} from '../../service/lineItems.service';
+import {newLineItem} from '../../service/lineItems.service';
 
 let wrapper: ReactWrapper;
 
@@ -18,19 +18,19 @@ beforeAll(function () {
 
 beforeEach(() => {
     getInputByLabel = (fieldText: string) => wrapper.findWhere(node => {
-        const re = new RegExp(fieldText);
         return (
-            node.type() === 'div' &&
-            node.text().trim().match(re) !== null &&
-            node.hasClass('MuiTextField-root')
+            node.hasClass('MuiTextField-root') &&
+            node.text().trim().includes(fieldText)
         )
     }).find('input');
+
     setDropdownByLabelValue = (label: string, value: string) => wrapper.findWhere(node => {
         return (
             node.hasClass('MuiFormControl-root') &&
             node.text().trim().includes(label)
         )
-    }).find('input').simulate('change', {target: {name: 'text', value}})
+    }).find('input').simulate('change', {target: {name: 'text', value}});
+
     setCheckboxByLabelValue = (label: string, checked: boolean) => wrapper.findWhere(node => {
         return (
             node.hasClass('MuiFormControlLabel-root') &&
@@ -45,14 +45,7 @@ const props: LineItemProps = {
     deleteLineItem: () => {
     },
     onLineItemChange: lineItemChangeFn,
-    applyChanges: true,
-    caseSensitive: false,
-    color: '',
-    groupTitle: '',
-    id: -1,
-    matchType: ChromeTabsAttributes.url,
-    regex: true,
-    text: '',
+    ...newLineItem()
 }
 
 beforeEach(() => {

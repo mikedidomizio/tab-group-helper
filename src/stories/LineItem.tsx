@@ -54,6 +54,59 @@ const defaultProps: LItem = {
     text: '',
 }
 
+const CheckBox = (label: string, inputVame: string, val: boolean, handleChange: Function) => {
+    return (
+        <FormControlLabel
+            control={
+                <Checkbox
+                    checked={val}
+                    onChange={(evt: ChangeEvent<any>) => handleChange(evt, 'checked')}
+                    name={inputVame}
+                    color="primary"
+                />
+            }
+            label={label}
+        />
+    )
+}
+
+const Textfield = (label: string, inputName: string, value: string, handleChange: Function) => {
+    return (
+        <TextField required name={inputName}
+                   onChange={(evt: ChangeEvent<any>) => handleChange(evt, 'value')}
+                   label={label}
+                   autoComplete="off"
+                   spellCheck="false"
+                   value={value}
+        />
+    )
+}
+
+const SelectTemplate = (idName: string, label: string, labelId: string, value: string, dropdownOptions: { k: string, v: string }[], handleChange: Function) => {
+    const menuItems = dropdownOptions.map(i => {
+        const label = i.v === '' ? 'none' : i.v;
+        return (
+            <MenuItem key={i.k} value={i.k}>{label}</MenuItem>
+        )
+    });
+
+    return (
+        <FormControl>
+            <InputLabel id={idName}>{label}</InputLabel>
+            <Select
+                labelId={labelId}
+                id={idName}
+                label={labelId}
+                name={idName}
+                onChange={(evt: ChangeEvent<any>) => handleChange(evt, 'value')}
+                value={value}
+            >
+                {menuItems}
+            </Select>
+        </FormControl>
+    )
+};
+
 /**
  * Line item for grouping Chrome tabs
  */
@@ -73,14 +126,13 @@ export const LineItem: FunctionComponent<LineItemProps> = ({
     const colorOptions: Array<chrome.tabGroups.ColorEnum | ''> = ['', 'grey', 'blue', 'red', 'yellow', 'green', 'pink', 'purple', 'cyan'];
     const [stateTabsMatched, setTabsMatchedState]: [chrome.tabs.Tab[], SetStateAction<any>] = useState([]);
 
-    const menuOptions = () => {
-        return colorOptions.map(i => {
-            const label = i === '' ? 'none' : i;
-            return (
-                <MenuItem key={i} value={i}>{label}</MenuItem>
-            )
-        });
-    };
+    const menuOptionsColors: { k: string, v: string }[] = colorOptions.map(i => {
+        const label = i === '' ? 'none' : i;
+        return {
+            k: i,
+            v: label,
+        }
+    });
 
     const getTabsMatched = () => {
         if (stateTabsMatched.length === 0) {
@@ -133,90 +185,21 @@ export const LineItem: FunctionComponent<LineItemProps> = ({
     return (
         <div className={classes.root}>
             <FormGroup row>
-                <FormControl>
-                    <InputLabel id="matchType">Type</InputLabel>
-                    <Select
-                        labelId="Match Type"
-                        id="matchType"
-                        label="Match Type"
-                        name="matchType"
-                        onChange={(evt: ChangeEvent<any>) => handleChange(evt, 'value')}
-                        value={matchType}
-                    >
-                        <MenuItem key="title" value="title">Title</MenuItem>
-                        <MenuItem key="url" value="url">URL</MenuItem>
-                    </Select>
-                </FormControl>
-
-                <TextField required name="text"
-                           onChange={(evt: ChangeEvent<any>) => handleChange(evt, 'value')}
-                           label="Contains"
-                           autoComplete="off"
-                           spellCheck="false"
-                           value={text}
-                />
-                <FormControlLabel
-                    control={
-                        <Checkbox
-                            checked={caseSensitive}
-                            onChange={(evt: ChangeEvent<any>) => handleChange(evt, 'checked')}
-                            name="caseSensitive"
-                            color="primary"
-                        />
-                    }
-                    label="Case Sensitive"
-                />
-                <FormControlLabel
-                    control={
-                        <Checkbox
-                            checked={regex}
-                            onChange={(evt: ChangeEvent<any>) => handleChange(evt, 'checked')}
-                            name="regex"
-                            color="primary"
-                        />
-                    }
-                    label="Regex"
-                />
+                {SelectTemplate('matchType', 'Type', 'Match Type', matchType, [{k: 'url', v: 'URL'}, {
+                    k: 'title',
+                    v: 'Title'
+                }], handleChange)}
+                {Textfield('Contains', 'text', text, handleChange)}
+                {CheckBox('Case Sensitive', 'caseSensitive', caseSensitive, handleChange)}
+                {CheckBox('Regex', 'regex', regex, handleChange)}
             </FormGroup>
             <FormGroup className={classes.root} row>
-                <TextField required name="groupTitle"
-                           onChange={(evt: ChangeEvent<any>) => handleChange(evt, 'value')}
-                           label="Group Name"
-                           autoComplete="off"
-                           spellCheck="false"
-                           value={groupTitle}
-                />
-                <FormGroup className={classes.root} row>
-                    <FormControl>
-                        <InputLabel id="color">Color</InputLabel>
-                        <Select
-                            labelId="color"
-                            id="color"
-                            label="Color"
-                            name="color"
-                            onChange={(evt: ChangeEvent<any>) => handleChange(evt, 'value')}
-                            value={color}
-                        >
-                            {menuOptions()}
-                        </Select>
-                    </FormControl>
-                </FormGroup>
-                <FormControlLabel
-                    control={
-                        <Checkbox
-                            checked={applyChanges}
-                            onChange={(evt: ChangeEvent<any>) => handleChange(evt, 'checked')}
-                            name="applyChanges"
-                            color="primary"
-                        />
-                    }
-                    label="Apply"
-                />
+                {Textfield('Group Name', 'groupTitle', groupTitle, handleChange)}
+                {SelectTemplate('color', 'Color', 'color', color, menuOptionsColors, handleChange)}
+                {CheckBox('Apply', 'applyChanges', applyChanges, handleChange)}
                 <IconButton aria-label="delete" onClick={() => deleteLineItem(id)}>
                     <DeleteIcon/>
                 </IconButton>
-
-
             </FormGroup>
             <FormGroup className={classes.root} row>
                 <Tooltip title={getTabsMatched()} placement="bottom-start">
