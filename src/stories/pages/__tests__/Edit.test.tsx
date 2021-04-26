@@ -1,9 +1,8 @@
-import {render, screen} from '@testing-library/react';
 import {Edit} from '../Edit';
 import React from 'react';
 import {mount, ReactWrapper} from 'enzyme';
 import '../../../__tests-helpers__/enzyme-adapter';
-import {getButtonByText} from '../../../__tests-helpers__/functions';
+import {getButtonByText, renderComponentAndExpect} from '../../../__tests-helpers__/functions';
 
 beforeAll(() => {
     // mock localStorage // todo this is possibly removable
@@ -19,11 +18,7 @@ afterEach(() => {
     wrapper.unmount();
 });
 
-test('should render the component properly', () => {
-    render(<Edit/>);
-    const element = screen.getByText(/Manually edit/i);
-    expect(element).toBeInTheDocument();
-});
+test('should render the component properly', () => renderComponentAndExpect(<Edit/>, /Manually Edit/i))
 
 let wrapper: ReactWrapper;
 let getTextArea: () => ReactWrapper<any, any>;
@@ -50,17 +45,17 @@ test('beautify button should not clean up the JSON if the JSON is invalid', () =
     // bad JSON
     const val = '[ { "id": 776575BAD } ]';
     getTextArea().simulate('change', {target: {value: val}});
-    getButtonByText(wrapper,'Beautify').simulate('click');
+    getButtonByText(wrapper, 'Beautify').simulate('click');
     expect(getTextArea().props().value).toEqual(val);
 });
 
 describe('error testing', () => {
 
     const simulateAndExpectError =
-    (val: string, error: string) => {
-        getTextArea().simulate('change', {target: {value: val}});
-        expect(wrapper.html()).toContain(error);
-    };
+        (val: string, error: string) => {
+            getTextArea().simulate('change', {target: {value: val}});
+            expect(wrapper.html()).toContain(error);
+        };
 
     test('should show error if matching ids exist', () => simulateAndExpectError('[ { "id": 123 }, { "id": 123 } ]', 'Cannot have duplicate IDs'));
     test('should show error JSON text is invalid', () => simulateAndExpectError('[ { "id": 123 }, /// ]', 'Issue with JSON'));
