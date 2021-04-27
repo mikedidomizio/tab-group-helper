@@ -1,4 +1,4 @@
-import {render, screen, waitFor} from '@testing-library/react';
+import {waitFor} from '@testing-library/react';
 import React from 'react';
 import {mount, ReactWrapper} from 'enzyme';
 import {Board} from '../Board';
@@ -6,7 +6,7 @@ import {Board} from '../Board';
 import chrome from 'sinon-chrome/extensions';
 import {TabService} from '../../../service/tab.service';
 import {LineItem} from '../../../service/lineItems.service';
-import {getButtonByText} from '../../../__tests-helpers__/functions';
+import {getButtonByText, renderComponentAndExpect} from '../../../__tests-helpers__/functions';
 import '../../../__tests-helpers__/enzyme-adapter';
 
 let wrapper: ReactWrapper;
@@ -47,15 +47,9 @@ afterEach(() => {
     wrapper.unmount();
 });
 
-test('should render the component properly', () => {
-    render(<Board/>);
-    const element = screen.getByText(/Add item/i);
-    expect(element).toBeInTheDocument();
-});
+test('should render the component properly', () => renderComponentAndExpect(<Board/>, /Add item/i));
 
-test('should have a line item', () => {
-    expect(getLineItems().length).toBe(1);
-});
+test('should have a line item', () => expect(getLineItems().length).toBe(1));
 
 test('should add another line item on clicking the add item button', () => {
     getButtonByText(wrapper, 'Add Item').simulate('click');
