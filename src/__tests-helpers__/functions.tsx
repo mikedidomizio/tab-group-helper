@@ -1,4 +1,6 @@
 import {ReactWrapper} from 'enzyme';
+import {render, screen} from '@testing-library/react';
+import {ReactElement} from 'react';
 
 export const getButtonByText = (wrapper: ReactWrapper, btnText: string) => wrapper.findWhere(node => {
     return (
@@ -6,3 +8,9 @@ export const getButtonByText = (wrapper: ReactWrapper, btnText: string) => wrapp
         node.text() === btnText
     );
 });
+
+export const renderComponentAndExpect = (component: ReactElement, expectString: RegExp) => {
+    render(component);
+    const element = screen.getByText(expectString);
+    expect(element).toBeInTheDocument();
+}
