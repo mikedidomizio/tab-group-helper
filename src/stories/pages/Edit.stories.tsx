@@ -10,6 +10,11 @@ chrome.tabs.query.yields([]);
 export default {
     title: 'pages/Edit',
     component: Edit,
+    parameters: {
+        viewport: {
+            defaultViewport: 'chromeExtension'
+        },
+    },
 };
 
 const Template = (args: any) => <Edit {...args} />;
