@@ -2,7 +2,7 @@
   "name": "tab-group-helper",
   "prettyName": "Tab Group Helper",
   "description": "Allow quick grouping of tabs by their attributes like title or URL",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "private": true,
   "repository": {
     "type": "git",
