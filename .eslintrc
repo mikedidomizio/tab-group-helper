@@ -1,33 +1,14 @@
 {
-  "extends": [
-    "react-app",
-    "react-app/jest"
-  ],
-  "env": {
-    "browser": true,
-    "webextensions": true
-  },
-  "overrides": [
-    {
-      "files": [
-        "**/*.stories.*"
-      ]
-    }
-  ],
-  "rules": {
-    "@typescript-eslint/no-use-before-define": [
-      "error"
-    ],
-    "quotes": ["warn", "single", { "allowTemplateLiterals": true }],
-    "import/no-anonymous-default-export": "off",
-    "no-use-before-define": "off"
+  "extends": "react-app",
+  "globals": {
+    "chrome": "readonly"
   },
   "ignorePatterns": [
     "node_modules/**",
     "."
   ],
-  "plugins": [
-    "@typescript-eslint"
-  ],
-  "parser": "@typescript-eslint/parser"
+  "plugins": ["prettier"],
+  "rules": {
+    "prettier/prettier": "error"
+  }
 }

@@ -5,7 +5,7 @@
 - Help page with links to repo and installed extension version
 - Tooltips on the nav buttons at the bottom to explain their functionality
 - Personalized Storybook more with package information
-- New `ButtomBarButton` story
+- New `BottomBarButton` story
 
 ### Fixed
 

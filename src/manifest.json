@@ -1,0 +1,22 @@
+{
+  "manifest_version": 3,
+  "name": "Tab Group Helper",
+  "version": "1.2.0",
+  "description": "Allow quick grouping of tabs by their attributes like title or URL",
+  "background": { "service_worker": "background.bundle.js" },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": "icon-128.png"
+  },
+  "permissions": [
+    "storage",
+    "tabs",
+    "tabGroups"
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["icon-128.png"],
+      "matches": []
+    }
+  ]
+}

@@ -1,18 +1,19 @@
 const packageJSON = require('../package.json');
 const fs = require('fs');
-
-// runs the build manifest
-require('./build-manifest');
+const manifest = require('../src/manifest.json');
 
 /**
- * Check that changelog is updated with what has changed in new version
+ * Check that manifest/package/changelog versioning all matches
  */
 (async () => {
-    const changelog = fs.readFileSync('./CHANGELOG.md');
-    const changelogRegex = new RegExp(`## ${packageJSON.version}`);
+  const changelog = fs.readFileSync(__dirname + '/../CHANGELOG.md');
+  const changelogRegex = new RegExp(`## ${packageJSON.version}`);
 
-    if (!changelogRegex.test(changelog.toString())) {
-        throw new Error('Changelog has not been updated to include items changed in this version');
-    }
+  if (packageJSON.version !== manifest.version) {
+    throw new Error('package version does not match manifest version');
+  }
+
+  if (!changelogRegex.exec(changelog)) {
+    throw new Error('changelog needs version');
+  }
 })();
-
