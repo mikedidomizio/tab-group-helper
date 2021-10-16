@@ -55,6 +55,7 @@ export interface LineItemProps extends LItem {
 
 const defaultProps: LItem = {
   applyChanges: true,
+  autoGroup: false,
   caseSensitive: false,
   color: '',
   groupTitle: '',
@@ -143,6 +144,7 @@ const SelectTemplate = (
  */
 export const LineItem: FunctionComponent<LineItemProps> = ({
   applyChanges,
+  autoGroup,
   caseSensitive,
   color,
   deleteLineItem,
@@ -215,6 +217,7 @@ export const LineItem: FunctionComponent<LineItemProps> = ({
   const getLineItemValues = (): LItem => {
     return {
       applyChanges,
+      autoGroup,
       caseSensitive,
       color,
       id,
@@ -277,6 +280,7 @@ export const LineItem: FunctionComponent<LineItemProps> = ({
           handleChange
         )}
         {CheckBox('Apply', 'applyChanges', applyChanges, handleChange)}
+        {CheckBox('Auto-Group', 'autoGroup', autoGroup, handleChange)}
         <IconButton aria-label="delete" onClick={() => deleteLineItem(id)}>
           <DeleteIcon />
         </IconButton>

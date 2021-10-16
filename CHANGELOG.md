@@ -1,3 +1,9 @@
+## 1.3.0 (2021-10-16)
+
+### Added
+
+- Background script to auto group tabs into groups
+
 ## 1.2.0 (2021-04-27)
 
 ### Added
@@ -9,7 +15,7 @@
 
 ### Fixed
 
-- Updates to Storybook components to ensure their again working
+- Updates to Storybook components to ensure they're again working
 
 ## 1.1.0 (2021-04-18)
 
