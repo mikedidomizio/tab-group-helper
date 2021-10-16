@@ -1,30 +1,21 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+# See https://help.github.com/ignore-files/ for more about ignoring files.
 
 # dependencies
 /node_modules
-/.pnp
-.pnp.js
 
 # testing
 /coverage
 
 # production
 /build
-/dist
 
 # misc
 .DS_Store
-.idea
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
+.history
 
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# this is generated from a base manifest
-/public/manifest.json
-
-/tmp
+# secrets
+secrets.*.js

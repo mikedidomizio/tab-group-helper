@@ -2,55 +2,95 @@
   "name": "tab-group-helper",
   "prettyName": "Tab Group Helper",
   "description": "Allow quick grouping of tabs by their attributes like title or URL",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "private": true,
   "repository": {
     "type": "git",
     "url": "https://github.com/mikedidomizio/tab-group-helper"
   },
-  "dependencies": {
-    "@material-ui/core": "^4.11.3",
-    "@material-ui/icons": "^4.11.2",
-    "@material-ui/lab": "^4.0.0-alpha.57",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "react-router-dom": "^5.2.0",
-    "react-scripts": "4.0.3",
-    "web-vitals": "^1.0.1"
-  },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "build-ext": "sh ./scripts/build.sh",
-    "lint": "eslint ./src/**/*.{js,jsx,ts,tsx}",
-    "watch": "node ./scripts/watch.js",
-    "test": "react-scripts test",
-    "test:coverage": "react-scripts test --coverage",
-    "eject": "react-scripts eject",
-    "storybook": "start-storybook -p 6006 -s public",
-    "build-storybook": "build-storybook -s public",
-    "deploy-storybook": "storybook-to-ghpages --out tmp/storybook --ci",
-    "build-manifest": "node ./scripts/build-manifest.js",
-    "prep-publish": "node ./scripts/prepare-publish.js"
+    "build": "node utils/build.js",
+    "start": "node utils/webserver.js",
+    "prettier": "prettier --write '**/*.{js,jsx,css,html}'",
+    "test": "jest --env=jsdom",
+    "test:coverage": "npm test -- --coverage",
+    "prep-publish": "node ./scripts/prepare-publish.js",
+    "build-ext": "sh ./scripts/build.sh"
   },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+  "dependencies": {
+    "@hot-loader/react-dom": "^17.0.1",
+    "@material-ui/core": "^4.12.3",
+    "@material-ui/icons": "^4.11.2",
+    "@material-ui/lab": "^4.0.0-alpha.60",
+    "@types/react-dom": "^17.0.1",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
+    "react-hot-loader": "^4.13.0",
+    "react-router-dom": "^5.2.1"
   },
-  "babel": {
-    "presets": [
-      "react-app"
-    ]
+  "devDependencies": {
+    "@babel/core": "^7.12.17",
+    "@babel/plugin-proposal-class-properties": "^7.12.13",
+    "@babel/preset-env": "^7.12.17",
+    "@babel/preset-react": "^7.12.13",
+    "@testing-library/jest-dom": "^5.14.1",
+    "@testing-library/react": "^12.1.2",
+    "@types/chrome": "0.0.134",
+    "@types/enzyme": "^3.10.9",
+    "@types/jest": "^27.0.1",
+    "@types/node": "^16.7.10",
+    "@types/react": "^17.0.19",
+    "@types/sinon-chrome": "^2.2.11",
+    "@types/testing-library__jest-dom": "^5.14.1",
+    "@typescript-eslint/eslint-plugin": "^4.33.0",
+    "@typescript-eslint/parser": "^4.31.1",
+    "@wojtekmaj/enzyme-adapter-react-17": "^0.6.3",
+    "babel-eslint": "^10.1.0",
+    "babel-loader": "^8.2.2",
+    "babel-preset-react-app": "^10.0.0",
+    "clean-webpack-plugin": "^3.0.0",
+    "copy-webpack-plugin": "^7.0.0",
+    "css-loader": "^5.0.2",
+    "enzyme": "^3.11.0",
+    "eslint": "^7.32.0",
+    "eslint-config-react-app": "^6.0.0",
+    "eslint-plugin-flowtype": "^5.2.2",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-react": "^7.22.0",
+    "eslint-plugin-react-hooks": "^4.2.0",
+    "file-loader": "^6.2.0",
+    "fs-extra": "^9.1.0",
+    "html-loader": "^2.1.0",
+    "html-webpack-plugin": "^5.2.0",
+    "identity-obj-proxy": "^3.0.0",
+    "jest": "^27.2.5",
+    "node-sass": "^4.14.1",
+    "prettier": "^2.2.1",
+    "sass-loader": "^11.0.1",
+    "sinon-chrome": "^3.0.1",
+    "source-map-loader": "^2.0.1",
+    "style-loader": "^2.0.0",
+    "terser-webpack-plugin": "^5.1.1",
+    "ts-loader": "^8.0.17",
+    "typescript": "^4.4.3",
+    "webpack": "^5.23.0",
+    "webpack-cli": "^4.5.0",
+    "webpack-dev-server": "^3.11.2"
   },
   "jest": {
+    "modulePaths": [
+      "<rootDir>"
+    ],
+    "moduleNameMapper": {
+      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/__mocks__/fileMock.js",
+      "\\.(css|less|scss|sass)$": "identity-obj-proxy",
+      "^react($|/.+)": "<rootDir>/node_modules/react$1"
+    },
+    "setupFilesAfterEnv": [
+      "<rootDir>/jest-setup.ts"
+    ],
     "collectCoverageFrom": [
       "src/**/*.{js,jsx,ts,tsx}",
       "!src/**/*.stories.{js,jsx,ts,tsx}",
@@ -69,48 +109,5 @@
         "statements": 50
       }
     }
-  },
-  "devDependencies": {
-    "@storybook/addon-actions": "^6.2.1",
-    "@storybook/addon-essentials": "^6.2.1",
-    "@storybook/addon-links": "^6.2.1",
-    "@storybook/node-logger": "^6.2.1",
-    "@storybook/preset-create-react-app": "^3.1.7",
-    "@storybook/react": "^6.2.1",
-    "@storybook/storybook-deployer": "^2.8.7",
-    "@testing-library/jest-dom": "^5.12.0",
-    "@testing-library/react": "^11.2.6",
-    "@testing-library/user-event": "^13.1.5",
-    "@types/chrome": "^0.0.134",
-    "@types/enzyme": "^3.10.8",
-    "@types/react": "^17.0.3",
-    "@types/sinon-chrome": "^2.2.10",
-    "@wojtekmaj/enzyme-adapter-react-17": "^0.6.1",
-    "babel-loader": "8.1.0",
-    "babel-preset-react-app": "^8.0.0",
-    "case-sensitive-paths-webpack-plugin": "^2.4.0",
-    "clean-webpack-plugin": "^2.0.1",
-    "enzyme": "^3.11.0",
-    "enzyme-adapter-react-16": "^1.15.6",
-    "eslint-loader": "^4.0.2",
-    "fs-extra": "7.0.1",
-    "html-webpack-plugin": "4.0.0-beta.5",
-    "mini-css-extract-plugin": "0.5.0",
-    "optimize-css-assets-webpack-plugin": "^5.0.4",
-    "pnp-webpack-plugin": "^1.6.4",
-    "postcss-normalize": "7.0.1",
-    "postcss-safe-parser": "4.0.1",
-    "react-dev-utils": "^11.0.4",
-    "resolve": "^1.20.0",
-    "sass-loader": "^11.0.1",
-    "sinon-chrome": "^3.0.1",
-    "style-loader": "^2.0.0",
-    "terser-webpack-plugin": "1.2.3",
-    "typescript": "^4.2.4",
-    "url-loader": "^4.1.1",
-    "webpack": "4.44.2",
-    "webpack-chrome-extension-reloader": "^1.3.0",
-    "webpack-manifest-plugin": "2.0.4",
-    "workbox-webpack-plugin": "4.2.0"
   }
 }

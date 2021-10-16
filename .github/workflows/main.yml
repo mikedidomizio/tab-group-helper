@@ -52,38 +52,6 @@ jobs:
         if: steps.cache.outputs.cache-hit != 'true'
         run: yarn install --frozen-lockfile
 
-  # Runs linter, fails on errors
-  lint:
-    needs: [ build ]
-    runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [ 12.x ]
-
-    steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
-        with:
-          node-version: ${{ matrix.node-version }}
-
-      - name: Restore node_modules
-        uses: actions/cache@v2
-        id: node_modules-cache
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-yarn-v2-${{ hashFiles('yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-v2-
-
-      - name: Install dependencies
-        if: steps.cache.outputs.cache-hit != 'true'
-        run: yarn install --frozen-lockfile
-
-      - name: Lint
-        run: yarn lint
-
   # Runs code coverage and pushes to third party which will update pull request if exists
   code_coverage:
     needs: [ build ]
@@ -124,45 +92,9 @@ jobs:
           fail_ci_if_error: true # optional (default = false)
           verbose: false # optional (default = false)
 
-  # Deploy storybook to github pages (master/push)
-  deploy_storybook:
-    needs: [ code_coverage, lint ]
-    if: ${{ github.ref == 'refs/heads/master' && github.event_name == 'push' }}
-    runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [ 12.x ]
-
-    steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
-        with:
-          node-version: ${{ matrix.node-version }}
-
-      - name: Restore node_modules
-        uses: actions/cache@v2
-        id: node_modules-cache
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-yarn-v2-${{ hashFiles('yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-v2-
-
-      - name: Install dependencies
-        if: steps.cache.outputs.cache-hit != 'true'
-        run: yarn install --frozen-lockfile
-
-      # deploy to GitHub pages which only occurs on master/push
-      - name: Deploy GitHub Storybook pages
-        run: git remote add gh-token "https://github.com:mikedidomizio/tab-group-helper.git" && yarn deploy-storybook
-        env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
-
   # Builds the zip file artifact for debugging or for pushing to the web store
   build_zip:
-    needs: [ code_coverage, lint ]
+    needs: [ code_coverage ]
     runs-on: ubuntu-latest
 
     strategy:
@@ -196,4 +128,4 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: extension
-          path: ./dist
+          path: ./build
