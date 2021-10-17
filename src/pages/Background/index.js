@@ -1,5 +1,5 @@
-import { TabService } from '../Popup/service/tab.service';
 import { LineItemsService } from '../Popup/service/lineItems.service';
+import { TabService } from '../Popup/service/tab.service';
 
 // todo very similar to the one found in Board.tsx and should not be duplicated
 chrome.tabs.onCreated.addListener(async function (tab) {

@@ -1,7 +1,9 @@
+import packageJSON from '../../../package.json';
 import './App.css';
-import { useCallback, useEffect, useState } from 'react';
+import { LineItemsService } from './service/lineItems.service';
 import { Board } from './stories/pages/Board';
-import { makeStyles } from '@material-ui/core/styles';
+import { Edit } from './stories/pages/Edit';
+import { Help } from './stories/pages/Help';
 import {
   AppBar,
   IconButton,
@@ -10,12 +12,10 @@ import {
   Toolbar,
   Typography,
 } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 import { Menu as MenuIcon } from '@material-ui/icons';
-import { Edit } from './stories/pages/Edit';
 import { createMemoryHistory } from 'history';
-import packageJSON from '../../../package.json';
-import { Help } from './stories/pages/Help';
-import { LineItemsService } from './service/lineItems.service';
+import { useCallback, useEffect, useState } from 'react';
 
 const useStyles = makeStyles((theme) => ({
   root: {

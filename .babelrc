@@ -1,7 +1,7 @@
 {
   "presets": [
-    // "@babel/preset-env",
-    // "@babel/preset-react"
+    "@babel/preset-env",
+    "@babel/preset-react",
     "react-app",
     [
       "@babel/react",
@@ -11,7 +11,7 @@
     ]
   ],
   "plugins": [
-    // "@babel/plugin-proposal-class-properties",
+    "@babel/plugin-proposal-class-properties",
     "react-hot-loader/babel"
   ]
 }
