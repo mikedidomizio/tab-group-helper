@@ -1,8 +1,7 @@
 import { LineItemsService } from '../Popup/service/lineItems.service';
 import { TabService } from '../Popup/service/tab.service';
 
-// todo very similar to the one found in Board.tsx and should not be duplicated
-chrome.tabs.onCreated.addListener(async function (tab) {
+const regroup = async () => {
   const lineItemsService = new LineItemsService();
   const tabsService = new TabService();
 
@@ -27,5 +26,16 @@ chrome.tabs.onCreated.addListener(async function (tab) {
       const color = item.color !== '' ? item.color : undefined;
       await tabsService.addTabsToGroup(ids, item.groupTitle, color);
     }
+  }
+};
+
+// todo very similar to the one found in Board.tsx and should not be duplicated
+chrome.tabs.onCreated.addListener(async function (tab) {
+  await regroup();
+});
+
+chrome.tabs.onUpdated.addListener(async function (tabId, changeInfo /*tab*/) {
+  if (changeInfo.url) {
+    await regroup();
   }
 });
