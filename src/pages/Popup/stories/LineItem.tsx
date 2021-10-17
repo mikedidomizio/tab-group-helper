@@ -139,6 +139,8 @@ const SelectTemplate = (
   );
 };
 
+const tooltipTime = 5000;
+
 /**
  * Line item for grouping Chrome tabs
  */
@@ -246,41 +248,89 @@ export const LineItem: FunctionComponent<LineItemProps> = ({
   return (
     <div className={classes.root}>
       <FormGroup row>
-        {SelectTemplate(
-          'matchType',
-          'Type',
-          'Match Type',
-          matchType,
-          [
-            { k: 'url', v: 'URL' },
-            {
-              k: 'title',
-              v: 'Title',
-            },
-          ],
-          handleChange
-        )}
-        {Textfield('Contains', 'text', text, handleChange)}
-        {CheckBox(
-          'Case Sensitive',
-          'caseSensitive',
-          caseSensitive,
-          handleChange
-        )}
-        {CheckBox('Regex', 'regex', regex, handleChange)}
+        <Tooltip
+          title="What attribute to match"
+          enterDelay={tooltipTime}
+          leaveDelay={0}
+        >
+          {SelectTemplate(
+            'matchType',
+            'Type',
+            'Match Type',
+            matchType,
+            [
+              { k: 'url', v: 'URL' },
+              {
+                k: 'title',
+                v: 'Title',
+              },
+            ],
+            handleChange
+          )}
+        </Tooltip>
+        <Tooltip
+          title="The tab must contain the following"
+          enterDelay={tooltipTime}
+          leaveDelay={0}
+        >
+          {Textfield('Contains', 'text', text, handleChange)}
+        </Tooltip>
+        <Tooltip
+          title="Whether it should match any case or have to be exact"
+          enterDelay={tooltipTime}
+          leaveDelay={0}
+        >
+          {CheckBox(
+            'Case Sensitive',
+            'caseSensitive',
+            caseSensitive,
+            handleChange
+          )}
+        </Tooltip>
+        <Tooltip
+          title="Enable matching by regular expression"
+          enterDelay={tooltipTime}
+          leaveDelay={0}
+        >
+          {CheckBox('Regex', 'regex', regex, handleChange)}
+        </Tooltip>
       </FormGroup>
       <FormGroup className={classes.root} row>
-        {Textfield('Group Name', 'groupTitle', groupTitle, handleChange)}
-        {SelectTemplate(
-          'color',
-          'Color',
-          'color',
-          color,
-          menuOptionsColors,
-          handleChange
-        )}
-        {CheckBox('Apply', 'applyChanges', applyChanges, handleChange)}
-        {CheckBox('Auto-Group', 'autoGroup', autoGroup, handleChange)}
+        <Tooltip
+          title="The name that the group will be given"
+          enterDelay={tooltipTime}
+          leaveDelay={0}
+        >
+          {Textfield('Group Name', 'groupTitle', groupTitle, handleChange)}
+        </Tooltip>
+        <Tooltip
+          title="The Chrome group colour"
+          enterDelay={tooltipTime}
+          leaveDelay={0}
+        >
+          {SelectTemplate(
+            'color',
+            'Color',
+            'color',
+            color,
+            menuOptionsColors,
+            handleChange
+          )}
+        </Tooltip>
+        <Tooltip
+          title="Whether or not it should include this on 'Run'"
+          enterDelay={tooltipTime}
+          leaveDelay={0}
+        >
+          {CheckBox('Apply', 'applyChanges', applyChanges, handleChange)}
+        </Tooltip>
+        <Tooltip
+          title="Will automatically group newly created tabs"
+          enterDelay={tooltipTime}
+          leaveDelay={0}
+        >
+          {CheckBox('Auto-Group', 'autoGroup', autoGroup, handleChange)}
+        </Tooltip>
         <IconButton aria-label="delete" onClick={() => deleteLineItem(id)}>
           <DeleteIcon />
         </IconButton>
