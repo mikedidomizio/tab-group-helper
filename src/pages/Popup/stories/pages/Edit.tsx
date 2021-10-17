@@ -1,16 +1,17 @@
+import { LineItem, LineItemsService } from '../../service/lineItems.service';
+import { BottomBar } from '../BottomBar';
+import { BottomBarButton } from '../BottomBarButton';
+import { Box, TextField, Typography } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
+import { Alert } from '@material-ui/lab';
 import React, {
   ChangeEvent,
   FunctionComponent,
   ReactElement,
   useEffect,
+  useMemo,
   useState,
 } from 'react';
-import { LineItem, LineItemsService } from '../../service/lineItems.service';
-import { Alert } from '@material-ui/lab';
-import { Box, TextField, Typography } from '@material-ui/core';
-import { BottomBar } from '../BottomBar';
-import { makeStyles } from '@material-ui/core/styles';
-import { BottomBarButton } from '../BottomBarButton';
 
 const useStyles = makeStyles((/*theme*/) => ({
   root: {
@@ -33,10 +34,8 @@ export interface EditProps {
 /**
  * Edit line items manually
  */
-// todo error should probably be null and not undefined
-export const Edit: FunctionComponent<EditProps> = ({ error }): ReactElement => {
-  // todo do we need separate instances?
-  const lineItemsService = new LineItemsService();
+export const Edit: FunctionComponent<EditProps> = (): ReactElement => {
+  const lineItemsService = useMemo(() => new LineItemsService(), []);
   const classes = useStyles();
   const [state, setState] = useState<{
     error: string | null;

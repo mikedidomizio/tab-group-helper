@@ -1,3 +1,14 @@
+import {
+  LineItem as LItem,
+  LineItemsService,
+  newLineItem,
+} from '../../service/lineItems.service';
+import { TabService } from '../../service/tab.service';
+import { BottomBar } from '../BottomBar';
+import { BottomBarButton } from '../BottomBarButton';
+import { LineItem } from '../LineItem';
+import { Box, Divider } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 import React, {
   FunctionComponent,
   ReactElement,
@@ -5,17 +16,6 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import { LineItem } from '../LineItem';
-import { TabService } from '../../service/tab.service';
-import {
-  LineItem as LItem,
-  LineItemsService,
-  newLineItem,
-} from '../../service/lineItems.service';
-import { makeStyles } from '@material-ui/core/styles';
-import { BottomBar } from '../BottomBar';
-import { Box, Divider } from '@material-ui/core';
-import { BottomBarButton } from '../BottomBarButton';
 
 const useStyles = makeStyles((/*theme*/) => ({
   root: {

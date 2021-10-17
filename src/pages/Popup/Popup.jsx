@@ -1,5 +1,4 @@
 import packageJSON from '../../../package.json';
-import './App.css';
 import { LineItemsService } from './service/lineItems.service';
 import { Board } from './stories/pages/Board';
 import { Edit } from './stories/pages/Edit';

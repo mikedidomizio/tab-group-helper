@@ -1,11 +1,8 @@
-import React, {
-  ChangeEvent,
-  FunctionComponent,
-  ReactElement,
-  SetStateAction,
-  useEffect,
-  useState,
-} from 'react';
+import {
+  ChromeTabsAttributes,
+  LineItem as LItem,
+} from '../service/lineItems.service';
+import { TabService } from '../service/tab.service';
 import {
   Box,
   Checkbox,
@@ -19,13 +16,16 @@ import {
   TextField,
   Tooltip,
 } from '@material-ui/core';
-import DeleteIcon from '@material-ui/icons/Delete';
 import { makeStyles } from '@material-ui/core/styles';
-import { TabService } from '../service/tab.service';
-import {
-  ChromeTabsAttributes,
-  LineItem as LItem,
-} from '../service/lineItems.service';
+import DeleteIcon from '@material-ui/icons/Delete';
+import React, {
+  ChangeEvent,
+  FunctionComponent,
+  ReactElement,
+  SetStateAction,
+  useEffect,
+  useState,
+} from 'react';
 
 const useStyles = makeStyles((theme) => ({
   root: {
