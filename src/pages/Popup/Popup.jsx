@@ -1,8 +1,8 @@
 import packageJSON from '../../../package.json';
 import { LineItemsService } from './service/lineItems.service';
-import { Board } from './stories/pages/Board';
-import { Edit } from './stories/pages/Edit';
-import { Help } from './stories/pages/Help';
+import { Board } from './components/pages/Board';
+import { Edit } from './components/pages/Edit';
+import { Help } from './components/pages/Help';
 import {
   AppBar,
   IconButton,
