@@ -1,4 +1,4 @@
-import App from './Popup';
+import { App } from './Popup';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
 import React from 'react';
