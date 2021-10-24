@@ -1,8 +1,9 @@
-## 1.3.0 (2021-10-16)
+## 1.3.0 (2021-10-24)
 
 ### Added
 
-- Background script to auto group tabs into groups
+- Background script to auto group tabs into groups either when tab is created or tab is updated
+- Hovering over line items will give a brief description on their functionality
 
 ## 1.2.0 (2021-04-27)
 
@@ -11,7 +12,6 @@
 - Help page with links to repo and installed extension version
 - Tooltips on the nav buttons at the bottom to explain their functionality
 - Personalized Storybook more with package information
-- New `BottomBarButton` story
 
 ### Fixed
 

@@ -70,7 +70,7 @@ export const Board: FunctionComponent = (): ReactElement => {
     []
   );
 
-  const tabsService: TabService = new TabService();
+  const tabService: TabService = new TabService();
   const [lineItems, setLineItems] = useState<LItem[]>([]);
 
   useEffect(() => {
@@ -96,7 +96,7 @@ export const Board: FunctionComponent = (): ReactElement => {
     for (let item of lineItems) {
       const regex = item.regex;
       const { caseSensitive } = item;
-      const returned: chrome.tabs.Tab[] = await new TabService().getTabsWhichMatch(
+      const returned: chrome.tabs.Tab[] = await tabService.getTabsWhichMatch(
         item.text,
         item.matchType,
         caseSensitive,
@@ -108,7 +108,7 @@ export const Board: FunctionComponent = (): ReactElement => {
       const ids: number[] = returned.map((i) => (i.id ? i.id : -1));
       if (ids.length) {
         const color = item.color !== '' ? item.color : undefined;
-        await tabsService.addTabsToGroup(ids, item.groupTitle, color);
+        await tabService.addTabsToGroup(ids, item.groupTitle, color);
       }
     }
   };
@@ -133,7 +133,7 @@ export const Board: FunctionComponent = (): ReactElement => {
   /**
    * Removes all current groups
    */
-  const clearGroups = async () => await tabsService.clearGroups();
+  const clearGroups = async () => await tabService.clearGroups();
 
   const addLineItem = async () => {
     const lineItems = await lineItemsService.add();

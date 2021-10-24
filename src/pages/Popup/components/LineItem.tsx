@@ -10,6 +10,7 @@ import {
   FormControlLabel,
   FormGroup,
   IconButton,
+  Input,
   InputLabel,
   MenuItem,
   Select,
@@ -39,6 +40,12 @@ const useStyles = makeStyles((theme) => ({
     '& .MuiFormControl-root': {
       marginRight: theme.spacing(1),
     },
+    '& .MuiFormControl-root.Color': {
+      width: '100px',
+    },
+    '& .MuiSelect-select': {
+      width: '160px',
+    },
   },
 }));
 
@@ -55,7 +62,7 @@ export interface LineItemProps extends LItem {
 
 const defaultProps: LItem = {
   applyChanges: true,
-  autoGroup: false,
+  autoGroup: [],
   caseSensitive: false,
   color: '',
   groupTitle: '',
@@ -105,6 +112,52 @@ const Textfield = (
   );
 };
 
+const MultiSelectTemplate = (
+  label: string,
+  labelId: string,
+  handleChangeMultiple: (event: ChangeEvent<any>) => unknown,
+  options: { text: string; value: string }[],
+  value: string[]
+) => {
+  return (
+    <FormControl className={label}>
+      <InputLabel id={labelId + '-label'}>{label}</InputLabel>
+      <Select
+        labelId={labelId + '-label'}
+        id={labelId}
+        multiple
+        name={labelId}
+        value={value}
+        onChange={handleChangeMultiple}
+        renderValue={(selected) =>
+          (selected as string[])
+            .map((selectedValue) => {
+              const opt = options.find((option) => {
+                if (option.value === selectedValue) {
+                  return option.text;
+                }
+                return '';
+              });
+
+              if (opt?.text) {
+                return opt.text;
+              }
+              return '';
+            })
+            .join(', ')
+        }
+        input={<Input />}
+      >
+        {options.map((option) => (
+          <MenuItem key={option.value} value={option.value}>
+            {option.text}
+          </MenuItem>
+        ))}
+      </Select>
+    </FormControl>
+  );
+};
+
 const SelectTemplate = (
   idName: string,
   label: string,
@@ -123,7 +176,7 @@ const SelectTemplate = (
   });
 
   return (
-    <FormControl>
+    <FormControl className={label}>
       <InputLabel id={idName}>{label}</InputLabel>
       <Select
         labelId={labelId}
@@ -140,6 +193,11 @@ const SelectTemplate = (
 };
 
 const tooltipTime = 5000;
+
+export enum autoGroupValue {
+  tabCreated = 'tabCreated',
+  tabUpdated = 'tabUpdated',
+}
 
 /**
  * Line item for grouping Chrome tabs
@@ -158,6 +216,10 @@ export const LineItem: FunctionComponent<LineItemProps> = ({
   text,
 }: LineItemProps & typeof defaultProps): ReactElement => {
   const classes = useStyles();
+  const autoGroupOptions = [
+    { text: 'Created tab', value: autoGroupValue.tabCreated },
+    { text: 'Updated tab', value: autoGroupValue.tabUpdated },
+  ];
   const colorOptions: Array<chrome.tabGroups.ColorEnum | ''> = [
     '',
     'grey',
@@ -245,6 +307,16 @@ export const LineItem: FunctionComponent<LineItemProps> = ({
     );
   };
 
+  const handleChangeMultiple = (
+    event: ChangeEvent<{ name: string; value: string[] }>
+  ) => {
+    onLineItemChange(
+      Object.assign(getLineItemValues(), {
+        [event.target.name]: event.target.value,
+      })
+    );
+  };
+
   return (
     <div className={classes.root}>
       <FormGroup row>
@@ -318,18 +390,24 @@ export const LineItem: FunctionComponent<LineItemProps> = ({
           )}
         </Tooltip>
         <Tooltip
-          title="Whether or not it should include this on 'Run'"
+          title="Will automatically group created/updated tabs"
+          enterDelay={tooltipTime}
+          leaveDelay={0}
+        >
+          {MultiSelectTemplate(
+            'Auto-Group',
+            'autoGroup',
+            handleChangeMultiple,
+            autoGroupOptions,
+            autoGroup
+          )}
+        </Tooltip>
+        <Tooltip
+          title="Whether or not it should include this on 'Run' or auto-group"
           enterDelay={tooltipTime}
           leaveDelay={0}
         >
           {CheckBox('Apply', 'applyChanges', applyChanges, handleChange)}
-        </Tooltip>
-        <Tooltip
-          title="Will automatically group newly created tabs"
-          enterDelay={tooltipTime}
-          leaveDelay={0}
-        >
-          {CheckBox('Auto-Group', 'autoGroup', autoGroup, handleChange)}
         </Tooltip>
         <IconButton aria-label="delete" onClick={() => deleteLineItem(id)}>
           <DeleteIcon />
