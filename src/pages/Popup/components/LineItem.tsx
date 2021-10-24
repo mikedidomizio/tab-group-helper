@@ -74,7 +74,7 @@ const defaultProps: LItem = {
 
 const CheckBox = (
   label: string,
-  inputVame: string,
+  inputName: string,
   val: boolean,
   handleChange: Function
 ) => {
@@ -84,7 +84,7 @@ const CheckBox = (
         <Checkbox
           checked={val}
           onChange={(evt: ChangeEvent<any>) => handleChange(evt, 'checked')}
-          name={inputVame}
+          name={inputName}
           color="primary"
         />
       }

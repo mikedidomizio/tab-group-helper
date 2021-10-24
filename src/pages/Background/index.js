@@ -3,7 +3,7 @@ import { TabService } from '../Popup/service/tab.service';
 
 /**
  * @param {'tabCreated' | 'tabUpdated'} autoGroupType
- * @param {chrome.tabs.Tab} tab
+ * @param tab
  * @returns {Promise<void>}
  */
 // todo very similar to the one found in Board.tsx and should not be duplicated
