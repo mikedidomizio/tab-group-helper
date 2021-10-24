@@ -8,6 +8,8 @@ beforeAll(function () {
   global.chrome = chrome;
 });
 
+interface ChromeError extends Error {}
+
 describe('tab service', () => {
   let tabsService: TabService;
 
@@ -46,9 +48,8 @@ describe('tab service', () => {
       };
       try {
         await tabsService.listAllTabs();
-      } catch (e) {
-        // eslint-disable-next-line jest/no-conditional-expect
-        expect((e as any).message).toBe('bad');
+      } catch (e: any) {
+        expect(e.message).toBe('bad');
       }
 
       // reset so the next tests don't fail
@@ -64,9 +65,8 @@ describe('tab service', () => {
       };
       try {
         await tabsService.clearGroups();
-      } catch (e) {
-        // eslint-disable-next-line jest/no-conditional-expect
-        expect((e as any).message).toBe('bad');
+      } catch (e: any) {
+        expect(e.message).toBe('bad');
       }
     });
   });
@@ -78,9 +78,8 @@ describe('tab service', () => {
       };
       try {
         await tabsService.createGroup(123, []);
-      } catch (e) {
-        // eslint-disable-next-line jest/no-conditional-expect
-        expect((e as any).message).toBe('bad');
+      } catch (e: any) {
+        expect(e.message).toBe('bad');
       }
     });
   });
@@ -103,9 +102,8 @@ describe('tab service', () => {
       };
       try {
         await tabsService.getGroupIdByTitle('myTitle');
-      } catch (e) {
-        // eslint-disable-next-line jest/no-conditional-expect
-        expect((e as any).message).toBe('bad');
+      } catch (e: any) {
+        expect(e.message).toBe('bad');
       }
     });
   });

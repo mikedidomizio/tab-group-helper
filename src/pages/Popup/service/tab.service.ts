@@ -2,9 +2,6 @@
 import { ChromeTabsAttributes } from './lineItems.service';
 
 export class TabService {
-  /**
-   * @return {Promise<Tab[]>}
-   */
   async listAllTabs(): Promise<chrome.tabs.Tab[]> {
     return new Promise((resolve, reject) => {
       try {
@@ -20,7 +17,6 @@ export class TabService {
    * @param {"url" | "title"} type
    * @param {boolean} caseSensitive
    * @param {boolean} regex
-   * @return {Promise<Tab[]>}
    */
   async getTabsWhichMatch(
     text: string,
@@ -68,7 +64,6 @@ export class TabService {
    * @param {number[]} tabIds
    * @param {string} groupName
    * @param {string} color
-   * @return {Promise<TabGroup>}
    */
   async addTabsToGroup(
     tabIds: number[],

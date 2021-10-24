@@ -4,7 +4,7 @@ import { ReactElement } from 'react';
 // @ts-ignore
 import chrome from 'sinon-chrome/extensions';
 
-// todo this entire folder ignored from production build?
+// export this so we don't have to have a bunch of additional ts-ignore everywhere
 export { chrome };
 
 export const getButtonByText = (wrapper: ReactWrapper, btnText: string) =>
@@ -27,7 +27,7 @@ export const generateFakeTab = (newFakeTabArgs: Partial<chrome.tabs.Tab>) => {
     {
       id: Math.floor(Math.random() * 100000 + 1),
       title: 'my fake tab',
-      url: 'http://google.ca',
+      url: 'https://google.ca',
     },
     newFakeTabArgs
   );

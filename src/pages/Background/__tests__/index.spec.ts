@@ -140,7 +140,7 @@ describe('regroup function', () => {
 
     chrome.tabs.query.yields([firstTab, secondTab]);
 
-    firstTab.url = 'http://facebook.com/my-new-url';
+    firstTab.url = 'https://facebook.com/my-new-url';
 
     await regroup(autoGroupValue.tabUpdated, firstTab);
 

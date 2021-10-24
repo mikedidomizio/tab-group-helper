@@ -2,6 +2,7 @@ import packageJSON from '../../../package.json';
 import { Board } from './components/pages/Board';
 import { Edit } from './components/pages/Edit';
 import { Help } from './components/pages/Help';
+import { LineItemsService } from './service/lineItems.service';
 import {
   AppBar,
   IconButton,
