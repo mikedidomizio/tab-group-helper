@@ -17,5 +17,10 @@
     "types": ["node", "jest", "@testing-library/jest-dom"]
   },
   "include": ["src", "./jest-setup.ts"],
-  "exclude": ["build", "node_modules"]
+  "exclude": ["build", "node_modules",
+    "__tests__",
+    "__tests-helpers__",
+    "./src/**/*.spec.ts",
+    "./src/**/*.spec.tsx"
+  ],
 }
