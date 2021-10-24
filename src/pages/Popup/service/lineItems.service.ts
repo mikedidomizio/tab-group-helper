@@ -11,7 +11,7 @@ export interface LineItem {
   /**
    * Will group new tabs created automatically
    */
-  autoGroup: boolean;
+  autoGroup: string[];
   /**
    * If true, matches will only match case sensitive
    */
@@ -45,7 +45,7 @@ export interface LineItem {
 export const newLineItem = (): LineItem => {
   return Object.seal({
     applyChanges: true,
-    autoGroup: false,
+    autoGroup: [],
     caseSensitive: false,
     color: '' as chrome.tabGroups.ColorEnum,
     id: new Date().getTime() + Math.floor(Math.random() * 10000),

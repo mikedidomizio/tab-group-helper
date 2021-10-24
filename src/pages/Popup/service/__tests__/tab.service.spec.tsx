@@ -1,17 +1,10 @@
+import { generateFakeTab } from '../../__tests-helpers__/functions';
 import { ChromeTabsAttributes } from '../lineItems.service';
 import { TabService } from '../tab.service';
 // @ts-ignore
 import chrome from 'sinon-chrome/extensions';
 
 jest.setTimeout(30000);
-
-// will be useful if we ever expand on what attributes we can match
-const generateFakeTab = (title: string, url: string) => {
-  return {
-    title,
-    url,
-  };
-};
 
 beforeAll(function () {
   global.chrome = chrome;
@@ -122,8 +115,8 @@ describe('tab service', () => {
   describe('getTabsWhichMatch', () => {
     beforeAll(() => {
       chrome.tabs.query.yields([
-        generateFakeTab('react - good times', 'react.com'),
-        generateFakeTab('facebook', 'facebook.com'),
+        generateFakeTab({ title: 'react - good times', url: 'react.com' }),
+        generateFakeTab({ title: 'facebook', url: 'facebook.com' }),
       ]);
     });
 
