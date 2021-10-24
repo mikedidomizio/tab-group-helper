@@ -1,5 +1,5 @@
 import '../../../__tests-helpers__/enzyme-adapter';
-import { getButtonByText } from '../../../__tests-helpers__/functions';
+import { chrome, getButtonByText } from '../../../__tests-helpers__/functions';
 import { LineItem, newLineItem } from '../../../service/lineItems.service';
 import { TabService } from '../../../service/tab.service';
 import { Board } from '../Board';
@@ -7,8 +7,6 @@ import { act, fireEvent, waitFor } from '@testing-library/react';
 import { render, screen } from '@testing-library/react';
 import { mount, ReactWrapper } from 'enzyme';
 import React from 'react';
-// @ts-ignore
-import chrome from 'sinon-chrome/extensions';
 
 let wrapper: ReactWrapper;
 let getInputByLabel: (field: string) => ReactWrapper<any, any>;

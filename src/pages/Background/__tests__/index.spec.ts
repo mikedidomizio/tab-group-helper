@@ -1,12 +1,13 @@
-import { generateFakeTab } from '../../Popup/__tests-helpers__/functions';
+import {
+  chrome,
+  generateFakeTab,
+} from '../../Popup/__tests-helpers__/functions';
 import { autoGroupValue } from '../../Popup/components/LineItem';
 import {
   LineItemsService,
   newLineItem,
 } from '../../Popup/service/lineItems.service';
 import { TabService } from '../../Popup/service/tab.service';
-// @ts-ignore
-import chrome from 'sinon-chrome/extensions';
 
 global.chrome = chrome;
 const { regroup } = require('../index');

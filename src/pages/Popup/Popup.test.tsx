@@ -1,11 +1,9 @@
 import './__tests-helpers__/enzyme-adapter';
+import { chrome } from './__tests-helpers__/functions';
 import { render, screen } from '@testing-library/react';
 import { mount, ReactWrapper } from 'enzyme';
 // @ts-ignore
 import { createMemoryHistory } from 'history';
-// import App from './App';
-// @ts-ignore
-import chrome from 'sinon-chrome/extensions';
 
 // @ts-ignore
 let agentGetter: SpyInstance;

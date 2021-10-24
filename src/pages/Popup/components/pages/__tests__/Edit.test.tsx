@@ -1,5 +1,6 @@
 import '../../../__tests-helpers__/enzyme-adapter';
 import {
+  chrome,
   getButtonByText,
   renderComponentAndExpect,
 } from '../../../__tests-helpers__/functions';
@@ -8,8 +9,6 @@ import { Edit } from '../Edit';
 import { act, render, screen } from '@testing-library/react';
 import { mount, ReactWrapper } from 'enzyme';
 import React from 'react';
-// @ts-ignore
-import chrome from 'sinon-chrome/extensions';
 
 window.chrome = chrome;
 

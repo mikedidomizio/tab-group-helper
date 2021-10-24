@@ -1,8 +1,11 @@
 import { render, screen } from '@testing-library/react';
 import { ReactWrapper } from 'enzyme';
 import { ReactElement } from 'react';
+// @ts-ignore
+import chrome from 'sinon-chrome/extensions';
 
 // todo this entire folder ignored from production build?
+export { chrome };
 
 export const getButtonByText = (wrapper: ReactWrapper, btnText: string) =>
   wrapper.findWhere((node) => {

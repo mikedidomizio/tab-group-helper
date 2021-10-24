@@ -1,9 +1,8 @@
 import packageJSON from '../../../../../../package.json';
 import '../../../__tests-helpers__/enzyme-adapter';
+import { chrome } from '../../../__tests-helpers__/functions';
 import { Help } from '../Help';
 import { mount } from 'enzyme';
-// @ts-ignore
-import chrome from 'sinon-chrome/extensions';
 
 beforeAll(function () {
   global.chrome = chrome;
