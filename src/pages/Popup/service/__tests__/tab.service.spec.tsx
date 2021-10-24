@@ -1,8 +1,6 @@
-import { generateFakeTab } from '../../__tests-helpers__/functions';
+import { chrome, generateFakeTab } from '../../__tests-helpers__/functions';
 import { ChromeTabsAttributes } from '../lineItems.service';
 import { TabService } from '../tab.service';
-// @ts-ignore
-import chrome from 'sinon-chrome/extensions';
 
 jest.setTimeout(30000);
 

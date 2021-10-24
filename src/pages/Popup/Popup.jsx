@@ -1,5 +1,4 @@
 import packageJSON from '../../../package.json';
-import { LineItemsService } from './service/lineItems.service';
 import { Board } from './components/pages/Board';
 import { Edit } from './components/pages/Edit';
 import { Help } from './components/pages/Help';

@@ -1,10 +1,9 @@
 import '../../__tests-helpers__/enzyme-adapter';
+import { chrome } from '../../__tests-helpers__/functions';
 import { newLineItem } from '../../service/lineItems.service';
 import { LineItem, LineItemProps } from '../LineItem';
 import { mount, ReactWrapper } from 'enzyme';
 import React from 'react';
-// @ts-ignore
-import chrome from 'sinon-chrome/extensions';
 
 let wrapper: ReactWrapper;
 
