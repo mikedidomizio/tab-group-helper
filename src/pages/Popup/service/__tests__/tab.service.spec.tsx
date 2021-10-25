@@ -8,8 +8,6 @@ beforeAll(function () {
   global.chrome = chrome;
 });
 
-interface ChromeError extends Error {}
-
 describe('tab service', () => {
   let tabsService: TabService;
 
