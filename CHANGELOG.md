@@ -1,3 +1,9 @@
+## 1.4.0 (2021-10-25)
+
+### Added
+
+- Ability to sort groups alphabetically
+
 ## 1.3.0 (2021-10-24)
 
 ### Added
