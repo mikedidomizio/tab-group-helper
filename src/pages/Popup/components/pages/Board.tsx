@@ -30,36 +30,6 @@ const useStyles = makeStyles((/*theme*/) => ({
   },
 }));
 
-const cleanUpLineItems = (lineItems: LItem[]): LItem[] => {
-  const defaultLineItem = newLineItem();
-
-  // delete ID because it's always different
-  function sortObjectByKeys<T>(objToSort: T): T {
-    return Object.keys(objToSort)
-      .sort()
-      .reduce((obj: any, key) => {
-        // @ts-ignore
-        obj[key] = objToSort[key];
-        return obj;
-      }, {});
-  }
-
-  const sortedStringifiedDefaultLineItem = sortObjectByKeys<LItem>(
-    defaultLineItem
-  );
-  return lineItems.slice().filter((item: LItem) => {
-    const sortedClonedLineItem = sortObjectByKeys(item);
-    // rename the id, deleting it leads to deleting it in the returned object
-    sortedStringifiedDefaultLineItem.id = item.id;
-    // we sorted both and then stringify to ensure keys are all alphabetical
-    // this is only going to work for shallow objects
-    return (
-      JSON.stringify(sortedClonedLineItem) !==
-      JSON.stringify(sortedStringifiedDefaultLineItem)
-    );
-  });
-};
-
 /**
  * Board of line items that we will run against to group Chrome tabs
  */
@@ -115,18 +85,7 @@ export const Board: FunctionComponent = (): ReactElement => {
 
   // proceeds to remove any line items that match the default (aka have not been edited)
   const cleanUp = async (): Promise<void> => {
-    const cleanedUpLineItems = cleanUpLineItems(lineItems);
-    if (cleanedUpLineItems.length) {
-      // todo move the clean up logic to inside the service and let it handle it
-      await lineItemsService.set(cleanedUpLineItems);
-      setLineItems(cleanedUpLineItems);
-    } else {
-      await clearResetAndSetState();
-    }
-  };
-
-  const clearResetAndSetState = async () => {
-    const lineItems = await lineItemsService.reset();
+    const lineItems = await lineItemsService.cleanUpLineItems();
     setLineItems(lineItems);
   };
 
@@ -136,27 +95,21 @@ export const Board: FunctionComponent = (): ReactElement => {
   };
 
   const deleteLineItem = async (lineItemUniqueId: number): Promise<void> => {
-    if ((await lineItemsService.get()).length === 1) {
-      await clearResetAndSetState();
-    } else {
-      const lineItems = await lineItemsService.deleteLineItems(
-        lineItemUniqueId
-      );
-      setLineItems(lineItems);
-    }
+    const lineItems = await lineItemsService.deleteLineItemById(
+      lineItemUniqueId
+    );
+    setLineItems(lineItems);
   };
 
   const handleLineItemChange = async (
     lineItemUniqueId: number,
     lineItemState: LItem
   ) => {
-    const lineItemsSlice = lineItems.slice();
-    const idx = lineItemsSlice.findIndex((i) => i.id === lineItemUniqueId);
-    if (idx >= 0) {
-      lineItemsSlice[idx] = lineItemState;
-      await lineItemsService.updateLineItems(lineItemUniqueId, lineItemState);
-      setLineItems(lineItemsSlice);
-    }
+    const lineItems = await lineItemsService.updateLineItems(
+      lineItemUniqueId,
+      lineItemState
+    );
+    setLineItems(lineItems);
   };
 
   return (

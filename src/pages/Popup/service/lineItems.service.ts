@@ -56,6 +56,36 @@ export const newLineItem = (): LineItem => {
   });
 };
 
+const cleanUpLineItems = (lineItems: LineItem[]): LineItem[] => {
+  const defaultLineItem = newLineItem();
+
+  // delete ID because it's always different
+  function sortObjectByKeys<T>(objToSort: T): T {
+    return Object.keys(objToSort)
+      .sort()
+      .reduce((obj: any, key) => {
+        // @ts-ignore
+        obj[key] = objToSort[key];
+        return obj;
+      }, {});
+  }
+
+  const sortedStringifiedDefaultLineItem = sortObjectByKeys<LineItem>(
+    defaultLineItem
+  );
+  return lineItems.slice().filter((item: LineItem) => {
+    const sortedClonedLineItem = sortObjectByKeys(item);
+    // rename the id, deleting it leads to deleting it in the returned object
+    sortedStringifiedDefaultLineItem.id = item.id;
+    // we sorted both and then stringify to ensure keys are all alphabetical
+    // this is only going to work for shallow objects
+    return (
+      JSON.stringify(sortedClonedLineItem) !==
+      JSON.stringify(sortedStringifiedDefaultLineItem)
+    );
+  });
+};
+
 /**
  * Maintains the line items between components
  */
@@ -101,7 +131,7 @@ export class LineItemsService {
     return this.wrappedSet(this.lineItems);
   }
 
-  async deleteLineItems(lineItemUniqueId: number): Promise<LineItem[]> {
+  async deleteLineItemById(lineItemUniqueId: number): Promise<LineItem[]> {
     const lineItems = (await this.get()).slice();
     // check to see if line item length is 1, if so we just reset it to empty
     if (lineItems.length === 1) {
@@ -110,6 +140,17 @@ export class LineItemsService {
 
     this.lineItems = lineItems.filter((item) => item.id !== lineItemUniqueId);
     return this.wrappedSet(this.lineItems);
+  }
+
+  /**
+   * Proceeds to move lineItems that match the initial line item state
+   */
+  async cleanUpLineItems(): Promise<LineItem[]> {
+    const cleanedUpLineItems = cleanUpLineItems(this.lineItems);
+    if (cleanedUpLineItems.length) {
+      return this.set(cleanedUpLineItems);
+    }
+    return this.reset();
   }
 
   /**
