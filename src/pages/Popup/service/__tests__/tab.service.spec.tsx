@@ -71,6 +71,37 @@ describe('tab service', () => {
     });
   });
 
+  describe('sortGrous', () => {
+    it('should sort them alphabetically by default', async () => {
+      chrome.tabGroups = {
+        query: (t: string, callback: Function) =>
+          callback([
+            { id: 123, title: 'zebras' },
+            { id: 234, title: 'manifestos' },
+            { id: 345, title: 'zebras' },
+            { id: 456, title: 'abc' },
+          ]),
+      };
+
+      chrome.tabGroups.move = () => {};
+
+      const moveSpy = jest
+        .spyOn(chrome.tabGroups, 'move')
+        .mockImplementation(() => {});
+
+      const groups = await tabsService.sortGroups();
+
+      expect(moveSpy).toHaveBeenCalledTimes(4);
+      expect(moveSpy).nthCalledWith(1, 456, {
+        index: 0,
+      });
+      expect(moveSpy).nthCalledWith(2, 234, {
+        index: 1,
+      });
+      expect(groups[groups.length - 1].title).toBe('zebras');
+    });
+  });
+
   describe('createGroup', () => {
     it('should throw if chrome API query fails', async () => {
       chrome.tabs.group = () => {
@@ -88,9 +119,12 @@ describe('tab service', () => {
     it('will return the first group if multiple groups are matched', async () => {
       chrome.tabGroups = {
         query: (t: string, callback: Function) =>
-          callback([{ id: 123 }, { id: 234 }]),
+          callback([
+            { id: 123, title: 'zebras' },
+            { id: 234, title: 'zebras' },
+          ]),
       };
-      const id = await tabsService.getGroupIdByTitle('myTitle');
+      const id = await tabsService.getGroupIdByTitle('zebras');
       expect(id).toBe(123);
     });
 

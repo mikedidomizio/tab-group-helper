@@ -7,6 +7,7 @@ import { TabService } from '../Popup/service/tab.service';
  * @returns {Promise<void>}
  */
 // todo very similar to the one found in Board.tsx and should not be duplicated
+// todo seems to be some bug where it doesn't always auto-group?  can't tell if reloading the extension fixes it
 export const regroup = async (autoGroupType, tab) => {
   const lineItemsService = new LineItemsService();
   const tabsService = new TabService();

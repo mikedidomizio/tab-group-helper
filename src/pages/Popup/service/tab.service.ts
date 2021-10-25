@@ -1,6 +1,18 @@
 /// <reference types="@types/chrome" />
 import { ChromeTabsAttributes } from './lineItems.service';
 
+// https://developer.chrome.com/docs/extensions/reference/tabGroups
+// this can also be used for querying I believe
+interface ChromeTabGroup {
+  collapsed: boolean;
+  color: chrome.tabGroups.ColorEnum;
+  id: number;
+  title?: string;
+  windowId: number;
+}
+
+// todo with the change from V2 to V3 Manifest, I believe we can convert these chrome API requests to Promises
+
 export class TabService {
   async listAllTabs(): Promise<chrome.tabs.Tab[]> {
     return new Promise((resolve, reject) => {
@@ -110,6 +122,41 @@ export class TabService {
   }
 
   /**
+   * Sorts groups for now by title alphabetically
+   */
+  async sortGroups(): Promise<ChromeTabGroup[]> {
+    return new Promise((resolve, reject) => {
+      try {
+        // todo should also consider that it'll only run/sort or whatever action on that exact window and not all windows
+        chrome.tabGroups.query({}, (groups: ChromeTabGroup[]) => {
+          groups.sort((a, b) => {
+            if (a.title && b.title) {
+              if (a.title > b.title) {
+                return 1;
+              }
+              if (a.title < b.title) {
+                return -1;
+              }
+            }
+
+            return 0;
+          });
+
+          // if index starts at -1, it'll be at the end
+          for (let i = 0; i < groups.length; i++) {
+            chrome.tabGroups.move(groups[i].id, {
+              index: i,
+            });
+          }
+          resolve(groups);
+        });
+      } catch (e) {
+        reject(e);
+      }
+    });
+  }
+
+  /**
    * @param {number} groupId
    * @param {number[]} tabIds
    * @param {object} createProperties
@@ -150,9 +197,13 @@ export class TabService {
           {
             title,
           },
-          (groupIds) => {
-            if (groupIds.length >= 1) {
-              resolve(groupIds[0].id);
+          (groups: ChromeTabGroup[]) => {
+            const group: ChromeTabGroup | undefined = groups.find(
+              (group) => group.title === title
+            );
+
+            if (group) {
+              resolve(group.id);
             }
             resolve(undefined);
           }
