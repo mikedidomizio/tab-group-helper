@@ -130,11 +130,6 @@ export const Board: FunctionComponent = (): ReactElement => {
     setLineItems(lineItems);
   };
 
-  /**
-   * Removes all current groups
-   */
-  const clearGroups = async () => await tabService.clearGroups();
-
   const addLineItem = async () => {
     const lineItems = await lineItemsService.add();
     setLineItems(lineItems);
@@ -199,7 +194,13 @@ export const Board: FunctionComponent = (): ReactElement => {
           Clean up
         </BottomBarButton>
         <BottomBarButton
-          onClick={clearGroups}
+          onClick={() => tabService.sortGroups()}
+          tooltip="Sort groups"
+        >
+          Sort Groups
+        </BottomBarButton>
+        <BottomBarButton
+          onClick={() => tabService.clearGroups()}
           tooltip="Clears all groups in your browser"
         >
           Clear Groups
