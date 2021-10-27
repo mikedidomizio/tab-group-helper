@@ -1,3 +1,9 @@
+## 1.5.0 (2021-10-27)
+
+### Added
+
+- Ability on Edit page to copy the JSON to clipboard if it's valid
+
 ## 1.4.0 (2021-10-25)
 
 ### Added
