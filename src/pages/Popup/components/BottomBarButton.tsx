@@ -1,4 +1,10 @@
-import { Box, Button, Tooltip, TooltipProps } from '@material-ui/core';
+import {
+  Box,
+  Button,
+  PropTypes,
+  Tooltip,
+  TooltipProps,
+} from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import React, {
   FunctionComponent,
@@ -14,15 +20,23 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-interface BottomBarButtonInterface {
+interface BottomBarButtonProps {
+  /**
+   * Color of the button which will default to primary if not specified
+   */
+  color?: PropTypes.Color;
   /**
    * The contents of the button
    */
   children: string;
   /**
+   * An icon for the end of the button
+   */
+  endIcon?: JSX.Element | null;
+  /**
    * The click functionality set by the parent.  By default no action occurs.
    */
-  onClick: Function;
+  onClick: any;
   /**
    * The placement of the tooltip.  Values can be retrieved from https://material-ui.com/api/tooltip/
    */
@@ -30,14 +44,16 @@ interface BottomBarButtonInterface {
   /**
    * The tooltip text that appears on hovering
    */
-  tooltip?: string;
+  tooltip: string | boolean;
 }
 
-const defaultProps: BottomBarButtonInterface = {
+const defaultProps: BottomBarButtonProps = {
   children: '',
+  color: 'primary',
+  endIcon: null,
   onClick: () => {},
   placement: 'top-start',
-  tooltip: '',
+  tooltip: false,
 };
 
 /**
@@ -45,20 +61,30 @@ const defaultProps: BottomBarButtonInterface = {
  * Difference between this and normal button is this has removed drop shadow.
  * Simplifies everything into a one line component.
  */
-export const BottomBarButton: FunctionComponent<BottomBarButtonInterface> = (
-  props: PropsWithChildren<any>
-): ReactElement => {
+export const BottomBarButton: FunctionComponent<BottomBarButtonProps> = ({
+  children,
+  color,
+  endIcon,
+  onClick,
+  placement,
+  tooltip,
+}: PropsWithChildren<BottomBarButtonProps>): ReactElement => {
   const classes = useStyles();
   return (
     <Box className={classes.root} component="span" mr={1}>
       <Tooltip
-        title={props.tooltip}
+        title={tooltip}
         enterDelay={1000}
-        placement={props.placement}
+        placement={placement}
         leaveDelay={0}
       >
-        <Button onClick={props.onClick} variant="contained" color="primary">
-          {props.children}
+        <Button
+          onClick={onClick}
+          variant="contained"
+          color={color}
+          endIcon={endIcon}
+        >
+          {children}
         </Button>
       </Tooltip>
     </Box>
