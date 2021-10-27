@@ -6,13 +6,15 @@ import {
 } from '../../../__tests-helpers__/functions';
 import { newLineItem } from '../../../service/lineItems.service';
 import { Edit } from '../Edit';
-import { act, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import { mount, ReactWrapper } from 'enzyme';
 import React from 'react';
 
-window.chrome = chrome;
+// required for a timeout located within this component
+jest.setTimeout(10000);
 
 beforeAll(() => {
+  (global as any).chrome = chrome;
   // mock localStorage // todo this is possibly removable
   (global.localStorage as any) = {
     getItem: [],
@@ -27,13 +29,13 @@ afterEach(() => {
 });
 
 test.skip('should render the component properly', () =>
-  renderComponentAndExpect(<Edit error="" />, /Manually Edit/i));
+  renderComponentAndExpect(<Edit />, /Manually Edit/i));
 
 let wrapper: ReactWrapper;
 let getTextArea: () => ReactWrapper<any, any>;
 
 beforeEach(() => {
-  wrapper = mount(<Edit error="" />);
+  wrapper = mount(<Edit />);
   getTextArea = () =>
     wrapper
       .find('textarea')
@@ -48,9 +50,9 @@ afterEach(() => {
 
 test('should show valid JSON objects for each line item', async () => {
   chrome.storage.local.get.yields({ lineItems: [newLineItem()] });
-  const { rerender } = render(<Edit error={null} />);
+  const { rerender } = render(<Edit />);
 
-  await act(async () => rerender(<Edit error={null} />));
+  await act(async () => rerender(<Edit />));
 
   expect(screen.getByDisplayValue(/applyChanges/)).toBeInTheDocument();
 });
@@ -99,4 +101,98 @@ test.skip('reset button should return/beautify JSON into the previously saved va
   });
   button.simulate('click');
   expect(getTextArea().props().value).toEqual(savedStateValue);
+});
+
+describe('clicking the copy to clipboard button', () => {
+  beforeEach(() => {
+    Object.assign(navigator, {
+      clipboard: {
+        writeText: () => {},
+      },
+    });
+  });
+
+  test('should use the browser copy to clipboard functionality', () => {
+    const clipboardSpy = jest.spyOn(navigator.clipboard, 'writeText');
+    render(<Edit />);
+
+    const textarea = screen.getByRole('textbox');
+    fireEvent.change(textarea, {
+      target: { value: '[{ "id": 123, "test": "works" }]' },
+    });
+
+    const copyButton = screen.getByText(/copy to clipboard/i);
+    fireEvent.click(copyButton);
+
+    expect(clipboardSpy).toHaveBeenCalledWith(
+      '[{ "id": 123, "test": "works" }]'
+    );
+  });
+
+  test('should change the text of the button and have an icon', () => {
+    render(<Edit />);
+
+    const copyButton = screen.getByText(/copy to clipboard/i);
+    fireEvent.click(copyButton);
+
+    const updatedCopyButton = screen.queryByText(/copied/i);
+    const container = screen.getByRole('button', {
+      name: /copy the valid json to clipboard/i,
+    });
+
+    expect(updatedCopyButton).toBeInTheDocument();
+    expect(screen.queryByText(/copy to clipboard/i)).not.toBeInTheDocument();
+    expect(container.querySelector('svg')).toBeInTheDocument();
+  });
+
+  test('after a few seconds the text for the copy button should return back to the default state', async () => {
+    render(<Edit />);
+
+    const copyButton = screen.getByText(/copy to clipboard/i);
+    fireEvent.click(copyButton);
+
+    const container = screen.getByRole('button', {
+      name: /copy the valid json to clipboard/i,
+    });
+
+    expect(screen.queryByText(/copied/i)).toBeInTheDocument();
+    expect(screen.queryByText(/copy to clipboard/i)).not.toBeInTheDocument();
+    expect(container.querySelector('svg')).toBeInTheDocument();
+
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 5000));
+
+      expect(screen.queryByText(/copied/i)).not.toBeInTheDocument();
+      expect(screen.queryByText(/copy to clipboard/i)).toBeInTheDocument();
+      expect(container.querySelector('svg')).not.toBeInTheDocument();
+    });
+  });
+
+  test('should show the copy button with error text and an icon if copying fails', () => {
+    Object.assign(navigator, {
+      clipboard: {
+        writeText: () => {
+          throw new Error('BAD');
+        },
+      },
+    });
+    render(<Edit />);
+
+    const textarea = screen.getByRole('textbox');
+    fireEvent.change(textarea, {
+      target: { value: '[{ "id": 123, "test": "works" }]' },
+    });
+
+    const copyButton = screen.getByText(/copy to clipboard/i);
+    fireEvent.click(copyButton);
+
+    const errorCopyButton = screen.queryByText(/error/i);
+    const container = screen.getByRole('button', {
+      name: /copy the valid json to clipboard/i,
+    });
+
+    expect(errorCopyButton).toBeInTheDocument();
+    expect(screen.queryByText(/copy to clipboard/i)).not.toBeInTheDocument();
+    expect(container.querySelector('svg')).toBeInTheDocument();
+  });
 });

@@ -3,6 +3,7 @@ import { BottomBar } from '../BottomBar';
 import { BottomBarButton } from '../BottomBarButton';
 import { Box, TextField, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import { Check, ErrorOutline } from '@material-ui/icons';
 import { Alert } from '@material-ui/lab';
 import React, {
   ChangeEvent,
@@ -24,23 +25,37 @@ const useStyles = makeStyles((/*theme*/) => ({
   },
 }));
 
-export interface EditProps {
-  /**
-   * Error value that is displayed in the UI.  By default this text/value is not visible
-   */
-  error: string | null;
-}
-
 /**
  * Edit line items manually
  */
-export const Edit: FunctionComponent<EditProps> = (): ReactElement => {
+export const Edit: FunctionComponent = (): ReactElement => {
   const lineItemsService = useMemo(() => new LineItemsService(), []);
   const classes = useStyles();
   const [state, setState] = useState<{
     error: string | null;
     textFieldValue: string;
   }>({ error: null, textFieldValue: '' });
+  let defaultClipboardButtonText = 'Copy to Clipboard';
+  // first value is the button text, second value is true for success copied, false for error, null for nothing
+  const [clipboardButtonText, setClipboardButtonText] = useState<
+    [string, boolean | null]
+  >([defaultClipboardButtonText, null]);
+
+  useEffect(() => {
+    let interval: any;
+
+    if (clipboardButtonText[0] !== defaultClipboardButtonText) {
+      interval = setTimeout(() => {
+        setClipboardButtonText([defaultClipboardButtonText, null]);
+      }, 3000);
+    }
+
+    return () => {
+      if (interval) {
+        clearInterval(interval);
+      }
+    };
+  }, [clipboardButtonText, defaultClipboardButtonText]);
 
   useEffect(() => {
     (async () =>
@@ -49,7 +64,13 @@ export const Edit: FunctionComponent<EditProps> = (): ReactElement => {
     return () => {
       // unmount
     };
+    // todo specifying getJsonTextField as a dependency for this useEffect holds up the test suite
   }, []);
+
+  const getJsonTextField = async (): Promise<string> => {
+    const lineItems = await lineItemsService.get();
+    return JSON.stringify(lineItems, undefined, 4);
+  };
 
   const handleChange = async (
     evt: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -60,6 +81,7 @@ export const Edit: FunctionComponent<EditProps> = (): ReactElement => {
       const parsed = JSON.parse(textFieldValue);
       if (!hasDuplicateIds(parsed)) {
         setState({ error: null, textFieldValue });
+        setClipboardButtonText([defaultClipboardButtonText, null]);
         await lineItemsService.set(parsed);
       } else {
         setState({
@@ -86,11 +108,6 @@ export const Edit: FunctionComponent<EditProps> = (): ReactElement => {
     return new Set(ids).size !== ids.length;
   };
 
-  const getJsonTextField = async (): Promise<string> => {
-    const lineItems = await lineItemsService.get();
-    return JSON.stringify(lineItems, undefined, 4);
-  };
-
   const reset = async (): Promise<void> => {
     setState({ textFieldValue: await getJsonTextField(), error: null });
   };
@@ -99,6 +116,29 @@ export const Edit: FunctionComponent<EditProps> = (): ReactElement => {
     if (!state.error) {
       setState({ textFieldValue: await getJsonTextField(), error: null });
     }
+  };
+
+  const copyToClipboard = () => {
+    if (!state.error) {
+      try {
+        navigator.clipboard.writeText(state.textFieldValue);
+        setClipboardButtonText(['Copied', true]);
+        return;
+      } catch (e) {
+        // below will set the error since we have a return
+      }
+    }
+    setClipboardButtonText(['Error', false]);
+  };
+
+  const endIcon = () => {
+    if (clipboardButtonText[0] !== defaultClipboardButtonText) {
+      if (clipboardButtonText[1]) {
+        return <Check />;
+      }
+      return <ErrorOutline />;
+    }
+    return null;
   };
 
   return (
@@ -129,11 +169,14 @@ export const Edit: FunctionComponent<EditProps> = (): ReactElement => {
         <BottomBarButton onClick={beautify} tooltip="Cleans up the JSON above">
           Beautify
         </BottomBarButton>
+        <BottomBarButton
+          onClick={copyToClipboard}
+          tooltip="Copy the valid JSON to clipboard"
+          endIcon={endIcon()}
+        >
+          {clipboardButtonText[0]}
+        </BottomBarButton>
       </BottomBar>
     </Box>
   );
-};
-
-Edit.defaultProps = {
-  error: null,
 };
