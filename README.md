@@ -5,22 +5,31 @@
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/839bbee00ab645b384a4e387bd40c5b0)](https://www.codacy.com/gh/mikedidomizio/tab-group-helper/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=mikedidomizio/tab-group-helper&amp;utm_campaign=Badge_Grade)
 [![Maintainability](https://api.codeclimate.com/v1/badges/c6b0516fddf8d7ac00a2/maintainability)](https://codeclimate.com/github/mikedidomizio/tab-group-helper/maintainability)
 
-This extension allows the user to run a set of commands which will automatically group tabs by title or URL.
-Including the ability to use regular expressions for more advanced capturing.
+This is the source code for a Google Chrome extension that allows the user to set up a bunch of rules to which they can manage groups and tabs by title or URL.
 
-Ex.
-For instance if you have a number of "GitHub" and "GitLab" tabs open and want to group them under "Git", you could
+<img src="screenshot.png" alt="picture of extension" width="600" />
+
+## Other Features
+
+- Use regular expressions to be more creative/advanced with your grouping rules
+- Automatically group tabs on creation and/or on when tabs change web page
+- Import/export your settings to share with co-workers or friends
+- Sort your groups with a click of a button
+
+## Chrome Web Store
+
+You can download this directly from the Chrome Web Store [here](https://chrome.google.com/webstore/detail/tab-group-helper/llhkcebnebfiaamifhbpehjompplpnae)
+or build it directly and load it
 
 ## Development
 
-This is written in React and uses Storybook for component isolation development.  Components are deployed to GitHub pages
-and can be viewed [here](https://mikedidomizio.github.io/tab-group-helper)
+This is written in React and uses a combination of RTL and unit tests to ensure quality.
 
 To get started with development, run `yarn install` to get the dependencies.
 
 ### Hot Reloading extension
 
-`yarn watch`
+`yarn start`
 
 Will build the extension, load the `./build` directory as an unpacked extension.  This will hot reload changes.
 
