@@ -1,3 +1,9 @@
+## 1.5.1 (2021-10-28)
+
+### Fixed
+
+- If the user had group rules, and opened the extension and immediately cleaned groups, it would remove all groups
+
 ## 1.5.0 (2021-10-27)
 
 ### Added
@@ -15,7 +21,7 @@
 ### Added
 
 - Background script to auto group tabs into groups either when tab is created or tab is updated
-- Hovering over line items will give a brief description on their functionality
+- Hovering over group rules will give a brief description on their functionality
 
 ## 1.2.0 (2021-04-27)
 
