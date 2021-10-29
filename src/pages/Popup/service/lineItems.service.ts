@@ -97,9 +97,9 @@ export class LineItemsService {
   }
 
   async get(): Promise<LineItem[]> {
-    const lineItems = await this.wrappedGet();
-    if (lineItems?.length) {
-      return lineItems;
+    this.lineItems = await this.wrappedGet();
+    if (this.lineItems?.length) {
+      return this.lineItems;
     }
 
     return this.reset();
@@ -146,7 +146,8 @@ export class LineItemsService {
    * Proceeds to move lineItems that match the initial line item state
    */
   async cleanUpLineItems(): Promise<LineItem[]> {
-    const cleanedUpLineItems = cleanUpLineItems(this.lineItems);
+    const lineItems = await this.get();
+    const cleanedUpLineItems = cleanUpLineItems(lineItems);
     if (cleanedUpLineItems.length) {
       return this.set(cleanedUpLineItems);
     }
@@ -157,7 +158,7 @@ export class LineItemsService {
    * Returns chrome storage or undefined if it has not been set.
    * Should not be called by anything other than the `get` method
    */
-  private async wrappedGet(): Promise<LineItem[] | undefined> {
+  private async wrappedGet(): Promise<LineItem[]> {
     // todo reject: https://developer.chrome.com/docs/extensions/reference/storage/
     return new Promise((resolve) => {
       chrome.storage.local.get(

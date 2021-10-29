@@ -1,7 +1,6 @@
 import {
   LineItem as LItem,
   LineItemsService,
-  newLineItem,
 } from '../../service/lineItems.service';
 import { TabService } from '../../service/tab.service';
 import { BottomBar } from '../BottomBar';
@@ -83,7 +82,6 @@ export const Board: FunctionComponent = (): ReactElement => {
     }
   };
 
-  // proceeds to remove any line items that match the default (aka have not been edited)
   const cleanUp = async (): Promise<void> => {
     const lineItems = await lineItemsService.cleanUpLineItems();
     setLineItems(lineItems);

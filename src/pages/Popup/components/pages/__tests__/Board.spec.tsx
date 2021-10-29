@@ -1,6 +1,10 @@
 import '../../../__tests-helpers__/enzyme-adapter';
 import { chrome, getButtonByText } from '../../../__tests-helpers__/functions';
-import { LineItem, newLineItem } from '../../../service/lineItems.service';
+import {
+  LineItem,
+  LineItemsService,
+  newLineItem,
+} from '../../../service/lineItems.service';
 import { TabService } from '../../../service/tab.service';
 import { Board } from '../Board';
 import { act, fireEvent, waitFor } from '@testing-library/react';
@@ -12,6 +16,8 @@ let wrapper: ReactWrapper;
 let getInputByLabel: (field: string) => ReactWrapper<any, any>;
 let clickDeleteButton: () => ReactWrapper<any, any>;
 let getLineItems: () => ReactWrapper<any, any>;
+
+jest.setTimeout(30000);
 
 beforeAll(function () {
   global.chrome = chrome;
@@ -148,4 +154,35 @@ test('clear groups should make a chrome api request to clear all active groups',
     getButtonByText(wrapper, 'Clear Groups').simulate('click')
   );
   expect(ungroupFn).toHaveBeenCalledWith([123], expect.anything());
+});
+
+test('cleaning up the groups should remove any groups that are the default state', async () => {
+  const lineItem = newLineItem();
+  lineItem.text = 'this should still exist after clean';
+  chrome.storage.local.get.yields({ lineItems: [lineItem, newLineItem()] });
+  chrome.storage.local.set.yields({});
+  jest
+    .spyOn(React, 'useState')
+    .mockReturnValue([[lineItem, newLineItem()], () => {}]);
+  const setSpy = jest.spyOn(LineItemsService.prototype, 'set');
+
+  const { rerender } = render(<Board />);
+  await act(async () => await rerender(<Board />));
+
+  const allLineItems = await screen.findAllByText(/group name/i);
+  expect(allLineItems.length).toBe(2);
+
+  const cleanButton = screen.getByRole('button', {
+    name: /removes items that are the default for quick removal/i,
+  });
+  // todo it'd be nice to use rtl or mock over the chrome.storage.local.set/get to properly keep state
+  chrome.storage.local.get.yields({ lineItems: [lineItem] });
+
+  fireEvent.click(cleanButton);
+  // until we get a proper mocking of the chrome storage, we can at least unit test that the `set`
+  // is called with 1 line item (after cleaned up)
+  await waitFor(() => expect(setSpy).toHaveBeenCalledWith([lineItem]));
+
+  const allLineItemsCleaned = await screen.findAllByText(/group name/i);
+  expect(allLineItemsCleaned.length).toBe(1);
 });
