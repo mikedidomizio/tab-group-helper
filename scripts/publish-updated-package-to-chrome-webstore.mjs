@@ -1,10 +1,11 @@
-import chromeWebstoreUpload from 'chrome-webstore-upload';
 import {checkNewSemVerIsGreater} from './check-new-sem-ver.mjs';
 import fs from 'fs';
 import { getZipPath, zipBuild } from './zip-build.mjs';
 import path from 'path';
+import {chromeWebStore} from './chrome-web-store-api';
 
-const {GCP_CLIENT_ID, GCP_REFRESH_TOKEN, PUBLISH_EXT} = process.env;
+const PUBLISH_EXT = process.env;
+
 if (PUBLISH_EXT) {
   console.warn('PUBLISH_EXT variable is set, will publish to Chrome Webstore');
 } else {
@@ -12,12 +13,6 @@ if (PUBLISH_EXT) {
 }
 
 const manifest = JSON.parse(fs.readFileSync(path.join(process.cwd(), './src/manifest.json')).toString());
-
-const chromeWebStore = chromeWebstoreUpload({
-  extensionId: 'llhkcebnebfiaamifhbpehjompplpnae',
-  clientId: GCP_CLIENT_ID,
-  refreshToken: GCP_REFRESH_TOKEN,
-});
 
 const token = await chromeWebStore.fetchToken();
 const projection = 'DRAFT'; // optional. Can also be 'PUBLISHED' but only "DRAFT" is supported at this time.
