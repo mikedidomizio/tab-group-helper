@@ -1,3 +1,9 @@
+## 1.6.0 (2021-10-31 👻)
+
+### Added
+
+- Included a general help instruction page that is displayed when the extension is installed.  It also can be opened from the Help page.
+
 ## 1.5.1 (2021-10-28)
 
 ### Fixed
