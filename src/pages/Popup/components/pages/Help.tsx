@@ -45,6 +45,11 @@ export const Help: FunctionComponent<any> = (): ReactElement => {
               Chrome Web Store link
             </Link>
           </ListItem>
+          <ListItem>
+            <Link variant="body2" href="pages/general.html" onClick={openLink}>
+              General/Help page with instructions
+            </Link>
+          </ListItem>
         </List>
       </Box>
     </Box>
