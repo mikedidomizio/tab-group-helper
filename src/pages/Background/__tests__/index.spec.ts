@@ -10,7 +10,26 @@ import {
 import { TabService } from '../../Popup/service/tab.service';
 
 global.chrome = chrome;
-const { regroup } = require('../index');
+const { forTesting } = require('../index');
+
+const { regroup, update } = forTesting;
+
+describe('update function', () => {
+  beforeAll(() => {
+    chrome.runtime.OnInstalledReason = {
+      INSTALL: 'install',
+      UPDATE: 'update,',
+    };
+  });
+
+  it('should open up the general page on installed with installed as a query param', () => {
+    const createSpy = jest.spyOn(chrome.tabs, 'create');
+    update(undefined, undefined, chrome.runtime.OnInstalledReason.INSTALL);
+    expect(createSpy).toHaveBeenCalledWith({
+      url: '/pages/general.html?installed',
+    });
+  });
+});
 
 describe('regroup function', () => {
   let matchedTabsSpy: jest.SpyInstance;

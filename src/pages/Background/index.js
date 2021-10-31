@@ -8,7 +8,7 @@ import { TabService } from '../Popup/service/tab.service';
  */
 // todo very similar to the one found in Board.tsx and should not be duplicated
 // todo seems to be some bug where it doesn't always auto-group?  can't tell if reloading the extension fixes it
-export const regroup = async (autoGroupType, tab) => {
+const regroup = async (autoGroupType, tab) => {
   const lineItemsService = new LineItemsService();
   const tabsService = new TabService();
 
@@ -38,6 +38,19 @@ export const regroup = async (autoGroupType, tab) => {
   }
 };
 
+const update = (id, previousVersion, reason) => {
+  // reason on loading unpacked was 'install' (id/previousVersion were undefined)
+  if (reason === chrome.runtime.OnInstalledReason.INSTALL) {
+    chrome.tabs.create({
+      url: '/pages/general.html?installed',
+    });
+  }
+
+  if (reason === chrome.runtime.OnInstalledReason.UPDATE) {
+    // for future
+  }
+};
+
 chrome.tabs.onCreated.addListener(async function (tab) {
   await regroup('tabCreated', tab);
 });
@@ -47,3 +60,12 @@ chrome.tabs.onUpdated.addListener(async function (tabId, changeInfo, tab) {
     await regroup('tabUpdated', tab);
   }
 });
+// https://developer.chrome.com/docs/extensions/reference/runtime/#event-onInstalled
+chrome.runtime.onInstalled.addListener(({ id, previousVersion, reason }) => {
+  update(id, previousVersion, reason);
+});
+
+export const forTesting = {
+  regroup,
+  update,
+};

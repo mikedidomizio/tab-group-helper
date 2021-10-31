@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Tab Group Helper</title>
+  <style>
+    .installed {
+        display: none;
+    }
+  </style>
+</head>
+<body>
+<h1 class="installed">Thanks for installing Tab Group Helper</h1>
+
+<h2>Instructions</h2>
+<p>
+  <h5>Type</h5>
+  <ul>
+    <li>When selecting URL, it'll read the URLs of the tabs and group against that</li>
+    <li>
+      When selecting Title, it'll read the title attribute of the tabs and group against that.
+    </li>
+  </ul>
+  <h5>Contains</h5>
+  <ul>
+    <li>Write what you want to match against.  If you picked "title" for Type, and you want to match YouTube tabs about cats, you might put "cats".  If you picked "URL" for Type, and you want to match all Youtube tabs, you might put "youtube"</li>
+  </ul>
+  <h5>Case Sensitive</h5>
+  <ul>
+    <li>URLs and Titles can be tricky to match against, by default this option is off to ensure the best user experience.  If you do need stricter rules, you can enable this</li>
+  </ul>
+  <h5>Regex</h5>
+  <ul>
+    <li>You can enable this and in the "Contains" input field write regular expressions.  For example, if you want to group social media tabs together you might enable this and put "facebook|twitter|instagram|tiktok" in the "Contains" field</li>
+  </ul>
+  <h5>Group Name</h5>
+  <ul>
+    <li>The name of the tab in the browser</li>
+  </ul>
+  <h5>Color</h5>
+  <ul>
+    <li>The color of the tab in the browser</li>
+  </ul>
+  <h5>Auto-Group</h5>
+  <ul>
+    <li>"Created Tab" will group tabs when they are created, duplicated</li>
+    <li>"Updated Tab" will group tabs when they are updated, by title or URL.  This would run on page changes for example</li>
+  </ul>
+  <h5>Apply</h5>
+  <ul>
+    <li>By default enabled, this turns on/off this rule</li>
+  </ul>
+</p>
+
+<h2>Feedback/Comments</h2>
+<p>
+  Please leave a review on the Chrome Webstore.  Any and all feedback is appreciated!
+  <br/>
+  You can also let me know on <a href="https://twitter.com/Mike_DiDomizio" target="_blank">Twitter</a>
+</p>
+
+<h2>Help</h2>
+<p>
+  Are you a software developer?  This is an <a href='https://github.com/mikedidomizio/tab-group-helper' target='_blank'>open source project on GitHub</a> written in React/Typescript.
+  <br/>
+  If you're interested in contributing or building your own Chrome extension, I feel this project is a good starting platform.
+</p>
+
+<h2 class="installed">Thanks again!</h2>
+
+<script type="text/javascript" src='general.js'></script>
+</body>
+</html>
