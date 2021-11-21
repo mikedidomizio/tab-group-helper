@@ -5,6 +5,10 @@
 
 # testing
 /coverage
+/coverage-puppeteer
+/coverage-rtl
+coverage.json
+.nyc_output
 
 # production
 /build
