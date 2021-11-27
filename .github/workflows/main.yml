@@ -1,28 +1,8 @@
 name: Build
 
-on: [ push, pull_request ]
+on: [push, pull_request ]
 
 jobs:
-
-  # Ensures that versions match on pull request to master to ensure we're not going to end up with mismatched versions (master)
-  prepare_publish:
-    # if the target branch is master. We want to make sure we're not merging anything into master that's unpublishable
-    if: ${{ github.base_ref == 'master' && github.event_name == 'pull_request' }}
-    runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [ 14.x ]
-
-    steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
-        with:
-          node-version: ${{ matrix.node-version }}
-
-      - name: Prepare Publish script
-        run: yarn prep-publish
 
   # Builds and caches the node_modules for future jobs
   build:
@@ -51,6 +31,38 @@ jobs:
       - name: Install dependencies
         if: steps.cache.outputs.cache-hit != 'true'
         run: yarn install --frozen-lockfile
+
+
+  # Ensures that versions match on pull request to master to ensure we're not going to end up with mismatched versions (master)
+  prepare_publish:
+    needs: [ build ]
+
+    # if the target branch is master. We want to make sure we're not merging anything into master that's unpublishable
+    if: ${{ github.base_ref == 'master' && github.event_name == 'pull_request' }}
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [ 14.x ]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Restore node_modules
+        uses: actions/cache@v2
+        id: node_modules-cache
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-yarn-v2-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-v2-
+
+      - name: Prepare Publish script
+        run: yarn prep-publish
 
   # Runs code coverage and pushes to third party which will update pull request if exists
   code_coverage:
