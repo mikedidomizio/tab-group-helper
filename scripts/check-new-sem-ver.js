@@ -13,6 +13,6 @@ const checkNewSemVerIsGreater = (semVer, newSemVer) => {
   return !!((newMajor > major) | (newMinor > minor) | (newPatch > patch));
 };
 
-export {
-  checkNewSemVerIsGreater
-}
+module.exports = {
+  checkNewSemVerIsGreater,
+};
