@@ -5,11 +5,11 @@
  * @returns {boolean}
  */
 const checkNewSemVerIsGreater = (semVer, newSemVer) => {
-  const [major, minor, patch] = semVer.split('.').map(i => parseInt(i, 10));
+  const [major, minor, patch] = semVer.split('.').map((i) => parseInt(i, 10));
   const [newMajor, newMinor, newPatch] = newSemVer.split('.').map(i => parseInt(i, 10));
 
-  return !!(newMajor > major | newMinor > minor | newPatch > patch);
-}
+  return !!((newMajor > major) | (newMinor > minor) | (newPatch > patch));
+};
 
 export {
   checkNewSemVerIsGreater

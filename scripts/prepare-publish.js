@@ -1,7 +1,7 @@
 const packageJSON = require('../package.json');
 const fs = require('fs');
 const manifest = require('../src/manifest.json');
-const { chromeWebStore } = require('./chrome-web-store-api');
+const { chromeWebStore } = require('./chrome-web-store-api.mjs');
 const { checkNewSemVerIsGreater } = require('./check-new-sem-ver.mjs');
 
 /**
