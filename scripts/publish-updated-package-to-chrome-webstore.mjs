@@ -2,7 +2,7 @@ import {checkNewSemVerIsGreater} from './check-new-sem-ver.mjs';
 import fs from 'fs';
 import { getZipPath, zipBuild } from './zip-build.mjs';
 import path from 'path';
-import {chromeWebStore} from './chrome-web-store-api';
+import {chromeWebStore} from './chrome-web-store-api.mjs';
 
 const PUBLISH_EXT = process.env;
 

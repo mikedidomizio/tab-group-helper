@@ -16,6 +16,11 @@ const isVisible = async (page: any, element: any) =>
     );
   }, element);
 
+const loadPage = async (page: any, url: string) =>
+  page.goto(`file:${path.join(process.cwd(), url)}`, {
+    waitUntil: 'networkidle0',
+  });
+
 describe('general page', () => {
   let page: any;
   let browser: any;
@@ -56,27 +61,15 @@ describe('general page', () => {
   });
 
   it('if "installed" is in query string it should have a thank you message', async () => {
-    await page.goto(
-      `file:${path.join(
-        process.cwd(),
-        './src/pages/Pages/general.html?installed'
-      )}`,
-      {
-        waitUntil: 'networkidle0',
-      }
-    );
-
-    page.on('console', (consoleObj: any) => console.log(consoleObj.text()));
+    await loadPage(page, './src/pages/Pages/general.html?installed');
 
     expect(await isVisible(page, 'h1')).toBe(true);
   });
 
   it('if "installed" is not in query string it should not have a thank you message', async () => {
-    await page.goto(
-      `file:${path.join(process.cwd(), './src/pages/Pages/general.html')}`,
-      {
-        waitUntil: 'networkidle0',
-      }
+    await loadPage(
+      page,
+      `file:${path.join(process.cwd(), './src/pages/Pages/general.html')}`
     );
 
     expect(await isVisible(page, 'h1')).toBe(false);
