@@ -6,7 +6,9 @@
  */
 const checkNewSemVerIsGreater = (semVer, newSemVer) => {
   const [major, minor, patch] = semVer.split('.').map((i) => parseInt(i, 10));
-  const [newMajor, newMinor, newPatch] = newSemVer.split('.').map(i => parseInt(i, 10));
+  const [newMajor, newMinor, newPatch] = newSemVer
+    .split('.')
+    .map((i) => parseInt(i, 10));
 
   return !!((newMajor > major) | (newMinor > minor) | (newPatch > patch));
 };

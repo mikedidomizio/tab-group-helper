@@ -1,4 +1,4 @@
-import {checkNewSemVerIsGreater} from './check-new-sem-ver.mjs';
+import {checkNewSemVerIsGreater} from './check-new-sem-ver.js';
 import fs from 'fs';
 import { getZipPath, zipBuild } from './zip-build.mjs';
 import path from 'path';
