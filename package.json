@@ -15,7 +15,7 @@
     "test": "jest --env=jsdom",
     "test:coverage": "npm test -- --coverage",
     "test-all": "node ./scripts/run-all-tests-for-coverage.mjs",
-    "prep-publish": "node ./scripts/prepare-publish.js",
+    "prep-publish": "node scripts/prepare-publish.mjs",
     "publish": "node ./scripts/publish-updated-package-to-chrome-webstore.mjs",
     "build-ext": "sh ./scripts/build.sh"
   },

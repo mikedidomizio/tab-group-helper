@@ -1,15 +1,17 @@
-const packageJSON = require('../package.json');
-const fs = require('fs');
-const manifest = require('../src/manifest.json');
-const { chromeWebStore } = require('./chrome-web-store-api.mjs');
-const { checkNewSemVerIsGreater } = require('./check-new-sem-ver.mjs');
+import { chromeWebStore } from './chrome-web-store-api.mjs';
+import * as fs from 'fs';
+import path from 'path';
+import { checkNewSemVerIsGreater } from './check-new-sem-ver.js';
+
+const packageJSON = JSON.parse(fs.readFileSync(path.join(process.cwd(), './package.json')).toString())
+const manifest = JSON.parse(fs.readFileSync(path.join(process.cwd(), './src/manifest.json')).toString());
 
 /**
  * Check that manifest/package/changelog versioning all matches
  * Checks the new semver is greater than current one
  */
 (async () => {
-  const changelog = fs.readFileSync(__dirname + '/../CHANGELOG.md');
+  const changelog = fs.readFileSync(path.resolve('.//CHANGELOG.md'));
   const changelogRegex = new RegExp(`## ${packageJSON.version}`);
 
   if (packageJSON.version !== manifest.version) {
