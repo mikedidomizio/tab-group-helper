@@ -78,7 +78,13 @@ describe('regroup function', () => {
     await regroup(autoGroupValue.tabCreated);
 
     expect(matchedTabsSpy).toHaveBeenCalledTimes(1);
-    expect(matchedTabsSpy).toHaveBeenCalledWith('match', 'url', false, false);
+    expect(matchedTabsSpy).toHaveBeenCalledWith(
+      'match',
+      'url',
+      false,
+      false,
+      true
+    );
   });
 
   it("should filter out line items that don't match the auto group type", async () => {
@@ -100,7 +106,13 @@ describe('regroup function', () => {
     await regroup(autoGroupValue.tabCreated);
 
     expect(matchedTabsSpy).toHaveBeenCalledTimes(1);
-    expect(matchedTabsSpy).toHaveBeenCalledWith('match', 'url', false, false);
+    expect(matchedTabsSpy).toHaveBeenCalledWith(
+      'match',
+      'url',
+      false,
+      false,
+      true
+    );
   });
 
   it('should only add the newly created tab to group on creation of a new tab, and not existing tabs', async () => {

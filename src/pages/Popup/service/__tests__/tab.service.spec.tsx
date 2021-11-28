@@ -122,7 +122,7 @@ describe('tab service', () => {
             { id: 234, title: 'zebras' },
           ]),
       };
-      const id = await tabsService.getGroupIdByTitle('zebras');
+      const id = await tabsService.getGroupIdByTitle('zebras', true);
       expect(id).toBe(123);
     });
 
@@ -133,7 +133,7 @@ describe('tab service', () => {
         },
       };
       try {
-        await tabsService.getGroupIdByTitle('myTitle');
+        await tabsService.getGroupIdByTitle('myTitle', true);
       } catch (e: any) {
         expect(e.message).toBe('bad');
       }

@@ -25,7 +25,8 @@ const regroup = async (autoGroupType, tab) => {
       item.text,
       item.matchType,
       caseSensitive,
-      regex
+      regex,
+      true
     );
     // if id for some reason is undefined, we return -1
     // not exactly sure what would happen there if an error is thrown or it continues if trying to add

@@ -14,10 +14,19 @@ interface ChromeTabGroup {
 // todo with the change from V2 to V3 Manifest, I believe we can convert these chrome API requests to Promises
 
 export class TabService {
-  async listAllTabs(): Promise<chrome.tabs.Tab[]> {
+  async listAllTabs(
+    { currentWindow } = {
+      currentWindow: false,
+    }
+  ): Promise<chrome.tabs.Tab[]> {
     return new Promise((resolve, reject) => {
       try {
-        chrome.tabs.query(/*queryOptions*/ {}, (tabs) => resolve(tabs));
+        chrome.tabs.query(
+          {
+            currentWindow,
+          },
+          (tabs) => resolve(tabs)
+        );
       } catch (e) {
         reject(e);
       }
@@ -29,14 +38,18 @@ export class TabService {
    * @param {"url" | "title"} type
    * @param {boolean} caseSensitive
    * @param {boolean} regex
+   * @param {boolean} currentWindow whether to match all tabs of all windows (within that Chrome profile)
    */
   async getTabsWhichMatch(
     text: string,
     type: ChromeTabsAttributes,
     caseSensitive = false,
-    regex = false
+    regex = false,
+    currentWindow = false
   ): Promise<chrome.tabs.Tab[]> {
-    const tabs = await this.listAllTabs();
+    const tabs = await this.listAllTabs({
+      currentWindow,
+    });
     let cleanedText = text.trim();
     cleanedText = caseSensitive ? cleanedText : cleanedText.toLowerCase();
 
@@ -83,7 +96,7 @@ export class TabService {
     color?: chrome.tabGroups.ColorEnum
   ): Promise<chrome.tabGroups.TabGroup> {
     // does this work?  existingGroupId for both existing non-existing?
-    const existingGroupId = await this.getGroupIdByTitle(groupName);
+    const existingGroupId = await this.getGroupIdByTitle(groupName, true);
     const groupId = await this.createGroup(existingGroupId, tabIds);
     return this.renameGroupById(groupId, groupName, color);
   }
@@ -188,26 +201,33 @@ export class TabService {
    * Returns empty array if group does not exist
    * We're going to return the first one but we're really hoping the user has one group by name
    * @param {string} title
+   * @param {boolean} withinCurrentWindow
    * @return {Promise<number | null>}
    */
-  async getGroupIdByTitle(title: string): Promise<number | undefined> {
+  async getGroupIdByTitle(
+    title: string,
+    withinCurrentWindow = false
+  ): Promise<number | undefined> {
     return new Promise((resolve, reject) => {
-      try {
-        chrome.tabGroups.query(
-          {
-            title,
-          },
-          (groups: ChromeTabGroup[]) => {
-            const group: ChromeTabGroup | undefined = groups.find(
-              (group) => group.title === title
-            );
+      const queryParams: chrome.tabGroups.QueryInfo = {
+        title,
+      };
 
-            if (group) {
-              resolve(group.id);
-            }
-            resolve(undefined);
+      if (withinCurrentWindow) {
+        queryParams.windowId = chrome.windows.WINDOW_ID_CURRENT;
+      }
+
+      try {
+        chrome.tabGroups.query(queryParams, (groups: ChromeTabGroup[]) => {
+          const group: ChromeTabGroup | undefined = groups.find(
+            (group) => group.title === title
+          );
+
+          if (group) {
+            resolve(group.id);
           }
-        );
+          resolve(undefined);
+        });
       } catch (e) {
         reject(e);
       }
