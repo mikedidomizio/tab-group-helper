@@ -24,13 +24,13 @@ jobs:
         id: node_modules-cache
         with:
           path: node_modules
-          key: ${{ runner.os }}-yarn-v2-${{ hashFiles('yarn.lock') }}
+          key: ${{ runner.os }}-npm-v1-${{ hashFiles('package-lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-yarn-v2-
+            ${{ runner.os }}-npm-v1-
 
       - name: Install dependencies
         if: steps.cache.outputs.cache-hit != 'true'
-        run: yarn install --frozen-lockfile
+        run: npm ci
 
 
   # Ensures that versions match on pull request to master to ensure we're not going to end up with mismatched versions (master)
@@ -57,16 +57,16 @@ jobs:
         id: node_modules-cache
         with:
           path: node_modules
-          key: ${{ runner.os }}-yarn-v2-${{ hashFiles('yarn.lock') }}
+          key: ${{ runner.os }}-npm-v1-${{ hashFiles('package-lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-yarn-v2-
+            ${{ runner.os }}-npm-v1-
 
       - name: Install dependencies
         if: steps.cache.outputs.cache-hit != 'true'
-        run: yarn install --frozen-lockfile
+        run: npm ci
 
       - name: Prepare Publish script
-        run: yarn prep-publish
+        run: npm run prep-publish
         env:
           GCP_CLIENT_ID: ${{ secrets.GCP_CLIENT_ID }}
           GCP_REFRESH_TOKEN: ${{ secrets.GCP_REFRESH_TOKEN }}
@@ -92,16 +92,16 @@ jobs:
         id: node_modules-cache
         with:
           path: node_modules
-          key: ${{ runner.os }}-yarn-v2-${{ hashFiles('yarn.lock') }}
+          key: ${{ runner.os }}-npm-v1-${{ hashFiles('package-lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-yarn-v2-
+            ${{ runner.os }}-npm-v1-
 
       - name: Install dependencies
         if: steps.cache.outputs.cache-hit != 'true'
-        run: yarn install --frozen-lockfile
+        run: npm ci
 
       - name: Unit tests
-        run: yarn test-all
+        run: npm run test-all
 
       # use hash for safety reasons, using master/tags can introduce security risks into workflow
       - name: Push code coverage
@@ -132,16 +132,16 @@ jobs:
         id: node_modules-cache
         with:
           path: node_modules
-          key: ${{ runner.os }}-yarn-v2-${{ hashFiles('yarn.lock') }}
+          key: ${{ runner.os }}-npm-v1-${{ hashFiles('package-lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-yarn-v2-
+            ${{ runner.os }}-npm-v1-
 
       - name: Install dependencies
         if: steps.cache.outputs.cache-hit != 'true'
-        run: yarn install --frozen-lockfile
+        run: npm ci
 
       - name: Build extension
-        run: yarn build-ext
+        run: npm run build-ext
 
       - name: Upload artifact
         uses: actions/upload-artifact@v2
@@ -153,7 +153,7 @@ jobs:
   publish:
     needs: [ build_zip, code_coverage ]
     # if the target branch is master. We want to make sure we're not merging anything into master that's unpublishable
-    if: ${{ github.base_ref == 'master' && github.event_name == 'push' }}
+    if: ${{ github.base_ref == 'master' && github.event.pull_request.merged == true }}
     runs-on: ubuntu-latest
 
     strategy:
@@ -168,7 +168,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
 
       - name: Publish to Chrome Webstore
-        run: yarn publish
+        run: npm run publish
         env:
           GCP_CLIENT_ID: ${{ secrets.GCP_CLIENT_ID }}
           GCP_REFRESH_TOKEN: ${{ secrets.GCP_REFRESH_TOKEN }}
