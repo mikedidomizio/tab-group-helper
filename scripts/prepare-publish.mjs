@@ -11,7 +11,7 @@ const manifest = JSON.parse(fs.readFileSync(path.join(process.cwd(), './src/mani
  * Checks the new semver is greater than current one
  */
 (async () => {
-  const changelog = fs.readFileSync(path.resolve('.//CHANGELOG.md'));
+  const changelog = fs.readFileSync(path.resolve('./CHANGELOG.md'));
   const changelogRegex = new RegExp(`## ${packageJSON.version}`);
 
   if (packageJSON.version !== manifest.version) {
