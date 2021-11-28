@@ -267,7 +267,8 @@ export const LineItem: FunctionComponent<LineItemProps> = ({
       text,
       matchType,
       caseSensitive,
-      regex
+      regex,
+      true
     );
     if (tabsMatched.length !== stateTabsMatched.length) {
       setTabsMatchedState(tabsMatched);

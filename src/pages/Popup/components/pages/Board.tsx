@@ -57,24 +57,24 @@ export const Board: FunctionComponent = (): ReactElement => {
    * Proceed to run grouping
    */
   const run = async () => {
-    // todo shadow var?
-    let lineItems = await lineItemsService.get();
+    const lineItems = await lineItemsService.get();
     // immediately filter where apply is true, we ignore otherwise
-    lineItems = lineItems.filter((i) => i.applyChanges);
+    const lineItemsSetToAppl = lineItems.filter((i) => i.applyChanges);
 
-    for (let item of lineItems) {
+    for (let item of lineItemsSetToAppl) {
       const regex = item.regex;
       const { caseSensitive } = item;
-      const returned: chrome.tabs.Tab[] = await tabService.getTabsWhichMatch(
+      const matchedTabs: chrome.tabs.Tab[] = await tabService.getTabsWhichMatch(
         item.text,
         item.matchType,
         caseSensitive,
-        regex
+        regex,
+        true
       );
       // if id for some reason is undefined, we return -1
       // not exactly sure what would happen there if an error is thrown or it continues if trying to add
       // -1 tab to a group
-      const ids: number[] = returned.map((i) => (i.id ? i.id : -1));
+      const ids: number[] = matchedTabs.map((i) => (i.id ? i.id : -1));
       if (ids.length) {
         const color = item.color !== '' ? item.color : undefined;
         await tabService.addTabsToGroup(ids, item.groupTitle, color);

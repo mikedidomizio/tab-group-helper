@@ -1,4 +1,10 @@
-## 1.6.0 (2021-10-31 👻)
+## 1.6.1 (2021-11-28)
+
+### Fixed
+
+- Grouping is done within the same window by default
+
+## 1.6.0 (2021-11-28)
 
 ### Added
 
