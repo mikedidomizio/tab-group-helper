@@ -276,7 +276,9 @@ export class TabService {
   async clearGroups(): Promise<void> {
     return new Promise(async (resolve, reject) => {
       try {
-        const allTabs = await this.listAllTabs();
+        const allTabs = await this.listAllTabs({
+          currentWindow: true,
+        });
         const allTabsIds = allTabs.map((i) => i.id);
         // @ts-ignore
         chrome.tabs.ungroup(allTabsIds, resolve);
