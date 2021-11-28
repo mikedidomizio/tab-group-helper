@@ -33,6 +33,12 @@ export class TabService {
     });
   }
 
+  async listGroups(
+    queryInfo: chrome.tabGroups.QueryInfo = {}
+  ): Promise<chrome.tabGroups.TabGroup[]> {
+    return chrome.tabGroups.query(queryInfo);
+  }
+
   /**
    * @param {string} text
    * @param {"url" | "title"} type
@@ -214,7 +220,7 @@ export class TabService {
       };
 
       if (withinCurrentWindow) {
-        queryParams.windowId = chrome.windows.WINDOW_ID_CURRENT;
+        queryParams.windowId = TabService.getCurrentWindow();
       }
 
       try {
@@ -235,6 +241,36 @@ export class TabService {
   }
 
   /**
+   * Collapses all groups, either all groups or specific ones
+   */
+  async collapseGroups(
+    ifCollapsedExpandAll = false
+  ): Promise<chrome.tabGroups.TabGroup[]> {
+    let actionIsCollapse = true;
+
+    const groupsOfCurrentWindow = await this.listGroups({
+      windowId: TabService.getCurrentWindow(),
+    });
+
+    if (ifCollapsedExpandAll) {
+      const uniqueCollapsedValues = groupsOfCurrentWindow
+        .map((group) => group.collapsed)
+        .filter((x, i, a) => a.indexOf(x) === i);
+      if (uniqueCollapsedValues.length !== 2) {
+        actionIsCollapse = !uniqueCollapsedValues[0];
+      }
+    }
+
+    const promises = groupsOfCurrentWindow.map((group) =>
+      chrome.tabGroups.update(group.id, {
+        collapsed: actionIsCollapse,
+      })
+    );
+
+    return Promise.all(promises);
+  }
+
+  /**
    * Clear all groups
    */
   async clearGroups(): Promise<void> {
@@ -248,5 +284,9 @@ export class TabService {
         reject(e);
       }
     });
+  }
+
+  private static getCurrentWindow(): number {
+    return chrome.windows.WINDOW_ID_CURRENT;
   }
 }
