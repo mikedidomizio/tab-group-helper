@@ -61,8 +61,15 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-yarn-v2-
 
+      - name: Install dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: yarn install --frozen-lockfile
+
       - name: Prepare Publish script
         run: yarn prep-publish
+        env:
+          GCP_CLIENT_ID: ${{ secrets.GCP_CLIENT_ID }}
+          GCP_REFRESH_TOKEN: ${{ secrets.GCP_REFRESH_TOKEN }}
 
   # Runs code coverage and pushes to third party which will update pull request if exists
   code_coverage:
@@ -94,7 +101,7 @@ jobs:
         run: yarn install --frozen-lockfile
 
       - name: Unit tests
-        run: npm run test-all
+        run: yarn test-all
 
       # use hash for safety reasons, using master/tags can introduce security risks into workflow
       - name: Push code coverage
@@ -162,3 +169,6 @@ jobs:
 
       - name: Publish to Chrome Webstore
         run: yarn publish
+        env:
+          GCP_CLIENT_ID: ${{ secrets.GCP_CLIENT_ID }}
+          GCP_REFRESH_TOKEN: ${{ secrets.GCP_REFRESH_TOKEN }}
