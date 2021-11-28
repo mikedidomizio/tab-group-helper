@@ -34,4 +34,6 @@ const manifest = JSON.parse(fs.readFileSync(path.join(process.cwd(), './src/mani
       'Cannot merge as new semver is not greater than current one, merging will fail in the publishing stage'
     );
   }
+
+  console.log(`New version is coming: ${manifest.version}`)
 })();
