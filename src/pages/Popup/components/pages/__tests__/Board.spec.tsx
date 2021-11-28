@@ -182,7 +182,7 @@ describe('collapsing groups', () => {
       rerender(<Board />);
       await waitFor(() => screen.getByDisplayValue('github'));
       fireEvent.click(
-        screen.getByRole('button', { name: /collapse\/show groups/i })
+        screen.getByRole('button', { name: /collapse\/expand groups/i })
       );
     });
 
@@ -214,7 +214,7 @@ describe('collapsing groups', () => {
       rerender(<Board />);
       await waitFor(() => screen.getByDisplayValue('github'));
       fireEvent.click(
-        screen.getByRole('button', { name: /collapse\/show groups/i })
+        screen.getByRole('button', { name: /collapse\/expand groups/i })
       );
     });
 
@@ -233,9 +233,7 @@ test('clear groups should make a chrome api request to clear all active groups',
   ]);
   const ungroupFn = jest.fn();
   chrome.tabs.ungroup = ungroupFn;
-  await waitFor(() =>
-    getButtonByText(wrapper, 'Clear Groups').simulate('click')
-  );
+  await waitFor(() => getButtonByText(wrapper, 'Clear').simulate('click'));
   expect(ungroupFn).toHaveBeenCalledWith([123], expect.anything());
 });
 
