@@ -4,7 +4,7 @@ import { execSync } from 'child_process';
 // tried sending as LCOV, JSON, merging the files together.  Days lost.
 
 // Run the Puppeteer style tests, the coverage is output to the temp .nyc_output folder
-await execSync('npm run test -- general.spec.ts');
+await execSync('npm run test -- src/pages/Pages/__tests__/general.spec.ts');
 
 // the Puppeteer style tests we convert to JSON
 await execSync('npx nyc report --reporter=json --report-dir=./coverage-puppeteer');
