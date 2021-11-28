@@ -148,13 +148,19 @@ export const Board: FunctionComponent = (): ReactElement => {
           onClick={() => tabService.sortGroups()}
           tooltip="Sort groups"
         >
-          Sort Groups
+          Sort
+        </BottomBarButton>
+        <BottomBarButton
+          onClick={() => tabService.collapseGroups(true)}
+          tooltip="Collapse/Expand groups"
+        >
+          Collapse
         </BottomBarButton>
         <BottomBarButton
           onClick={() => tabService.clearGroups()}
           tooltip="Clears all groups in your browser"
         >
-          Clear Groups
+          Clear
         </BottomBarButton>
       </BottomBar>
     </Box>

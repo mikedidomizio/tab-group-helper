@@ -144,6 +144,89 @@ test('deleting the only line item will delete the current line item and leave a 
   expect(screen.queryByText('delete me')).not.toBeInTheDocument();
 });
 
+describe('collapsing groups', () => {
+  let updateSpy: jest.SpyInstance;
+
+  beforeEach(() => {
+    chrome.tabGroups = {
+      update: () => {},
+    };
+    updateSpy = jest.spyOn(chrome.tabGroups, 'update');
+
+    const lineItem = newLineItem();
+    lineItem.groupTitle = 'git';
+    lineItem.text = 'github';
+    chrome.storage.local.get.yields({ lineItems: [lineItem] });
+  });
+
+  test('will make a chrome api request to collapse all the groups', async () => {
+    // sinon-chrome package doesn't have therefore we mock it
+    chrome.tabGroups.query = () =>
+      Promise.resolve([
+        {
+          collapsed: false,
+          id: 123,
+          title: 'github-group',
+          windowId: -2,
+        },
+        {
+          collapsed: false,
+          id: 555,
+          title: 'facebook-group',
+          windowId: -2,
+        },
+      ]);
+
+    const { rerender } = render(<Board />);
+    await act(async () => {
+      rerender(<Board />);
+      await waitFor(() => screen.getByDisplayValue('github'));
+      fireEvent.click(
+        screen.getByRole('button', { name: /collapse\/show groups/i })
+      );
+    });
+
+    expect(updateSpy).toHaveBeenCalledWith(123, {
+      collapsed: true,
+    });
+  });
+
+  test('will make chrome api request to non collapse if all groups are already collapsed', async () => {
+    // sinon-chrome package doesn't have therefore we mock it
+    chrome.tabGroups.query = () =>
+      Promise.resolve([
+        {
+          collapsed: true,
+          id: 123,
+          title: 'github-group',
+          windowId: -2,
+        },
+        {
+          collapsed: true,
+          id: 555,
+          title: 'facebook-group',
+          windowId: -2,
+        },
+      ]);
+
+    const { rerender } = render(<Board />);
+    await act(async () => {
+      rerender(<Board />);
+      await waitFor(() => screen.getByDisplayValue('github'));
+      fireEvent.click(
+        screen.getByRole('button', { name: /collapse\/show groups/i })
+      );
+    });
+
+    expect(updateSpy).toHaveBeenCalledWith(123, {
+      collapsed: false,
+    });
+    expect(updateSpy).toHaveBeenCalledWith(555, {
+      collapsed: false,
+    });
+  });
+});
+
 test('clear groups should make a chrome api request to clear all active groups', async () => {
   chrome.tabs.query.yields([
     { id: 123, url: 'Hello-World.com' } as Partial<LineItem>,
