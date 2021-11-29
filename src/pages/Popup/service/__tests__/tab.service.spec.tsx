@@ -1,4 +1,8 @@
-import { chrome, generateFakeTab } from '../../__tests-helpers__/functions';
+import {
+  chrome,
+  chromeTabsQueryPromiseResponse,
+  generateFakeTab,
+} from '../../__tests-helpers__/functions';
 import { ChromeTabsAttributes } from '../lineItems.service';
 import { TabService } from '../tab.service';
 
@@ -23,11 +27,9 @@ describe('tab service', () => {
         update: () => {
           throw new Error("property 'color': Value must be one of");
         },
-        query: (t: string, callback: Function) =>
-          callback([{ id: 123 }, { id: 234 }]),
+        query: () => Promise.resolve([{ id: 123 }, { id: 234 }]),
       };
-      chrome.tabs.group = (t: string, callback: Function) =>
-        callback([{ id: 123 }, { id: 234 }]);
+      chrome.tabs.group = () => Promise.resolve([{ id: 123 }, { id: 234 }]);
 
       const tabGroup = await tabsService.addTabsToGroup([], 'myGroup');
       expect(tabGroup).toBeDefined();
@@ -57,7 +59,7 @@ describe('tab service', () => {
 
   describe('clearGroups', () => {
     it('should throw if chrome API ungroup fails', async () => {
-      chrome.tabs.query.yields([{ id: 123 }]);
+      chromeTabsQueryPromiseResponse([{ id: 123 }]);
       chrome.tabs.ungroup = () => {
         throw new Error('bad');
       };
@@ -72,8 +74,8 @@ describe('tab service', () => {
   describe('sortGrous', () => {
     it('should sort them alphabetically by default', async () => {
       chrome.tabGroups = {
-        query: (t: string, callback: Function) =>
-          callback([
+        query: () =>
+          Promise.resolve([
             { id: 123, title: 'zebras' },
             { id: 234, title: 'manifestos' },
             { id: 345, title: 'zebras' },
@@ -116,12 +118,13 @@ describe('tab service', () => {
   describe('getGroupIdByTitle', () => {
     it('will return the first group if multiple groups are matched', async () => {
       chrome.tabGroups = {
-        query: (t: string, callback: Function) =>
-          callback([
+        query: () =>
+          Promise.resolve([
             { id: 123, title: 'zebras' },
             { id: 234, title: 'zebras' },
           ]),
       };
+
       const id = await tabsService.getGroupIdByTitle('zebras', true);
       expect(id).toBe(123);
     });
@@ -142,7 +145,7 @@ describe('tab service', () => {
 
   describe('getTabsWhichMatch', () => {
     beforeAll(() => {
-      chrome.tabs.query.yields([
+      chromeTabsQueryPromiseResponse([
         generateFakeTab({ title: 'react - good times', url: 'react.com' }),
         generateFakeTab({ title: 'facebook', url: 'facebook.com' }),
       ]);

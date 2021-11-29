@@ -1,35 +1,14 @@
 /// <reference types="@types/chrome" />
 import { ChromeTabsAttributes } from './lineItems.service';
 
-// https://developer.chrome.com/docs/extensions/reference/tabGroups
-// this can also be used for querying I believe
-interface ChromeTabGroup {
-  collapsed: boolean;
-  color: chrome.tabGroups.ColorEnum;
-  id: number;
-  title?: string;
-  windowId: number;
-}
-
-// todo with the change from V2 to V3 Manifest, I believe we can convert these chrome API requests to Promises
-
 export class TabService {
   async listAllTabs(
     { currentWindow } = {
       currentWindow: false,
     }
   ): Promise<chrome.tabs.Tab[]> {
-    return new Promise((resolve, reject) => {
-      try {
-        chrome.tabs.query(
-          {
-            currentWindow,
-          },
-          (tabs) => resolve(tabs)
-        );
-      } catch (e) {
-        reject(e);
-      }
+    return chrome.tabs.query({
+      currentWindow,
     });
   }
 
@@ -112,67 +91,56 @@ export class TabService {
     newTitle: string,
     color?: chrome.tabGroups.ColorEnum
   ): Promise<chrome.tabGroups.TabGroup> {
-    return new Promise((resolve, reject) => {
-      try {
-        chrome.tabGroups.update(
-          groupId,
-          {
-            color,
-            title: newTitle,
-          },
-          resolve
+    try {
+      return chrome.tabGroups.update(groupId, {
+        color,
+        title: newTitle,
+      });
+    } catch (e) {
+      // an error can be thrown if color is `undefined`, but it's acceptable
+      // here we check if the message contains that and if so, we don't reject so we don't see
+      // an error thrown
+      if (
+        (e as any).message.includes("property 'color': Value must be one of")
+      ) {
+        // todo perhaps it should grab a list of groups and return it instead of an empty array
+        console.warn(
+          'Error thrown due to color not being set, empty results returned'
         );
-      } catch (e) {
-        // an error can be thrown if color is `undefined`, but it's acceptable
-        // here we check if the message contains that and if so, we don't reject so we don't see
-        // an error thrown
-        if (
-          (e as any).message.includes("property 'color': Value must be one of")
-        ) {
-          // todo perhaps it should grab a list of groups and return it instead of an empty array
-          console.warn(
-            'Error thrown due to color not being set, empty results returned'
-          );
-          resolve(([] as unknown) as chrome.tabGroups.TabGroup);
-        }
-        reject(e);
+        return ([] as unknown) as chrome.tabGroups.TabGroup;
       }
-    });
+      throw e;
+    }
   }
 
   /**
    * Sorts groups for now by title alphabetically
    */
-  async sortGroups(): Promise<ChromeTabGroup[]> {
-    return new Promise((resolve, reject) => {
-      try {
-        // todo should also consider that it'll only run/sort or whatever action on that exact window and not all windows
-        chrome.tabGroups.query({}, (groups: ChromeTabGroup[]) => {
-          groups.sort((a, b) => {
-            if (a.title && b.title) {
-              if (a.title > b.title) {
-                return 1;
-              }
-              if (a.title < b.title) {
-                return -1;
-              }
-            }
-
-            return 0;
-          });
-
-          // if index starts at -1, it'll be at the end
-          for (let i = 0; i < groups.length; i++) {
-            chrome.tabGroups.move(groups[i].id, {
-              index: i,
-            });
-          }
-          resolve(groups);
-        });
-      } catch (e) {
-        reject(e);
+  async sortGroups(): Promise<chrome.tabGroups.TabGroup[]> {
+    // todo should also consider that it'll only run/sort or whatever action on that exact window and not all windows
+    const groups: chrome.tabGroups.TabGroup[] = await chrome.tabGroups.query(
+      {}
+    );
+    groups.sort((a, b) => {
+      if (a.title && b.title) {
+        if (a.title > b.title) {
+          return 1;
+        }
+        if (a.title < b.title) {
+          return -1;
+        }
       }
+
+      return 0;
     });
+
+    // if index starts at -1, it'll be at the end
+    for (let i = 0; i < groups.length; i++) {
+      chrome.tabGroups.move(groups[i].id, {
+        index: i,
+      });
+    }
+    return groups;
   }
 
   /**
@@ -186,19 +154,10 @@ export class TabService {
     tabIds: number[] = [],
     createProperties: { windowId?: number } | undefined = undefined
   ): Promise<number> {
-    return new Promise((resolve, reject) => {
-      try {
-        chrome.tabs.group(
-          {
-            groupId,
-            tabIds,
-            createProperties,
-          },
-          resolve
-        );
-      } catch (e) {
-        reject(e);
-      }
+    return chrome.tabs.group({
+      groupId,
+      tabIds,
+      createProperties,
     });
   }
 
@@ -214,30 +173,24 @@ export class TabService {
     title: string,
     withinCurrentWindow = false
   ): Promise<number | undefined> {
-    return new Promise((resolve, reject) => {
-      const queryParams: chrome.tabGroups.QueryInfo = {
-        title,
-      };
+    const queryParams: chrome.tabGroups.QueryInfo = {
+      title,
+    };
 
-      if (withinCurrentWindow) {
-        queryParams.windowId = TabService.getCurrentWindow();
-      }
+    if (withinCurrentWindow) {
+      queryParams.windowId = TabService.getCurrentWindow();
+    }
 
-      try {
-        chrome.tabGroups.query(queryParams, (groups: ChromeTabGroup[]) => {
-          const group: ChromeTabGroup | undefined = groups.find(
-            (group) => group.title === title
-          );
+    const groups: chrome.tabGroups.TabGroup[] = await chrome.tabGroups.query(
+      queryParams
+    );
+    const group: chrome.tabGroups.TabGroup | undefined = groups.find(
+      (group) => group.title === title
+    );
 
-          if (group) {
-            resolve(group.id);
-          }
-          resolve(undefined);
-        });
-      } catch (e) {
-        reject(e);
-      }
-    });
+    if (group) {
+      return group.id;
+    }
   }
 
   /**
@@ -274,18 +227,12 @@ export class TabService {
    * Clear all groups
    */
   async clearGroups(): Promise<void> {
-    return new Promise(async (resolve, reject) => {
-      try {
-        const allTabs = await this.listAllTabs({
-          currentWindow: true,
-        });
-        const allTabsIds = allTabs.map((i) => i.id);
-        // @ts-ignore
-        chrome.tabs.ungroup(allTabsIds, resolve);
-      } catch (e) {
-        reject(e);
-      }
+    const allTabs: chrome.tabs.Tab[] = await this.listAllTabs({
+      currentWindow: true,
     });
+    const allTabsIds: number[] = allTabs.map((i) => i.id || -1);
+
+    return chrome.tabs.ungroup(allTabsIds);
   }
 
   private static getCurrentWindow(): number {
