@@ -18,5 +18,6 @@
       "resources": ["icon-128.png"],
       "matches": []
     }
-  ]
+  ],
+  "offline_enabled": true
 }
