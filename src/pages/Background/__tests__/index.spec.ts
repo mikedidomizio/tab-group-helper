@@ -1,5 +1,6 @@
 import {
   chrome,
+  chromeTabsQueryPromiseResponse,
   generateFakeTab,
 } from '../../Popup/__tests-helpers__/functions';
 import { autoGroupValue } from '../../Popup/components/LineItem';
@@ -52,7 +53,7 @@ describe('regroup function', () => {
     addTabsToGroupSpy = jest
       .spyOn(TabService.prototype, 'addTabsToGroup')
       .mockReturnValue(Promise.resolve({} as any));
-    chrome.tabs.query.yields([firstTab, secondTab]);
+    chromeTabsQueryPromiseResponse([firstTab, secondTab]);
     matchedTabsSpy = jest.spyOn(TabService.prototype, 'getTabsWhichMatch');
   });
 
@@ -140,7 +141,7 @@ describe('regroup function', () => {
       title: 'facebook devs',
     });
 
-    chrome.tabs.query.yields([firstTab, secondTab, newTab]);
+    chromeTabsQueryPromiseResponse([firstTab, secondTab, newTab]);
 
     await regroup(autoGroupValue.tabCreated, newTab);
 
@@ -169,7 +170,7 @@ describe('regroup function', () => {
         Promise.resolve([newItemMatchingGroup, newItemBadGroup])
       );
 
-    chrome.tabs.query.yields([firstTab, secondTab]);
+    chromeTabsQueryPromiseResponse([firstTab, secondTab]);
 
     firstTab.url = 'https://facebook.com/my-new-url';
 

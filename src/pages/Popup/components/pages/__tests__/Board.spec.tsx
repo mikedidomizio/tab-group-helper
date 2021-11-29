@@ -1,5 +1,9 @@
 import '../../../__tests-helpers__/enzyme-adapter';
-import { chrome, getButtonByText } from '../../../__tests-helpers__/functions';
+import {
+  chrome,
+  chromeTabsQueryPromiseResponse,
+  getButtonByText,
+} from '../../../__tests-helpers__/functions';
 import {
   LineItem,
   LineItemsService,
@@ -26,6 +30,12 @@ beforeAll(function () {
 beforeEach(() => {
   // clear the local storage to keep tests independent
   localStorage.clear();
+
+  chromeTabsQueryPromiseResponse([
+    { id: 123, url: 'Hello-World.com' } as Partial<LineItem>,
+  ]);
+
+  // todo remove enzyme
   wrapper = mount(<Board />);
   getInputByLabel = (fieldText: string) => {
     return getLineItems()
@@ -54,6 +64,7 @@ beforeEach(() => {
 
 afterEach(() => {
   wrapper.unmount();
+  chrome.reset();
 });
 
 test.skip('should have a line item', () =>
@@ -81,9 +92,6 @@ test.skip('clean up should leave any edited line items', () => {
 });
 
 test.skip('run should call the tabs service with each valid line item', async () => {
-  chrome.tabs.query.yields([
-    { id: 123, url: 'Hello-World.com' } as Partial<LineItem>,
-  ]);
   // sinon-chrome package doesn't have query therefore we mock it
   chrome.tabGroups = {
     query: () => {},
@@ -120,10 +128,6 @@ test('deleting a line item should remove a line item', async () => {
   });
 
   expect(screen.getByDisplayValue('still here')).toBeInTheDocument();
-});
-
-afterEach(() => {
-  chrome.reset();
 });
 
 test('deleting the only line item will delete the current line item and leave a blank one', async () => {
@@ -228,13 +232,10 @@ describe('collapsing groups', () => {
 });
 
 test('clear groups should make a chrome api request to clear all active groups', async () => {
-  chrome.tabs.query.yields([
-    { id: 123, url: 'Hello-World.com' } as Partial<LineItem>,
-  ]);
   const ungroupFn = jest.fn();
   chrome.tabs.ungroup = ungroupFn;
   await waitFor(() => getButtonByText(wrapper, 'Clear').simulate('click'));
-  expect(ungroupFn).toHaveBeenCalledWith([123], expect.anything());
+  expect(ungroupFn).toHaveBeenCalledWith([123]);
 });
 
 test('cleaning up the groups should remove any groups that are the default state', async () => {

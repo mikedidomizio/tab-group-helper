@@ -1,3 +1,4 @@
+import { LineItem } from '../service/lineItems.service';
 import { render, screen } from '@testing-library/react';
 import { ReactWrapper } from 'enzyme';
 import { ReactElement } from 'react';
@@ -31,4 +32,15 @@ export const generateFakeTab = (newFakeTabArgs: Partial<chrome.tabs.Tab>) => {
     },
     newFakeTabArgs
   );
+};
+
+// the sinon-chrome stubbing doesn't support Chrome Manifest V3 returning promises
+// therefore we overwrite the query getter
+export const chromeTabsQueryPromiseResponse = (
+  lineItems: Partial<LineItem>[]
+) => {
+  Object.defineProperty(chrome.tabs, 'query', {
+    value: () => Promise.resolve(lineItems),
+    writable: false,
+  });
 };
