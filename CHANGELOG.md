@@ -1,4 +1,8 @@
-## 1.6.1 (2021-11-28)
+## 1.7.0 (2021-11-28)
+
+### Added
+
+- Added collapse/expand button to collapse all groups
 
 ### Fixed
 
