@@ -19,5 +19,14 @@
       "matches": []
     }
   ],
-  "offline_enabled": true
+  "offline_enabled": true,
+  "commands": {
+    "run_grouping": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+G",
+        "mac": "Command+Shift+G"
+      },
+      "description": "Groups tabs by rules"
+    }
+  }
 }
