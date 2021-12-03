@@ -106,7 +106,7 @@ export const Board: FunctionComponent = (): ReactElement => {
           Add Item
         </BottomBarButton>
         <BottomBarButton
-          onClick={runGrouping}
+          onClick={() => runGrouping()}
           tooltip="Runs one by one through the line items that you have set above"
         >
           Run

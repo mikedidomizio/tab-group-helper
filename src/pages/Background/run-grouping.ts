@@ -1,19 +1,21 @@
 import { LineItemsService } from '../Popup/service/lineItems.service';
 import { TabService } from '../Popup/service/tab.service';
 
-// todo would be nice to write this in typescript and compile for background scripts
 /**
  * @param {'tabCreated' | 'tabUpdated' | undefined} autoGroupType
  * @param tab
  * @returns {Promise<void>}
  */
-export const runGrouping = async (autoGroupType, tab) => {
+export const runGrouping = async (
+  autoGroupType?: 'tabCreated' | 'tabUpdated',
+  tab?: chrome.tabs.Tab
+) => {
   const lineItemsService = new LineItemsService();
   const tabService = new TabService();
 
   const lineItems = await lineItemsService.get();
   // immediately filter where apply is true, we ignore otherwise
-  const lineItemsSetToAppl = lineItems.filter((i) => {
+  const lineItemsSetToApply = lineItems.filter((i) => {
     if (autoGroupType) {
       return i.applyChanges && i.autoGroup.includes(autoGroupType);
     }
@@ -21,7 +23,7 @@ export const runGrouping = async (autoGroupType, tab) => {
     return i.applyChanges;
   });
 
-  for (let item of lineItemsSetToAppl) {
+  for (let item of lineItemsSetToApply) {
     const regex = item.regex;
     const { caseSensitive } = item;
     const matchedTabs = await tabService.getTabsWhichMatch(
@@ -37,7 +39,7 @@ export const runGrouping = async (autoGroupType, tab) => {
     const ids = matchedTabs.map((i) => (i.id ? i.id : -1));
     const color = item.color !== '' ? item.color : undefined;
 
-    if (tab && ids.includes(tab?.id)) {
+    if (tab && tab?.id && ids.includes(tab.id)) {
       await tabService.addTabsToGroup([tab.id], item.groupTitle, color);
     } else if (ids.length) {
       await tabService.addTabsToGroup(ids, item.groupTitle, color);
