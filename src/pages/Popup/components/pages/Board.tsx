@@ -1,3 +1,5 @@
+// @ts-ignore
+import { runGrouping } from '../../../Background/run-grouping';
 import {
   LineItem as LItem,
   LineItemsService,
@@ -53,35 +55,6 @@ export const Board: FunctionComponent = (): ReactElement => {
     };
   }, [lineItemsService]);
 
-  /**
-   * Proceed to run grouping
-   */
-  const run = async () => {
-    const lineItems = await lineItemsService.get();
-    // immediately filter where apply is true, we ignore otherwise
-    const lineItemsSetToAppl = lineItems.filter((i) => i.applyChanges);
-
-    for (let item of lineItemsSetToAppl) {
-      const regex = item.regex;
-      const { caseSensitive } = item;
-      const matchedTabs: chrome.tabs.Tab[] = await tabService.getTabsWhichMatch(
-        item.text,
-        item.matchType,
-        caseSensitive,
-        regex,
-        true
-      );
-      // if id for some reason is undefined, we return -1
-      // not exactly sure what would happen there if an error is thrown or it continues if trying to add
-      // -1 tab to a group
-      const ids: number[] = matchedTabs.map((i) => (i.id ? i.id : -1));
-      if (ids.length) {
-        const color = item.color !== '' ? item.color : undefined;
-        await tabService.addTabsToGroup(ids, item.groupTitle, color);
-      }
-    }
-  };
-
   const cleanUp = async (): Promise<void> => {
     const lineItems = await lineItemsService.cleanUpLineItems();
     setLineItems(lineItems);
@@ -133,7 +106,7 @@ export const Board: FunctionComponent = (): ReactElement => {
           Add Item
         </BottomBarButton>
         <BottomBarButton
-          onClick={run}
+          onClick={runGrouping}
           tooltip="Runs one by one through the line items that you have set above"
         >
           Run
