@@ -26,6 +26,16 @@ chrome.tabs.onUpdated.addListener(async function (tabId, changeInfo, tab) {
 chrome.runtime.onInstalled.addListener(({ id, previousVersion, reason }) => {
   update(id, previousVersion, reason);
 });
+// custom shortcuts
+chrome.commands.onCommand.addListener(async (command) => {
+  const commands = {
+    runGrouping: 'run_grouping',
+  };
+
+  if (command === commands.runGrouping) {
+    await runGrouping();
+  }
+});
 
 export const forTesting = {
   runGrouping,
