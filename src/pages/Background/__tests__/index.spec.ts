@@ -13,7 +13,7 @@ import { TabService } from '../../Popup/service/tab.service';
 global.chrome = chrome;
 const { forTesting } = require('../index');
 
-const { regroup, update } = forTesting;
+const { runGrouping, update } = forTesting;
 
 describe('update function', () => {
   beforeAll(() => {
@@ -76,7 +76,7 @@ describe('regroup function', () => {
       .spyOn(LineItemsService.prototype, 'get')
       .mockReturnValue(Promise.resolve([newItemApply, newItemNoApply]));
 
-    await regroup(autoGroupValue.tabCreated);
+    await runGrouping(autoGroupValue.tabCreated);
 
     expect(matchedTabsSpy).toHaveBeenCalledTimes(1);
     expect(matchedTabsSpy).toHaveBeenCalledWith(
@@ -104,7 +104,7 @@ describe('regroup function', () => {
         Promise.resolve([newItemMatchingGroup, newItemBadGroup])
       );
 
-    await regroup(autoGroupValue.tabCreated);
+    await runGrouping(autoGroupValue.tabCreated);
 
     expect(matchedTabsSpy).toHaveBeenCalledTimes(1);
     expect(matchedTabsSpy).toHaveBeenCalledWith(
@@ -143,7 +143,7 @@ describe('regroup function', () => {
 
     chromeTabsQueryPromiseResponse([firstTab, secondTab, newTab]);
 
-    await regroup(autoGroupValue.tabCreated, newTab);
+    await runGrouping(autoGroupValue.tabCreated, newTab);
 
     expect(addTabsToGroupSpy).toBeCalledWith(
       [newTab.id],
@@ -174,7 +174,7 @@ describe('regroup function', () => {
 
     firstTab.url = 'https://facebook.com/my-new-url';
 
-    await regroup(autoGroupValue.tabUpdated, firstTab);
+    await runGrouping(autoGroupValue.tabUpdated, firstTab);
 
     expect(addTabsToGroupSpy).toBeCalledWith(
       [firstTab.id],
