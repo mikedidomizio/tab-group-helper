@@ -131,6 +131,31 @@ export class LineItemsService {
     return this.wrappedSet(this.lineItems);
   }
 
+  async moveLineItem(lineItemUniqueId: number, direction: 'up' | 'down') {
+    const lineItems = await this.get();
+    const lineItemIndex = lineItems.findIndex(
+      (item) => item.id === lineItemUniqueId
+    );
+
+    if (lineItemIndex >= 0) {
+      if (direction === 'up' && lineItemIndex > 0) {
+        const tmpLineItemToMoveUp: LineItem = lineItems[lineItemIndex];
+        lineItems[lineItemIndex] = lineItems[lineItemIndex - 1];
+        lineItems[lineItemIndex - 1] = tmpLineItemToMoveUp;
+        return this.set(lineItems);
+      } else if (direction === 'down' && lineItems[lineItemIndex + 1]) {
+        const tmpLineItemToMoveDown: LineItem = lineItems[lineItemIndex];
+        lineItems[lineItemIndex] = lineItems[lineItemIndex + 1];
+        lineItems[lineItemIndex + 1] = tmpLineItemToMoveDown;
+        return this.set(lineItems);
+      }
+    } else {
+      console.warn('Could not find line item by index/id');
+    }
+
+    return this.get();
+  }
+
   async deleteLineItemById(lineItemUniqueId: number): Promise<LineItem[]> {
     const lineItems = (await this.get()).slice();
     // check to see if line item length is 1, if so we just reset it to empty
