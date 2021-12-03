@@ -82,6 +82,16 @@ export const Board: FunctionComponent = (): ReactElement => {
     );
     setLineItems(lineItems);
   };
+  const handleLineItemMove = async (
+    lineItemUniqueId: number,
+    direction: 'up' | 'down'
+  ) => {
+    const lineItems = await lineItemsService.moveLineItem(
+      lineItemUniqueId,
+      direction
+    );
+    setLineItems(lineItems);
+  };
 
   return (
     <Box className={classes.root}>
@@ -92,6 +102,9 @@ export const Board: FunctionComponent = (): ReactElement => {
               <LineItem
                 onLineItemChange={(d: LItem) =>
                   handleLineItemChange(data.id, d)
+                }
+                moveLineItem={(id, direction) =>
+                  handleLineItemMove(id, direction)
                 }
                 deleteLineItem={deleteLineItem}
                 {...data}

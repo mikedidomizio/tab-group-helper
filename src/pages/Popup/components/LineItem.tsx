@@ -18,6 +18,8 @@ import {
   Tooltip,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
+import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
 import DeleteIcon from '@material-ui/icons/Delete';
 import React, {
   ChangeEvent,
@@ -44,7 +46,10 @@ const useStyles = makeStyles((theme) => ({
       width: '100px',
     },
     '& .MuiSelect-select': {
-      width: '160px',
+      width: '140px',
+    },
+    '& .MuiIconButton-sizeSmall': {
+      marginTop: '-7px',
     },
   },
 }));
@@ -54,6 +59,10 @@ export interface LineItemProps extends LItem {
    * Calls parent to delete remove
    */
   deleteLineItem: (args: number) => void;
+  /**
+   * Move line item order
+   */
+  moveLineItem: (id: number, direction: 'up' | 'down') => void;
   /**
    * On prop change, it calls the parent component
    */
@@ -211,6 +220,7 @@ export const LineItem: FunctionComponent<LineItemProps> = ({
   id,
   groupTitle,
   matchType,
+  moveLineItem,
   onLineItemChange,
   regex,
   text,
@@ -420,6 +430,24 @@ export const LineItem: FunctionComponent<LineItemProps> = ({
             {`${stateTabsMatched.length} match`}
             {stateTabsMatched.length !== 1 && 'es'}
           </InputLabel>
+        </Tooltip>
+        <Tooltip title="Move rule up">
+          <IconButton
+            aria-label="move rule up"
+            onClick={() => moveLineItem(id, 'up')}
+            size="small"
+          >
+            <ArrowDropUpIcon />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Move rule down">
+          <IconButton
+            aria-label="move rule down"
+            onClick={() => moveLineItem(id, 'down')}
+            size="small"
+          >
+            <ArrowDropDownIcon />
+          </IconButton>
         </Tooltip>
       </FormGroup>
     </div>
