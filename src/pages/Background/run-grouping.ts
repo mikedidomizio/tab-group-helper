@@ -1,5 +1,18 @@
-import { LineItemsService } from '../Popup/service/lineItems.service';
+import { LineItem, LineItemsService } from '../Popup/service/lineItems.service';
 import { TabService } from '../Popup/service/tab.service';
+
+// immediately filter where apply is true, we ignore otherwise
+const lineItemApplyFilter = (
+  lineItem: LineItem,
+  autoGroupType?: 'tabCreated' | 'tabUpdated'
+) => {
+  return autoGroupType
+    ? lineItem.applyChanges && lineItem.autoGroup.includes(autoGroupType)
+    : lineItem.applyChanges;
+};
+
+const getIdsOfMatchedTabs = (chromeTab: chrome.tabs.Tab) =>
+  chromeTab.id ? chromeTab.id : -1;
 
 /**
  * @param {'tabCreated' | 'tabUpdated' | undefined} autoGroupType
@@ -14,14 +27,9 @@ export const runGrouping = async (
   const tabService = new TabService();
 
   const lineItems = await lineItemsService.get();
-  // immediately filter where apply is true, we ignore otherwise
-  const lineItemsSetToApply = lineItems.filter((i) => {
-    if (autoGroupType) {
-      return i.applyChanges && i.autoGroup.includes(autoGroupType);
-    }
-
-    return i.applyChanges;
-  });
+  const lineItemsSetToApply = lineItems.filter((lineItem) =>
+    lineItemApplyFilter(lineItem, autoGroupType)
+  );
 
   for (let item of lineItemsSetToApply) {
     const regex = item.regex;
@@ -36,13 +44,10 @@ export const runGrouping = async (
     // if id for some reason is undefined, we return -1
     // not exactly sure what would happen there if an error is thrown or it continues if trying to add
     // -1 tab to a group
-    const ids = matchedTabs.map((i) => (i.id ? i.id : -1));
+    const ids = matchedTabs.map(getIdsOfMatchedTabs);
     const color = item.color !== '' ? item.color : undefined;
 
-    if (tab && tab?.id && ids.includes(tab.id)) {
-      await tabService.addTabsToGroup([tab.id], item.groupTitle, color);
-    } else if (ids.length) {
-      await tabService.addTabsToGroup(ids, item.groupTitle, color);
-    }
+    const tabsToGroup = tab && tab?.id && ids.includes(tab.id) ? [tab.id] : ids;
+    await tabService.addTabsToGroup(tabsToGroup, item.groupTitle, color);
   }
 };
