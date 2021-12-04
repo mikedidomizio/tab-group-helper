@@ -1,3 +1,11 @@
+## 1.8.0 (2021-12-04)
+
+## Added
+
+- Extension marked as can work offline (if it couldn't before)
+- Add shortcut to allow keyboard command to group
+- Add ability to move rules ordering
+
 ## 1.7.0 (2021-11-28)
 
 ### Added
