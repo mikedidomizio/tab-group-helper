@@ -1,6 +1,7 @@
 import { chromeWebStore } from './chrome-web-store-api.mjs';
 import * as fs from 'fs';
 import path from 'path';
+import * as core from '@actions/core';
 import { checkNewSemVerIsGreater } from './check-new-sem-ver.js';
 
 const packageJSON = JSON.parse(fs.readFileSync(path.join(process.cwd(), './package.json')).toString())
@@ -30,8 +31,10 @@ const manifest = JSON.parse(fs.readFileSync(path.join(process.cwd(), './src/mani
   const { crxVersion: currentPackageVersion } = packageInfo;
 
   if (!checkNewSemVerIsGreater(currentPackageVersion, manifest.version)) {
+    const str = 'Cannot merge as new semver is not greater than current one, merging will fail in the publishing stage';
+    core.setFailed(str);
     throw new Error(
-      'Cannot merge as new semver is not greater than current one, merging will fail in the publishing stage'
+      str
     );
   }
 
