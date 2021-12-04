@@ -4,6 +4,25 @@ on: [push, pull_request ]
 
 jobs:
 
+  test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [ 14.x ]
+
+    steps:
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+          BASE_REF:  ${{ github.base_ref }}
+          MERGED:    ${{ github.event.pull_request.merged }}
+        run: |
+          echo "$GITHUB_CONTEXT"
+          echo "$BASE_REF == 'master'"
+          echo "$MERGED == true"
+          echo "$MERGED == 'true'"
+
   # Builds and caches the node_modules for future jobs
   build:
     runs-on: ubuntu-latest
@@ -153,7 +172,7 @@ jobs:
   publish:
     needs: [ build_zip, code_coverage ]
     # if the target branch is master. We want to make sure we're not merging anything into master that's unpublishable
-    if: ${{ github.base_ref == master && github.event.pull_request.merged == true }}
+    if: ${{ github.event.pull_request.base.ref && github.event.pull_request.merged == true }}
     runs-on: ubuntu-latest
 
     strategy:
