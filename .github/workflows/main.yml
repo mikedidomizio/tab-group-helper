@@ -153,7 +153,7 @@ jobs:
   publish:
     needs: [ build_zip, code_coverage ]
     # if the target branch is master. We want to make sure we're not merging anything into master that's unpublishable
-    if: ${{ github.base_ref == 'master' && github.event.pull_request.merged == true }}
+    if: ${{ github.base_ref == master && github.event.pull_request.merged == true }}
     runs-on: ubuntu-latest
 
     strategy:
