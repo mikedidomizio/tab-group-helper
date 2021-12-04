@@ -31,7 +31,8 @@ const manifest = JSON.parse(fs.readFileSync(path.join(process.cwd(), './src/mani
   const { crxVersion: currentPackageVersion } = packageInfo;
 
   if (!checkNewSemVerIsGreater(currentPackageVersion, manifest.version)) {
-    const str = 'Cannot merge as new semver is not greater than current one, merging will fail in the publishing stage';
+    const str = 'Cannot merge as new semver is not greater than current one,' +
+      ' merging will fail in the publishing stage';
     core.setFailed(str);
     throw new Error(
       str
