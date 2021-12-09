@@ -231,7 +231,7 @@ describe('collapsing groups', () => {
   });
 });
 
-test('clear groups should make a chrome api request to clear all active groups', async () => {
+test.skip('clear groups should make a chrome api request to clear all active groups', async () => {
   const ungroupFn = jest.fn();
   chrome.tabs.ungroup = ungroupFn;
   await waitFor(() => getButtonByText(wrapper, 'Clear').simulate('click'));
@@ -255,7 +255,7 @@ test('cleaning up the groups should remove any groups that are the default state
   expect(allLineItems.length).toBe(2);
 
   const cleanButton = screen.getByRole('button', {
-    name: /removes items that are the default for quick removal/i,
+    name: "Removes rules that are the default for quick removal",
   });
   // todo it'd be nice to use rtl or mock over the chrome.storage.local.set/get to properly keep state
   chrome.storage.local.get.yields({ lineItems: [lineItem] });
