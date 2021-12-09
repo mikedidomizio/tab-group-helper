@@ -33,9 +33,6 @@ const useStyles = makeStyles((/*theme*/) => ({
       minHeight: '468px',
       height: '468px',
       overflowY: 'scroll',
-    },
-    '& .MuiIconButton-root:hover': {
-      backgroundColor: '#303f9f',
     }
   },
 }));
