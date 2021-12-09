@@ -8,8 +8,13 @@ import { TabService } from '../../service/tab.service';
 import { BottomBar } from '../BottomBar';
 import { BottomBarButton } from '../BottomBarButton';
 import { LineItem } from '../LineItem';
-import { Box, Divider, IconButton } from '@material-ui/core';
+import { Box, Divider } from '@material-ui/core';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+import DeleteSweepIcon from '@material-ui/icons/DeleteSweep';
+import LayersClearIcon from '@material-ui/icons/LayersClear';
+import PlayCircleOutlineIcon from '@material-ui/icons/PlayCircleOutline';
+import SortIcon from '@material-ui/icons/Sort';
+import UnfoldLessIcon from '@material-ui/icons/UnfoldLess';
 import { makeStyles } from '@material-ui/core/styles';
 import React, {
   FunctionComponent,
@@ -124,37 +129,42 @@ export const Board: FunctionComponent = (): ReactElement => {
           onClick={() => addLineItem()}
           tooltip="Adds a new rule"
         >
-          <AddCircleOutlineIcon fontSize="inherit" />
+          <AddCircleOutlineIcon />
         </BottomBarButton>
         <BottomBarButton
+          isIconButton
           onClick={() => runGrouping()}
-          tooltip="Runs one by one through the line items that you have set above"
+          tooltip="Runs one by one through the rules that you have set above"
         >
-          Run
+          <PlayCircleOutlineIcon />
         </BottomBarButton>
         <BottomBarButton
-          onClick={cleanUp}
-          tooltip="Removes items that are the default for quick removal"
+          isIconButton
+          onClick={() => cleanUp()}
+          tooltip="Removes rules that are the default for quick removal"
         >
-          Clean up
+          <DeleteSweepIcon />
         </BottomBarButton>
         <BottomBarButton
+          isIconButton
           onClick={() => tabService.sortGroups()}
           tooltip="Sort groups"
         >
-          Sort
+          <SortIcon />
         </BottomBarButton>
         <BottomBarButton
+          isIconButton
           onClick={() => tabService.collapseGroups(true)}
           tooltip="Collapse/Expand groups"
         >
-          Collapse
+          <UnfoldLessIcon />
         </BottomBarButton>
         <BottomBarButton
+          isIconButton
           onClick={() => tabService.clearGroups()}
           tooltip="Clears all groups in your browser"
         >
-          Clear
+          <LayersClearIcon />
         </BottomBarButton>
       </BottomBar>
     </Box>

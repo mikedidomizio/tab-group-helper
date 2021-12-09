@@ -11,7 +11,6 @@ import React, {
   PropsWithChildren,
   ReactElement, ReactNode,
 } from 'react';
-import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -47,7 +46,7 @@ interface BottomBarButtonProps {
   /**
    * The tooltip text that appears on hovering
    */
-  tooltip: string | boolean;
+  tooltip: string;
 }
 
 const defaultProps: BottomBarButtonProps = {
@@ -56,7 +55,7 @@ const defaultProps: BottomBarButtonProps = {
   endIcon: null,
   onClick: () => {},
   placement: 'top-start',
-  tooltip: false,
+  tooltip: '',
 };
 
 /**
@@ -83,10 +82,11 @@ export const BottomBarButton: FunctionComponent<BottomBarButtonProps> = ({
         leaveDelay={0}
       >
         {isIconButton ?
-          <IconButton onClick={onClick} color="inherit" aria-label="delete">
+          <IconButton aria-label={tooltip} onClick={onClick} color="inherit">
             {children}
           </IconButton>
         : <Button
+            aria-label={tooltip}
             onClick={onClick}
             variant="contained"
             color={color}
