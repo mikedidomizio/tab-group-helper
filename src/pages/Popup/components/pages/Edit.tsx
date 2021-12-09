@@ -149,7 +149,7 @@ export const Edit: FunctionComponent = (): ReactElement => {
         </Box>
         {state.error && <Alert severity="error">{state.error}</Alert>}
         <TextField
-          placeholder="JSON value of line items, edit with care"
+          placeholder="JSON value of rules, edit with care"
           multiline
           minRows={1}
           fullWidth
