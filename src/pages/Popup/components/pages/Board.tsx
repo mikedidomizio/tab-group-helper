@@ -8,7 +8,8 @@ import { TabService } from '../../service/tab.service';
 import { BottomBar } from '../BottomBar';
 import { BottomBarButton } from '../BottomBarButton';
 import { LineItem } from '../LineItem';
-import { Box, Divider } from '@material-ui/core';
+import { Box, Divider, IconButton } from '@material-ui/core';
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import { makeStyles } from '@material-ui/core/styles';
 import React, {
   FunctionComponent,
@@ -28,6 +29,9 @@ const useStyles = makeStyles((/*theme*/) => ({
       height: '468px',
       overflowY: 'scroll',
     },
+    '& .MuiIconButton-root:hover': {
+      backgroundColor: '#303f9f',
+    }
   },
 }));
 
@@ -115,8 +119,12 @@ export const Board: FunctionComponent = (): ReactElement => {
         ))}
       </Box>
       <BottomBar>
-        <BottomBarButton onClick={addLineItem} tooltip="Adds a new line item">
-          Add Item
+        <BottomBarButton
+          isIconButton
+          onClick={() => addLineItem()}
+          tooltip="Adds a new rule"
+        >
+          <AddCircleOutlineIcon fontSize="inherit" />
         </BottomBarButton>
         <BottomBarButton
           onClick={() => runGrouping()}

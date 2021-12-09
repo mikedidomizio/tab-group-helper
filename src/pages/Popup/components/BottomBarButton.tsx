@@ -1,6 +1,6 @@
 import {
   Box,
-  Button,
+  Button, IconButton,
   PropTypes,
   Tooltip,
   TooltipProps,
@@ -9,8 +9,9 @@ import { makeStyles } from '@material-ui/core/styles';
 import React, {
   FunctionComponent,
   PropsWithChildren,
-  ReactElement,
+  ReactElement, ReactNode,
 } from 'react';
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -28,11 +29,13 @@ interface BottomBarButtonProps {
   /**
    * The contents of the button
    */
-  children: string;
+  children: ReactNode | string;
   /**
    * An icon for the end of the button
+   * Whether or not this is a button that is just an icon or text button
    */
   endIcon?: JSX.Element | null;
+  isIconButton?: boolean;
   /**
    * The click functionality set by the parent.  By default no action occurs.
    */
@@ -65,6 +68,7 @@ export const BottomBarButton: FunctionComponent<BottomBarButtonProps> = ({
   children,
   color,
   endIcon,
+  isIconButton,
   onClick,
   placement,
   tooltip,
@@ -78,14 +82,19 @@ export const BottomBarButton: FunctionComponent<BottomBarButtonProps> = ({
         placement={placement}
         leaveDelay={0}
       >
-        <Button
-          onClick={onClick}
-          variant="contained"
-          color={color}
-          endIcon={endIcon}
-        >
-          {children}
-        </Button>
+        {isIconButton ?
+          <IconButton onClick={onClick} color="inherit" aria-label="delete">
+            {children}
+          </IconButton>
+        : <Button
+            onClick={onClick}
+            variant="contained"
+            color={color}
+            endIcon={endIcon}
+          >
+            {children}
+          </Button>
+        }
       </Tooltip>
     </Box>
   );
