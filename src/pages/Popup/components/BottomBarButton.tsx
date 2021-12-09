@@ -12,12 +12,18 @@ import React, {
   ReactElement, ReactNode,
 } from 'react';
 
-const useStyles = makeStyles((theme) => ({
+export const useStylesButtons = makeStyles((theme) => ({
   root: {
     '& button': {
       boxShadow: 'none !important',
     },
+
   },
+  button: {
+    "&:hover": {
+      backgroundColor: '#303f9f',
+    },
+  }
 }));
 
 interface BottomBarButtonProps {
@@ -72,9 +78,9 @@ export const BottomBarButton: FunctionComponent<BottomBarButtonProps> = ({
   placement,
   tooltip,
 }: PropsWithChildren<BottomBarButtonProps>): ReactElement => {
-  const classes = useStyles();
+  const classes = useStylesButtons();
   return (
-    <Box className={classes.root} component="span" mr={1}>
+    <Box className={classes.root} component="span">
       <Tooltip
         title={tooltip}
         enterDelay={1000}
@@ -82,7 +88,7 @@ export const BottomBarButton: FunctionComponent<BottomBarButtonProps> = ({
         leaveDelay={0}
       >
         {isIconButton ?
-          <IconButton aria-label={tooltip} onClick={onClick} color="inherit">
+          <IconButton className={classes.button} aria-label={tooltip} onClick={onClick} color="inherit">
             {children}
           </IconButton>
         : <Button

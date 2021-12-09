@@ -1,41 +1,17 @@
-import packageJSON from '../../../package.json';
 import { Board } from './components/pages/Board';
 import { Edit } from './components/pages/Edit';
 import { Help } from './components/pages/Help';
 import { LineItemsService } from './service/lineItems.service';
-import {
-  AppBar,
-  IconButton,
-  Menu,
-  MenuItem,
-  Toolbar,
-  Typography,
-} from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
-import { Menu as MenuIcon } from '@material-ui/icons';
 import { createMemoryHistory } from 'history';
 import { useCallback, useEffect, useState } from 'react';
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-    '& .MuiAppBar-root': {
-      position: 'sticky',
-      top: '0px',
-    },
-  },
-  menuButton: {
-    marginRight: theme.spacing(2),
-  },
-  title: {
-    flexGrow: 1,
-  },
-}));
+import { Header } from './components/Header';
 
 // leave outside the app to continue working
 const history = createMemoryHistory();
 
 export const App = () => {
+  // to force the rerender, we use this state variable to make the rerender happen
+  const [path, setPath] = useState('/')
   const chromeVersion = /Chrome\/([0-9.]+)/.exec(navigator.userAgent)[1];
   // necessary for the tabGroups API
   const requiredChromeVersion = 89;
@@ -64,61 +40,21 @@ export const App = () => {
     };
   }, []);
 
-  const classes = useStyles();
-  const [anchorEl, setAnchorEl] = useState(null);
-
-  const handleOpen = (event) => setAnchorEl(event.currentTarget);
-  const handleClose = () => setAnchorEl(null);
-
-  const handleOnMenuItemClick = useCallback((url) => {
+  const handleOnMenuItemClick =(url) => {
     history.push(url);
-    handleClose();
-  }, []);
-
+    setPath(url);
+  };
   const correctChromeVersion = () =>
     parseInt(chromeVersion) >= requiredChromeVersion;
 
   return (
     <div className="App">
       {correctChromeVersion && (
-        <div className={classes.root}>
-          <AppBar position="static">
-            <Toolbar>
-              <IconButton
-                edge="start"
-                className={classes.menuButton}
-                color="inherit"
-                aria-label="menu"
-                onClick={handleOpen}
-              >
-                <MenuIcon />
-              </IconButton>
-              <Menu
-                id="simple-menu"
-                anchorEl={anchorEl}
-                keepMounted
-                open={Boolean(anchorEl)}
-                onClose={handleClose}
-              >
-                <MenuItem onClick={() => handleOnMenuItemClick('/')}>
-                  Home
-                </MenuItem>
-                <MenuItem onClick={() => handleOnMenuItemClick('/edit')}>
-                  Manually Edit
-                </MenuItem>
-                <MenuItem onClick={() => handleOnMenuItemClick('/help')}>
-                  Help
-                </MenuItem>
-              </Menu>
-
-              <Typography variant="h6" className={classes.title}>
-                {packageJSON.prettyName}
-              </Typography>
-            </Toolbar>
-          </AppBar>
-          {history.location.pathname === '/edit' && <Edit />}
-          {history.location.pathname === '/help' && <Help />}
-          {history.location.pathname === '/' && <Board />}
+        <div>
+          <Header onMenuItemClick={handleOnMenuItemClick}/>
+          {path === '/edit' && <Edit />}
+          {path === '/help' && <Help />}
+          {path === '/' && <Board />}
         </div>
       )}
 
