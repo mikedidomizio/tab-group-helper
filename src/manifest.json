@@ -19,6 +19,7 @@
       "matches": []
     }
   ],
+  "minimum_chrome_version": "89",
   "offline_enabled": true,
   "commands": {
     "run_grouping": {
