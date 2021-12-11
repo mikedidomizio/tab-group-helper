@@ -1,3 +1,10 @@
+## 1.9.0 (2021-12-11)
+
+## Added
+
+- Manifest now includes minimum version to run extension
+- Replace buttons with icon buttons
+
 ## 1.8.0 (2021-12-04)
 
 ## Added
