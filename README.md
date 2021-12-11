@@ -7,7 +7,7 @@
 
 This is the source code for a Google Chrome extension that allows the user to set up a bunch of rules to which they can manage groups and tabs by title or URL.
 
-<img src="screenshot.png" alt="picture of extension" width="600" />
+<img src="screenshot.png?3" alt="picture of extension" width="600" />
 
 ## Other Features
 
