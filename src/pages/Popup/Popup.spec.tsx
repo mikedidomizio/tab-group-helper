@@ -9,6 +9,7 @@ let agentGetter: SpyInstance;
 let wrapper: ReactWrapper;
 
 beforeAll(function () {
+  // @ts-ignore
   global.chrome = chrome;
 });
 
