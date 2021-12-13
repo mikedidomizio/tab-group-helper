@@ -1,6 +1,7 @@
 import {
   Box,
-  Button, IconButton,
+  Button,
+  IconButton,
   PropTypes,
   Tooltip,
   TooltipProps,
@@ -9,7 +10,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import React, {
   FunctionComponent,
   PropsWithChildren,
-  ReactElement, ReactNode,
+  ReactElement,
+  ReactNode,
 } from 'react';
 
 export const useStylesButtons = makeStyles((theme) => ({
@@ -17,13 +19,12 @@ export const useStylesButtons = makeStyles((theme) => ({
     '& button': {
       boxShadow: 'none !important',
     },
-
   },
   button: {
-    "&:hover": {
+    '&:hover': {
       backgroundColor: '#303f9f',
     },
-  }
+  },
 }));
 
 interface BottomBarButtonProps {
@@ -87,11 +88,17 @@ export const BottomBarButton: FunctionComponent<BottomBarButtonProps> = ({
         placement={placement}
         leaveDelay={0}
       >
-        {isIconButton ?
-          <IconButton className={classes.button} aria-label={tooltip} onClick={onClick} color="inherit">
+        {isIconButton ? (
+          <IconButton
+            className={classes.button}
+            aria-label={tooltip}
+            onClick={onClick}
+            color="inherit"
+          >
             {children}
           </IconButton>
-        : <Button
+        ) : (
+          <Button
             aria-label={tooltip}
             onClick={onClick}
             variant="contained"
@@ -100,7 +107,7 @@ export const BottomBarButton: FunctionComponent<BottomBarButtonProps> = ({
           >
             {children}
           </Button>
-        }
+        )}
       </Tooltip>
     </Box>
   );
