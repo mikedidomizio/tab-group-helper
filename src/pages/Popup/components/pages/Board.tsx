@@ -9,13 +9,13 @@ import { BottomBar } from '../BottomBar';
 import { BottomBarButton } from '../BottomBarButton';
 import { LineItem } from '../LineItem';
 import { Box, Divider } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import DeleteSweepIcon from '@material-ui/icons/DeleteSweep';
 import LayersClearIcon from '@material-ui/icons/LayersClear';
 import PlayCircleOutlineIcon from '@material-ui/icons/PlayCircleOutline';
 import SortIcon from '@material-ui/icons/Sort';
 import UnfoldLessIcon from '@material-ui/icons/UnfoldLess';
-import { makeStyles } from '@material-ui/core/styles';
 import React, {
   FunctionComponent,
   ReactElement,
@@ -33,7 +33,7 @@ const useStyles = makeStyles((/*theme*/) => ({
       minHeight: '468px',
       height: '468px',
       overflowY: 'scroll',
-    }
+    },
   },
 }));
 
