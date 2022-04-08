@@ -25,7 +25,6 @@ export const runGrouping = async (
 ) => {
   const lineItemsService = new LineItemsService();
   const tabService = new TabService();
-
   const lineItems = await lineItemsService.get();
   const lineItemsSetToApply = lineItems.filter((lineItem) =>
     lineItemApplyFilter(lineItem, autoGroupType)

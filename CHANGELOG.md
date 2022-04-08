@@ -1,13 +1,19 @@
+## 1.9.1 (2022-04-08)
+
+### Fixed
+
+- Issue where manual run was not properly running
+
 ## 1.9.0 (2021-12-11)
 
-## Added
+### Added
 
 - Manifest now includes minimum version to run extension
 - Replace buttons with icon buttons
 
 ## 1.8.0 (2021-12-04)
 
-## Added
+### Added
 
 - Extension marked as can work offline (if it couldn't before)
 - Add shortcut to allow keyboard command to group

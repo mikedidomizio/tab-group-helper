@@ -130,21 +130,21 @@ export const Board: FunctionComponent = (): ReactElement => {
         </BottomBarButton>
         <BottomBarButton
           isIconButton
-          onClick={runGrouping}
+          onClick={() => runGrouping()}
           tooltip="Runs one by one through the rules that you have set above"
         >
           <PlayCircleOutlineIcon />
         </BottomBarButton>
         <BottomBarButton
           isIconButton
-          onClick={cleanUp}
+          onClick={() => cleanUp()}
           tooltip="Removes rules that are the default for quick removal"
         >
           <DeleteSweepIcon />
         </BottomBarButton>
         <BottomBarButton
           isIconButton
-          onClick={tabService.sortGroups}
+          onClick={() => tabService.sortGroups()}
           tooltip="Sort groups"
         >
           <SortIcon />
@@ -158,7 +158,7 @@ export const Board: FunctionComponent = (): ReactElement => {
         </BottomBarButton>
         <BottomBarButton
           isIconButton
-          onClick={tabService.clearGroups}
+          onClick={() => tabService.clearGroups()}
           tooltip="Clears all groups in your browser"
         >
           <LayersClearIcon />
