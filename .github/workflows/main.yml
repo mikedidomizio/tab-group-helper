@@ -44,13 +44,13 @@ jobs:
         id: node_modules-cache
         with:
           path: node_modules
-          key: ${{ runner.os }}-npm-v1-${{ hashFiles('package-lock.json') }}
+          key: ${{ runner.os }}-yarn-v1-${{ hashFiles('package-lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-npm-v1-
+            ${{ runner.os }}-yarn-v1-
 
       - name: Install dependencies
         if: steps.cache.outputs.cache-hit != 'true'
-        run: npm ci
+        run: yarn ci
 
 
   # Ensures that versions match on pull request to master to ensure we're not going to end up with mismatched versions (master)
@@ -77,16 +77,16 @@ jobs:
         id: node_modules-cache
         with:
           path: node_modules
-          key: ${{ runner.os }}-npm-v1-${{ hashFiles('package-lock.json') }}
+          key: ${{ runner.os }}-yarn-v1-${{ hashFiles('package-lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-npm-v1-
+            ${{ runner.os }}-yarn-v1-
 
       - name: Install dependencies
         if: steps.cache.outputs.cache-hit != 'true'
-        run: npm ci
+        run: yarn ci
 
       - name: Prepare Publish script
-        run: npm run prep-publish
+        run: yarn run prep-publish
         env:
           GCP_CLIENT_ID: ${{ secrets.GCP_CLIENT_ID }}
           GCP_REFRESH_TOKEN: ${{ secrets.GCP_REFRESH_TOKEN }}
@@ -112,16 +112,16 @@ jobs:
         id: node_modules-cache
         with:
           path: node_modules
-          key: ${{ runner.os }}-npm-v1-${{ hashFiles('package-lock.json') }}
+          key: ${{ runner.os }}-yarn-v1-${{ hashFiles('package-lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-npm-v1-
+            ${{ runner.os }}-yarn-v1-
 
       - name: Install dependencies
         if: steps.cache.outputs.cache-hit != 'true'
-        run: npm ci
+        run: yarn ci
 
       - name: Unit tests
-        run: npm run test-all
+        run: yarn run test-all
 
       # use hash for safety reasons, using master/tags can introduce security risks into workflow
       - name: Push code coverage
@@ -152,16 +152,16 @@ jobs:
         id: node_modules-cache
         with:
           path: node_modules
-          key: ${{ runner.os }}-npm-v1-${{ hashFiles('package-lock.json') }}
+          key: ${{ runner.os }}-yarn-v1-${{ hashFiles('package-lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-npm-v1-
+            ${{ runner.os }}-yarn-v1-
 
       - name: Install dependencies
         if: steps.cache.outputs.cache-hit != 'true'
-        run: npm ci
+        run: yarn ci
 
       - name: Build extension
-        run: npm run build-ext
+        run: yarn run build-ext
 
       - name: Upload artifact
         uses: actions/upload-artifact@v2
@@ -188,7 +188,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
 
       - name: Publish to Chrome Webstore
-        run: npm run publish
+        run: yarn run publish
         env:
           GCP_CLIENT_ID: ${{ secrets.GCP_CLIENT_ID }}
           GCP_REFRESH_TOKEN: ${{ secrets.GCP_REFRESH_TOKEN }}
