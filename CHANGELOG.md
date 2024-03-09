@@ -1,3 +1,9 @@
+## 1.9.2 (2024-03-09)
+
+### Fixed
+
+- Reductions in bundle size
+
 ## 1.9.1 (2022-04-08)
 
 ### Fixed
