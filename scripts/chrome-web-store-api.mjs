@@ -17,7 +17,7 @@ if (!GCP_REFRESH_TOKEN) {
 const chromeWebStore = chromeWebstoreUpload({
   extensionId: 'llhkcebnebfiaamifhbpehjompplpnae',
   clientId: GCP_CLIENT_ID,
-  client_secret: GCP_CLIENT_SECRET,
+  clientSecret: GCP_CLIENT_SECRET,
   refreshToken: GCP_REFRESH_TOKEN,
 });
 
