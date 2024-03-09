@@ -89,6 +89,7 @@ jobs:
         run: yarn run prep-publish
         env:
           GCP_CLIENT_ID: ${{ secrets.GCP_CLIENT_ID }}
+          GCP_CLIENT_SECRET: ${{ secrets.GCP_CLIENT_SECRET }}
           GCP_REFRESH_TOKEN: ${{ secrets.GCP_REFRESH_TOKEN }}
 
   # Runs code coverage and pushes to third party which will update pull request if exists
