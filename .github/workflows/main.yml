@@ -50,7 +50,7 @@ jobs:
 
       - name: Install dependencies
         if: steps.cache.outputs.cache-hit != 'true'
-        run: yarn ci
+        run: yarn install
 
 
   # Ensures that versions match on pull request to master to ensure we're not going to end up with mismatched versions (master)
@@ -83,7 +83,7 @@ jobs:
 
       - name: Install dependencies
         if: steps.cache.outputs.cache-hit != 'true'
-        run: yarn ci
+        run: yarn install
 
       - name: Prepare Publish script
         run: yarn run prep-publish
@@ -118,7 +118,7 @@ jobs:
 
       - name: Install dependencies
         if: steps.cache.outputs.cache-hit != 'true'
-        run: yarn ci
+        run: yarn install
 
       - name: Unit tests
         run: yarn run test-all
@@ -158,7 +158,7 @@ jobs:
 
       - name: Install dependencies
         if: steps.cache.outputs.cache-hit != 'true'
-        run: yarn ci
+        run: yarn install
 
       - name: Build extension
         run: yarn run build-ext
