@@ -61,6 +61,7 @@ const cleanUpLineItems = (lineItems: LineItem[]): LineItem[] => {
 
   // delete ID because it's always different
   function sortObjectByKeys<T>(objToSort: T): T {
+    // @ts-ignore
     return Object.keys(objToSort)
       .sort()
       .reduce((obj: any, key) => {
@@ -70,9 +71,8 @@ const cleanUpLineItems = (lineItems: LineItem[]): LineItem[] => {
       }, {});
   }
 
-  const sortedStringifiedDefaultLineItem = sortObjectByKeys<LineItem>(
-    defaultLineItem
-  );
+  const sortedStringifiedDefaultLineItem =
+    sortObjectByKeys<LineItem>(defaultLineItem);
   return lineItems.slice().filter((item: LineItem) => {
     const sortedClonedLineItem = sortObjectByKeys(item);
     // rename the id, deleting it leads to deleting it in the returned object

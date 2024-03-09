@@ -2,7 +2,7 @@
   "name": "tab-group-helper",
   "prettyName": "Tab Group Helper",
   "description": "Allow quick grouping of tabs by their attributes like title or URL",
-  "version": "1.9.1",
+  "version": "1.9.2",
   "private": true,
   "repository": {
     "type": "git",
@@ -24,9 +24,8 @@
     "@material-ui/core": "^4.12.3",
     "@material-ui/icons": "^4.11.2",
     "@material-ui/lab": "^4.0.0-alpha.60",
-    "@types/react-dom": "^17.0.1",
-    "react": "^17.0.1",
-    "react-dom": "^17.0.1",
+    "react": "17.0.1",
+    "react-dom": "17.0.1",
     "react-hot-loader": "^4.13.0",
     "react-router-dom": "^5.2.1"
   },
@@ -43,7 +42,8 @@
     "@types/enzyme": "^3.10.9",
     "@types/jest": "^27.0.1",
     "@types/node": "^16.7.10",
-    "@types/react": "^17.0.19",
+    "@types/react": "17.0.1",
+    "@types/react-dom": "17.0.1",
     "@types/sinon-chrome": "^2.2.11",
     "@types/testing-library__jest-dom": "^5.14.1",
     "@typescript-eslint/eslint-plugin": "^4.33.0",
@@ -52,7 +52,7 @@
     "babel-eslint": "^10.1.0",
     "babel-loader": "^8.2.2",
     "babel-preset-react-app": "^10.0.0",
-    "chrome-webstore-upload": "^0.6.2",
+    "chrome-webstore-upload": "^3.0.3",
     "clean-webpack-plugin": "^3.0.0",
     "copy-webpack-plugin": "^7.0.0",
     "css-loader": "^5.0.2",
@@ -72,7 +72,7 @@
     "identity-obj-proxy": "^3.0.0",
     "istanbul": "^0.4.5",
     "jest": "^27.2.5",
-    "node-sass": "^4.14.1",
+    "node-sass": "npm:sass",
     "nyc": "^15.1.0",
     "prettier": "^2.2.1",
     "puppeteer": "^10.4.0",
@@ -87,6 +87,9 @@
     "webpack": "^5.23.0",
     "webpack-cli": "^4.5.0",
     "webpack-dev-server": "^3.11.2"
+  },
+  "resolutions": {
+    "@types/react": "17.0.1"
   },
   "jest": {
     "modulePaths": [
