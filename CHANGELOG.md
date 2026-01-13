@@ -1,5 +1,8 @@
-## 1.9.3 (2026-01-12)
+## 1.10.0 (2026-01-12)
 
+### Added
+
+- New rules will not automatically group pinned tabs.  Existing rules can be change to not automatically group pinned tabs.
 - Update contact link from Twitter to BlueSky
 
 ## 1.9.2 (2024-03-09)

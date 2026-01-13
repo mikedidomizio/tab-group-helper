@@ -3,6 +3,8 @@ const getQueryParams = () => {
   return Object.fromEntries(urlSearchParams.entries());
 };
 
+const currentVersion = chrome.runtime.getManifest().version;
+
 window.onload = () => {
   const params = getQueryParams();
 
@@ -12,5 +14,15 @@ window.onload = () => {
     for (let el of installedDOMElements) {
       el.classList.remove('installed');
     }
+  }
+
+  if (params.newVersion !== undefined) {
+    document.querySelectorAll('.' + params.newVersion).forEach((el) => {
+      el.classList.remove(params.newVersion);
+    });
+
+    document
+      .querySelectorAll('.whats-new')
+      .forEach((el) => el.classList.remove('whats-new'));
   }
 };
