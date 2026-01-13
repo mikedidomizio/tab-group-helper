@@ -1,3 +1,7 @@
+## 1.9.3 (2026-01-12)
+
+- Update contact link from Twitter to BlueSky
+
 ## 1.9.2 (2024-03-09)
 
 ### Fixed
