@@ -1,9 +1,8 @@
 import packageJSON from '../../../../../../package.json';
-import '../../../__tests-helpers__/enzyme-adapter';
 import { chrome } from '../../../__tests-helpers__/functions';
 import { Help } from '../Help';
 import { render, screen } from '@testing-library/react';
-import { mount } from 'enzyme';
+import userEvent from '@testing-library/user-event';
 
 beforeAll(function () {
   // @ts-ignore
@@ -11,8 +10,10 @@ beforeAll(function () {
 });
 
 test('should include a link to the webstore package', () => {
-  const wrapper = mount(<Help />);
-  wrapper.find(`a[href="${packageJSON.repository.url}"]`).simulate('click');
+  render(<Help />);
+
+  userEvent.click(screen.getByRole('link', { name: /chrome web store link/i }));
+
   expect(
     chrome.tabs.create.withArgs({ url: packageJSON.repository.url })
   ).toBeTruthy();
@@ -21,14 +22,22 @@ test('should include a link to the webstore package', () => {
 test('should include a link that opens a new tab to the github repo', () => {
   const url =
     'https://chrome.google.com/webstore/detail/tab-group-helper/llhkcebnebfiaamifhbpehjompplpnae';
-  const wrapper = mount(<Help />);
-  wrapper.find(`a[href="${url}"]`).simulate('click');
+
+  render(<Help />);
+
+  userEvent.click(screen.getByRole('link', { name: /github page/i }));
+
   expect(chrome.tabs.create.withArgs({ url })).toBeTruthy();
 });
 
 test('should include a link to the general page', () => {
+  const url = 'pages/general.html';
+
   render(<Help />);
-  expect(
+
+  userEvent.click(
     screen.getByRole('link', { name: /general\/help page with instructions/i })
-  ).toBeInTheDocument();
+  );
+
+  expect(chrome.tabs.create.withArgs({ url })).toBeTruthy();
 });
