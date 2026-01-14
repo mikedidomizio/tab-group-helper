@@ -3,19 +3,17 @@ const getQueryParams = () => {
   return Object.fromEntries(urlSearchParams.entries());
 };
 
-const currentVersion = chrome.runtime.getManifest().version;
-
 window.onload = () => {
   const params = getQueryParams();
 
+  // Installed
   if (params.installed !== undefined) {
-    const installedDOMElements = document.querySelectorAll('.installed');
-
-    for (let el of installedDOMElements) {
+    document.querySelectorAll('.installed').forEach((el) => {
       el.classList.remove('installed');
-    }
+    });
   }
 
+  // New Version
   if (params.newVersion !== undefined) {
     document.querySelectorAll('.' + params.newVersion).forEach((el) => {
       el.classList.remove(params.newVersion);
