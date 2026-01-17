@@ -16,7 +16,7 @@ const getIdsOfMatchedTabs = (chromeTab: chrome.tabs.Tab) =>
 
 /**
  * @param {'tabCreated' | 'tabUpdated' | undefined} autoGroupType
- * @param tab
+ * @param tab   If tab is provided will only apply to the tab provided, otherwise applies to all tabs
  * @returns {Promise<void>}
  */
 export const runGrouping = async (
@@ -31,23 +31,24 @@ export const runGrouping = async (
   );
 
   for (let item of lineItemsSetToApply) {
-    const regex = item.regex;
-    const { caseSensitive } = item;
     const matchedTabs = await tabService.getTabsWhichMatch(
       item.text,
       item.matchType,
       item.includePinnedTabs,
-      caseSensitive,
-      regex,
+      item.caseSensitive,
+      item.regex,
       true
     );
     // if id for some reason is undefined, we return -1
     // not exactly sure what would happen there if an error is thrown or it continues if trying to add
     // -1 tab to a group
-    const ids = matchedTabs.map(getIdsOfMatchedTabs);
+    const matchedTabsIds = matchedTabs.map(getIdsOfMatchedTabs);
     const color = item.color !== '' ? item.color : undefined;
 
-    const tabsToGroup = tab && tab?.id && ids.includes(tab.id) ? [tab.id] : ids;
+    const tabsToGroup =
+      tab && tab?.id && matchedTabsIds.includes(tab.id)
+        ? [tab.id]
+        : matchedTabsIds;
     await tabService.addTabsToGroup(tabsToGroup, item.groupTitle, color);
   }
 };
