@@ -9,7 +9,14 @@ const update = (id, previousVersion, reason) => {
   }
 
   if (reason === chrome.runtime.OnInstalledReason.UPDATE) {
-    // for future
+    // ex. 1.10.0
+    const extensionVersion = chrome.runtime.getManifest().version;
+    // v1_10_0
+    const parseExtensionVersion = 'v' + extensionVersion.replaceAll('.', '_');
+
+    chrome.tabs.create({
+      url: '/pages/general.html?newVersion=' + parseExtensionVersion,
+    });
   }
 };
 
@@ -23,6 +30,7 @@ chrome.tabs.onUpdated.addListener(async function (tabId, changeInfo, tab) {
   }
 });
 // https://developer.chrome.com/docs/extensions/reference/runtime/#event-onInstalled
+// fired on first install, when extension is updated to a new version, and when Chrome is updated to a new version.
 chrome.runtime.onInstalled.addListener(({ id, previousVersion, reason }) => {
   update(id, previousVersion, reason);
 });
