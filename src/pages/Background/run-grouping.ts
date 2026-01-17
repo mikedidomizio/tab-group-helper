@@ -36,6 +36,7 @@ export const runGrouping = async (
     const matchedTabs = await tabService.getTabsWhichMatch(
       item.text,
       item.matchType,
+      item.includePinnedTabs,
       caseSensitive,
       regex,
       true

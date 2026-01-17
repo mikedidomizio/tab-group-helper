@@ -148,6 +148,11 @@ describe('tab service', () => {
       chromeTabsQueryPromiseResponse([
         generateFakeTab({ title: 'react - good times', url: 'react.com' }),
         generateFakeTab({ title: 'facebook', url: 'facebook.com' }),
+        generateFakeTab({
+          pinned: true,
+          title: 'Gmail',
+          url: 'mail.google.com',
+        }),
       ]);
     });
 
@@ -155,6 +160,7 @@ describe('tab service', () => {
       const checkAndExpect = async (
         text: string,
         type: ChromeTabsAttributes,
+        includePinnedTabs: boolean,
         caseSensitive: boolean,
         regex: boolean,
         num: number
@@ -164,6 +170,7 @@ describe('tab service', () => {
             await tabsService.getTabsWhichMatch(
               text,
               type,
+              includePinnedTabs,
               caseSensitive,
               regex
             )
@@ -174,6 +181,7 @@ describe('tab service', () => {
         await checkAndExpect(
           'React',
           ChromeTabsAttributes.title,
+          false,
           true,
           false,
           0
@@ -181,21 +189,43 @@ describe('tab service', () => {
       });
 
       it('should return an empty array if the text sent is zero length', async () => {
-        await checkAndExpect('', ChromeTabsAttributes.title, false, false, 0);
+        await checkAndExpect(
+          '',
+          ChromeTabsAttributes.title,
+          false,
+          false,
+          false,
+          0
+        );
       });
 
       it('should return an empty array if text is empty and type is of regex', async () => {
-        await checkAndExpect('', ChromeTabsAttributes.title, false, true, 0);
+        await checkAndExpect(
+          '',
+          ChromeTabsAttributes.title,
+          false,
+          false,
+          true,
+          0
+        );
       });
 
       it('should return an empty array if text when trimmed is empty, preventing accidental grouping unnecessarily', async () => {
-        await checkAndExpect(' ', ChromeTabsAttributes.title, false, false, 0);
+        await checkAndExpect(
+          ' ',
+          ChromeTabsAttributes.title,
+          false,
+          false,
+          false,
+          0
+        );
       });
 
       it('should match titles which contain text', async () => {
         await checkAndExpect(
           'react',
           ChromeTabsAttributes.title,
+          false,
           false,
           false,
           1
@@ -208,6 +238,7 @@ describe('tab service', () => {
           ChromeTabsAttributes.url,
           false,
           false,
+          false,
           1
         );
       });
@@ -216,6 +247,7 @@ describe('tab service', () => {
         await checkAndExpect(
           'Reac|Face',
           ChromeTabsAttributes.url,
+          false,
           false,
           true,
           2
@@ -227,6 +259,7 @@ describe('tab service', () => {
           'reac|Face',
           ChromeTabsAttributes.title,
           false,
+          false,
           true,
           2
         );
@@ -236,6 +269,7 @@ describe('tab service', () => {
         await checkAndExpect(
           'reac|Face',
           ChromeTabsAttributes.url,
+          false,
           true,
           true,
           1
@@ -248,12 +282,14 @@ describe('tab service', () => {
           '^(reac|face)',
           ChromeTabsAttributes.title,
           false,
+          false,
           true,
           2
         );
         await checkAndExpect(
           '^(reac|facetruck)',
           ChromeTabsAttributes.title,
+          false,
           false,
           true,
           1
@@ -262,18 +298,49 @@ describe('tab service', () => {
           '(times|book)$',
           ChromeTabsAttributes.title,
           false,
+          false,
           true,
           2
         );
         // url
-        await checkAndExpect('.com$', ChromeTabsAttributes.url, false, true, 2);
+        await checkAndExpect(
+          '.com$',
+          ChromeTabsAttributes.url,
+          false,
+          false,
+          true,
+          2
+        );
+      });
+
+      it('should match pinned tabs if includePinnedTabs is true', async () => {
+        await checkAndExpect(
+          'Gmail',
+          ChromeTabsAttributes.title,
+          true,
+          false,
+          false,
+          1
+        );
+      });
+
+      it('should not match pinned tabs if includePinnedTabs is false', async () => {
+        await checkAndExpect(
+          'Gmail',
+          ChromeTabsAttributes.title,
+          false,
+          false,
+          false,
+          0
+        );
       });
     });
 
     it("should not match a type that doesn't exist on that tab", async () => {
       await tabsService.getTabsWhichMatch(
         'reac',
-        (undefined as unknown) as ChromeTabsAttributes,
+        undefined as unknown as ChromeTabsAttributes,
+        false,
         false,
         true
       );

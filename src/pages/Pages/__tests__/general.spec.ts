@@ -72,4 +72,24 @@ describe('general page', () => {
 
     expect(await isVisible(page, 'h1')).toBe(false);
   });
+
+  it('should not show what\'s new if "newVersion" is not in query string', async () => {
+    await loadPage(page, 'src/pages/Pages/general.html');
+
+    // @ts-ignore
+    const extractedText = await page.$eval('*', (el) => el.innerText);
+
+    expect(extractedText.includes("What's new")).toBe(false);
+    expect(extractedText.includes('1.10.0 (Your new version 🎉!)')).toBe(false);
+  });
+
+  it('should show what\'s new if "newVersion" is in query string', async () => {
+    await loadPage(page, 'src/pages/Pages/general.html?newVersion=v1_10_0');
+
+    // @ts-ignore
+    const extractedText = await page.$eval('*', (el) => el.innerText);
+
+    expect(extractedText.includes("What's new")).toBe(true);
+    expect(extractedText.includes('1.10.0 (Your new version 🎉!)')).toBe(true);
+  })
 });
