@@ -36,8 +36,3 @@ chrome.commands.onCommand.addListener(async (command) => {
     await runGrouping();
   }
 });
-
-export const forTesting = {
-  runGrouping,
-  update,
-};
