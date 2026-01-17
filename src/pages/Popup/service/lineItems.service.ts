@@ -29,6 +29,10 @@ export interface LineItem {
    */
   groupTitle: string;
   /**
+   * Whether to include pinned tabs in the grouping (including auto-grouping)
+   */
+  includePinnedTabs: boolean;
+  /**
    * The match type to search in the browser tab
    */
   matchType: ChromeTabsAttributes;
@@ -49,11 +53,12 @@ export const newLineItem = (): LineItem => {
     caseSensitive: false,
     color: '' as chrome.tabGroups.ColorEnum,
     id: new Date().getTime() + Math.floor(Math.random() * 10000),
+    includePinnedTabs: false,
     groupTitle: '',
     matchType: ChromeTabsAttributes.url,
     regex: false,
     text: '',
-  });
+  } as LineItem);
 };
 
 const cleanUpLineItems = (lineItems: LineItem[]): LineItem[] => {
@@ -96,10 +101,18 @@ export class LineItemsService {
     return this.set([newLineItem()]);
   }
 
+  private mapNewFields(lineItem: Partial<LineItem>): LineItem {
+    if (!lineItem.hasOwnProperty('includePinnedTabs')) {
+      lineItem.includePinnedTabs = true;
+    }
+
+    return lineItem as LineItem;
+  }
+
   async get(): Promise<LineItem[]> {
     this.lineItems = await this.wrappedGet();
     if (this.lineItems?.length) {
-      return this.lineItems;
+      return this.lineItems.map((item) => this.mapNewFields(item));
     }
 
     return this.reset();

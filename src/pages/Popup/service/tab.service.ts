@@ -21,6 +21,7 @@ export class TabService {
   /**
    * @param {string} text
    * @param {"url" | "title"} type
+   * @param {boolean} includePinnedTabs
    * @param {boolean} caseSensitive
    * @param {boolean} regex
    * @param {boolean} currentWindow whether to match all tabs of all windows (within that Chrome profile)
@@ -28,11 +29,12 @@ export class TabService {
   async getTabsWhichMatch(
     text: string,
     type: ChromeTabsAttributes,
+    includePinnedTabs: boolean,
     caseSensitive = false,
     regex = false,
     currentWindow = false
   ): Promise<chrome.tabs.Tab[]> {
-    const tabs = await this.listAllTabs({
+    const browserTabs = await this.listAllTabs({
       currentWindow,
     });
     let cleanedText = text.trim();
@@ -40,9 +42,9 @@ export class TabService {
 
     if (cleanedText.length) {
       if (regex) {
-        return tabs.filter((i: chrome.tabs.Tab) => {
+        return browserTabs.filter((i: chrome.tabs.Tab) => {
           // @ts-ignore
-          if (i[type]) {
+          if (i[type] && (includePinnedTabs || !i.pinned)) {
             if (caseSensitive) {
               // @ts-ignore
               return i[type].match(new RegExp(cleanedText));
@@ -56,8 +58,8 @@ export class TabService {
         });
       }
 
-      return tabs.filter((i) => {
-        if (i && i[type]) {
+      return browserTabs.filter((i) => {
+        if (i && i[type] && (includePinnedTabs || !i.pinned)) {
           // @ts-ignore
           const val = caseSensitive ? i[type] : i[type].toLowerCase();
           return (val as ChromeTabsAttributes).includes(cleanedText);
@@ -107,7 +109,7 @@ export class TabService {
         console.warn(
           'Error thrown due to color not being set, empty results returned'
         );
-        return ([] as unknown) as chrome.tabGroups.TabGroup;
+        return [] as unknown as chrome.tabGroups.TabGroup;
       }
       throw e;
     }

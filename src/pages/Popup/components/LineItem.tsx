@@ -76,6 +76,7 @@ const defaultProps: LItem = {
   color: '',
   groupTitle: '',
   id: -1,
+  includePinnedTabs: false,
   matchType: ChromeTabsAttributes.url,
   regex: true,
   text: '',
@@ -219,6 +220,7 @@ export const LineItem: FunctionComponent<LineItemProps> = ({
   deleteLineItem,
   id,
   groupTitle,
+  includePinnedTabs,
   matchType,
   moveLineItem,
   onLineItemChange,
@@ -276,6 +278,7 @@ export const LineItem: FunctionComponent<LineItemProps> = ({
     const tabsMatched = await new TabService().getTabsWhichMatch(
       text,
       matchType,
+      includePinnedTabs,
       caseSensitive,
       regex,
       true
@@ -297,6 +300,7 @@ export const LineItem: FunctionComponent<LineItemProps> = ({
       color,
       id,
       groupTitle,
+      includePinnedTabs,
       matchType,
       regex,
       text,
@@ -376,6 +380,18 @@ export const LineItem: FunctionComponent<LineItemProps> = ({
           leaveDelay={0}
         >
           {CheckBox('Regex', 'regex', regex, handleChange)}
+        </Tooltip>
+        <Tooltip
+          title="Include pinned tabs when matching"
+          enterDelay={tooltipTime}
+          leaveDelay={0}
+        >
+          {CheckBox(
+            'Include pinned tabs',
+            'includePinnedTabs',
+            includePinnedTabs,
+            handleChange
+          )}
         </Tooltip>
       </FormGroup>
       <FormGroup className={classes.root} row>

@@ -37,6 +37,7 @@ export const generateFakeTab = (newFakeTabArgs: Partial<chrome.tabs.Tab>) => {
   return Object.assign(
     {
       id: Math.floor(Math.random() * 100000 + 1),
+      pinned: false,
       title: 'my fake tab',
       url: 'https://google.ca',
     },
