@@ -1,6 +1,5 @@
 import { LineItem } from '../service/lineItems.service';
-import { render, screen } from '@testing-library/react';
-import { ReactWrapper } from 'enzyme';
+import { render, screen, within, RenderResult } from '@testing-library/react';
 import { ReactElement } from 'react';
 // @ts-ignore
 import chrome from 'sinon-chrome/extensions';
@@ -8,10 +7,21 @@ import chrome from 'sinon-chrome/extensions';
 // export this so we don't have to have a bunch of additional ts-ignore everywhere
 export { chrome };
 
-export const getButtonByText = (wrapper: ReactWrapper, btnText: string) =>
-  wrapper.findWhere((node) => {
-    return node.type() === 'button' && node.text() === btnText;
-  });
+// Find a button either by accessible name (preferred) or by visible text.
+// If a scoped RenderResult is provided, search within that container.
+export const getButtonByText = (btnText: string, scope?: RenderResult) => {
+  const searchWithin = scope && scope.container ? within(scope.container) : screen;
+  try {
+    return searchWithin.getByRole('button', { name: btnText });
+  } catch (e) {
+    // fallback: find an element with the text and resolve to its closest button ancestor
+    const el = searchWithin.getByText(btnText);
+    const btn = el.closest('button');
+    if (btn) return btn as HTMLButtonElement;
+    // if no ancestor button, return the element itself
+    return el as HTMLElement;
+  }
+};
 
 export const renderComponentAndExpect = (
   component: ReactElement,

@@ -1,4 +1,3 @@
-import '../../../__tests-helpers__/enzyme-adapter';
 import {
   chrome,
   chromeTabsQueryPromiseResponse,
@@ -11,15 +10,19 @@ import {
 } from '../../../service/lineItems.service';
 import { TabService } from '../../../service/tab.service';
 import { Board } from '../Board';
-import { act, fireEvent, waitFor } from '@testing-library/react';
-import { render, screen } from '@testing-library/react';
-import { mount, ReactWrapper } from 'enzyme';
+import {
+  act,
+  fireEvent,
+  waitFor,
+  render,
+  screen,
+  within,
+} from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import React from 'react';
 
-let wrapper: ReactWrapper;
-let getInputByLabel: (field: string) => ReactWrapper<any, any>;
-let clickDeleteButton: () => ReactWrapper<any, any>;
-let getLineItems: () => ReactWrapper<any, any>;
+let getInputByLabel: (field: string) => HTMLElement;
+let getLineItems: () => NodeListOf<Element>;
 
 jest.setTimeout(30000);
 
@@ -35,35 +38,17 @@ beforeEach(() => {
     { id: 123, url: 'Hello-World.com' } as Partial<LineItem>,
   ]);
 
-  // todo remove enzyme
-  wrapper = mount(<Board />);
+  // NOTE: do not render here; tests will render and rerender as needed to avoid
+  // multiple instances of Board in the same test which causes ambiguous queries.
+
   getInputByLabel = (fieldText: string) => {
-    return getLineItems()
-      .findWhere((node) => {
-        const re = new RegExp(fieldText);
-        return (
-          node.type() === 'div' &&
-          node.text().trim().match(re) !== null &&
-          node.hasClass('MuiTextField-root')
-        );
-      })
-      .find('input');
+    return screen.getByLabelText(new RegExp(fieldText));
   };
-  clickDeleteButton = () =>
-    getLineItems()
-      .at(0)
-      .findWhere((node) => {
-        return node.type() === 'button';
-      })
-      .simulate('click');
-  getLineItems = () =>
-    wrapper.findWhere((node) => {
-      return node.type() === 'div' && node.hasClass('line-item');
-    });
+
+  getLineItems = () => document.querySelectorAll('.line-item');
 });
 
 afterEach(() => {
-  wrapper.unmount();
   chrome.reset();
 });
 
@@ -71,24 +56,22 @@ test.skip('should have a line item', () =>
   expect(getLineItems().length).toBe(1));
 
 test.skip('should add another line item on clicking the add item button', () => {
-  getButtonByText(wrapper, 'Add Item').simulate('click');
+  userEvent.click(getButtonByText('Add Item'));
   expect(getLineItems().length).toBe(2);
 });
 
 test.skip('clean up should remove all non-edited (default) line items', () => {
-  getButtonByText(wrapper, 'Add Item').simulate('click');
+  userEvent.click(getButtonByText('Add Item'));
   expect(getLineItems().length).toBe(2);
-  getButtonByText(wrapper, 'Clean up').simulate('click');
+  userEvent.click(getButtonByText('Clean up'));
   expect(getLineItems().length).toBe(1);
 });
 
 test.skip('clean up should leave any edited line items', () => {
-  getInputByLabel('Contains\\s').simulate('change', {
-    target: { name: 'text', value: 'Hello' },
-  });
-  getButtonByText(wrapper, 'Add Item').simulate('click');
-  getButtonByText(wrapper, 'Clean up').simulate('click');
-  expect(getInputByLabel('Contains\\s').props().value).toBe('Hello');
+  userEvent.type(getInputByLabel('Contains'), 'Hello');
+  userEvent.click(getButtonByText('Add Item'));
+  userEvent.click(getButtonByText('Clean up'));
+  expect((getInputByLabel('Contains') as HTMLInputElement).value).toBe('Hello');
 });
 
 test.skip('run should call the tabs service with each valid line item', async () => {
@@ -97,12 +80,8 @@ test.skip('run should call the tabs service with each valid line item', async ()
     query: () => {},
   };
   let addTabsSpy = jest.spyOn(TabService.prototype, 'addTabsToGroup');
-  await waitFor(() =>
-    getInputByLabel('Contains\\s').simulate('change', {
-      target: { name: 'text', value: 'Hello' },
-    })
-  );
-  getButtonByText(wrapper, 'Run').simulate('click');
+  await waitFor(() => userEvent.type(getInputByLabel('Contains'), 'Hello'));
+  userEvent.click(getButtonByText('Run'));
   await waitFor(() =>
     expect(addTabsSpy).toHaveBeenCalledWith([123], '', undefined)
   );
@@ -116,36 +95,36 @@ test('deleting a line item should remove a line item', async () => {
   lineItem2.text = 'still here';
   chrome.storage.local.get.yields({ lineItems: [lineItem, lineItem2] });
   chrome.storage.local.set.yields({});
-  const { rerender } = render(<Board />);
+  const { rerender, container } = render(<Board />);
   await act(async () => {
     await rerender(<Board />);
-    await waitFor(() => screen.getByDisplayValue('still here'));
-    const buttons = screen.getAllByRole('button', {
+    await waitFor(() => within(container).getByDisplayValue('still here'));
+    const buttons = within(container).getAllByRole('button', {
       name: /delete/i,
     });
     chrome.storage.local.get.yields({ lineItems: [lineItem2] });
     fireEvent.click(buttons[0]);
   });
 
-  expect(screen.getByDisplayValue('still here')).toBeInTheDocument();
+  expect(within(container).getByDisplayValue('still here')).toBeInTheDocument();
 });
 
 test('deleting the only line item will delete the current line item and leave a blank one', async () => {
   const lineItem = newLineItem();
   lineItem.text = 'delete me';
   chrome.storage.local.get.yields({ lineItems: [lineItem] });
-  const { rerender } = render(<Board />);
+  const { rerender, container } = render(<Board />);
   await act(async () => {
     rerender(<Board />);
-    await waitFor(() => screen.getByDisplayValue('delete me'));
+    await waitFor(() => within(container).getByDisplayValue('delete me'));
     fireEvent.click(
-      screen.getByRole('button', {
+      within(container).getByRole('button', {
         name: /delete/i,
       })
     );
   });
 
-  expect(screen.queryByText('delete me')).not.toBeInTheDocument();
+  expect(within(container).queryByText('delete me')).not.toBeInTheDocument();
 });
 
 describe('collapsing groups', () => {
@@ -181,13 +160,12 @@ describe('collapsing groups', () => {
         },
       ]);
 
-    const { rerender } = render(<Board />);
+    const { rerender, container } = render(<Board />);
     await act(async () => {
       rerender(<Board />);
-      await waitFor(() => screen.getByDisplayValue('github'));
-      fireEvent.click(
-        screen.getByRole('button', { name: /collapse\/expand groups/i })
-      );
+      await waitFor(() => within(container).getByDisplayValue('github'));
+      const collapseButtons = within(container).getAllByRole('button', { name: /collapse\/expand groups/i });
+      fireEvent.click(collapseButtons[0]);
     });
 
     expect(updateSpy).toHaveBeenCalledWith(123, {
@@ -213,13 +191,12 @@ describe('collapsing groups', () => {
         },
       ]);
 
-    const { rerender } = render(<Board />);
+    const { rerender, container } = render(<Board />);
     await act(async () => {
       rerender(<Board />);
-      await waitFor(() => screen.getByDisplayValue('github'));
-      fireEvent.click(
-        screen.getByRole('button', { name: /collapse\/expand groups/i })
-      );
+      await waitFor(() => within(container).getByDisplayValue('github'));
+      const collapseButtons = within(container).getAllByRole('button', { name: /collapse\/expand groups/i });
+      fireEvent.click(collapseButtons[0]);
     });
 
     expect(updateSpy).toHaveBeenCalledWith(123, {
@@ -234,7 +211,7 @@ describe('collapsing groups', () => {
 test.skip('clear groups should make a chrome api request to clear all active groups', async () => {
   const ungroupFn = jest.fn();
   chrome.tabs.ungroup = ungroupFn;
-  await waitFor(() => getButtonByText(wrapper, 'Clear').simulate('click'));
+  await waitFor(() => userEvent.click(getButtonByText('Clear')));
   expect(ungroupFn).toHaveBeenCalledWith([123]);
 });
 
@@ -248,15 +225,15 @@ test('cleaning up the groups should remove any groups that are the default state
     .mockReturnValue([[lineItem, newLineItem()], () => {}]);
   const setSpy = jest.spyOn(LineItemsService.prototype, 'set');
 
-  const { rerender } = render(<Board />);
+  const { rerender, container } = render(<Board />);
   await act(async () => await rerender(<Board />));
 
-  const allLineItems = await screen.findAllByText(/group name/i);
+  const allLineItems = await within(container).findAllByText(/group name/i);
   expect(allLineItems.length).toBe(2);
 
-  const cleanButton = screen.getByRole('button', {
+  const cleanButton = within(container).getAllByRole('button', {
     name: 'Removes rules that are the default for quick removal',
-  });
+  })[0];
   // todo it'd be nice to use rtl or mock over the chrome.storage.local.set/get to properly keep state
   chrome.storage.local.get.yields({ lineItems: [lineItem] });
 
@@ -265,6 +242,6 @@ test('cleaning up the groups should remove any groups that are the default state
   // is called with 1 line item (after cleaned up)
   await waitFor(() => expect(setSpy).toHaveBeenCalledWith([lineItem]));
 
-  const allLineItemsCleaned = await screen.findAllByText(/group name/i);
+  const allLineItemsCleaned = await within(container).findAllByText(/group name/i);
   expect(allLineItemsCleaned.length).toBe(1);
 });

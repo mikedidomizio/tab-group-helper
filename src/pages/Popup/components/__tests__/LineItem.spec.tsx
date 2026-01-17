@@ -1,87 +1,69 @@
-import '../../__tests-helpers__/enzyme-adapter';
 import { chrome } from '../../__tests-helpers__/functions';
 import { newLineItem } from '../../service/lineItems.service';
 import { LineItem, LineItemProps } from '../LineItem';
-import { mount, ReactWrapper } from 'enzyme';
-import React from 'react';
+import { render, screen, within, fireEvent } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 
-let wrapper: ReactWrapper;
-
-let getInputByLabel: (field: string) => ReactWrapper<any, any>;
-let setDropdownByLabelValue: (
-  label: string,
-  value: string
-) => ReactWrapper<any, any>;
-let setCheckboxByLabelValue: (
-  label: string,
-  checked: boolean
-) => ReactWrapper<any, any>;
+let getInputByLabel: (field: string) => HTMLElement;
+let setDropdownByLabelValue: (label: string, value: string) => Promise<void>;
+let setCheckboxByLabelValue: (label: string, checked: boolean) => void;
 
 beforeAll(function () {
   global.chrome = chrome;
-});
-
-beforeEach(() => {
-  getInputByLabel = (fieldText: string) =>
-    wrapper
-      .findWhere((node) => {
-        return (
-          node.hasClass('MuiTextField-root') &&
-          node.text().trim().includes(fieldText)
-        );
-      })
-      .find('input');
-
-  setDropdownByLabelValue = (label: string, value: string) =>
-    wrapper
-      .findWhere((node) => {
-        return (
-          node.hasClass('MuiFormControl-root') &&
-          node.text().trim().includes(label)
-        );
-      })
-      .find('input')
-      .simulate('change', { target: { name: 'text', value } });
-
-  setCheckboxByLabelValue = (label: string, checked: boolean) =>
-    wrapper
-      .findWhere((node) => {
-        return (
-          node.hasClass('MuiFormControlLabel-root') &&
-          node.text().trim().includes(label)
-        );
-      })
-      .find('input')
-      .simulate('change', { target: { checked } });
 });
 
 let lineItemChangeFn = jest.fn();
 
 const props: LineItemProps = {
   deleteLineItem: () => {},
+  moveLineItem: () => {},
   onLineItemChange: lineItemChangeFn,
   ...newLineItem(),
 };
 
 beforeEach(() => {
-  wrapper = mount(<LineItem {...props} />);
+  render(<LineItem {...props} />);
+
+  getInputByLabel = (fieldText: string) =>
+    // MUI associates labels with inputs; fallback to display value if necessary
+    screen.getByLabelText(new RegExp(fieldText));
+
+  setDropdownByLabelValue = async (label: string, value: string) => {
+    const select = screen.getByLabelText(new RegExp(label));
+    // open the MUI select menu
+    fireEvent.mouseDown(select);
+    // click the option in the menu
+    const option = await screen.findByText(new RegExp(value, 'i'));
+    fireEvent.click(option);
+  };
+
+  setCheckboxByLabelValue = (label: string, checked: boolean) => {
+    const checkbox = screen.getByLabelText(new RegExp(label));
+    if ((checkbox as HTMLInputElement).checked !== checked) {
+      fireEvent.click(checkbox);
+    }
+  };
 });
 
 afterEach(() => {
-  wrapper.unmount();
+  jest.clearAllMocks();
 });
 
-test('changing a line item value should call the parent onLineItemChange', () => {
-  setDropdownByLabelValue('Type', 'url');
-  getInputByLabel('Contains').simulate('change', {
-    target: { name: 'text', value: 'World' },
-  });
+test('changing a line item value should call the parent onLineItemChange', async () => {
+  await userEvent.click(screen.getByRole('button', { name: /type/i }));
+  await userEvent.click(screen.getByRole('option', { name: /url/i }));
+
+  const containElem = screen.getByTitle(/the tab must contain the following/i);
+  await userEvent.type(within(containElem).getByRole('textbox'), 'World');
+
   setCheckboxByLabelValue('Case Sensitive', true);
   setCheckboxByLabelValue('Regex', true);
-  getInputByLabel('Group Name').simulate('change', {
-    target: { name: 'text', value: 'Foo' },
-  });
-  setDropdownByLabelValue('Color', 'red');
+
+  const groupElem = screen.getByTitle(/the name that the group will be given/i);
+  await userEvent.type(within(groupElem).getByRole('textbox'), 'Foo');
+
+  await setDropdownByLabelValue('Color', 'red');
   setCheckboxByLabelValue('Apply', true);
-  expect(lineItemChangeFn).toHaveBeenCalledTimes(7);
+  // todo should be checking the expectations of the UI
+  expect(lineItemChangeFn).toHaveBeenCalledTimes(11);
 });
