@@ -1,12 +1,11 @@
-import './__tests-helpers__/enzyme-adapter';
 import { chrome } from './__tests-helpers__/functions';
-import { mount, ReactWrapper } from 'enzyme';
+// use RTL instead of Enzyme
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 // @ts-ignore
 import { createMemoryHistory } from 'history';
-
 // @ts-ignore
 let agentGetter: SpyInstance;
-let wrapper: ReactWrapper;
 
 beforeAll(function () {
   // @ts-ignore
@@ -16,6 +15,10 @@ beforeAll(function () {
 jest.mock('history');
 
 let pathFn: jest.Mock;
+
+afterEach(() => {
+  jest.clearAllMocks();
+});
 
 beforeEach(() => {
   pathFn = jest.fn().mockImplementation(() => {});
@@ -33,20 +36,15 @@ beforeEach(() => {
 test.skip('header menu links should update the history which will change the page', () => {
   jest.isolateModules(() => {
     const App = require('./Popup').default;
-    wrapper = mount(<App />);
+    const { container } = render(<App />);
     const menuLinkClickAndExpect = (linkName: string, expectedPath: string) => {
-      wrapper.find('header button').simulate('click');
-      wrapper
-        .findWhere((node) => {
-          return node.type() === 'li' && node.text() === linkName;
-        })
-        .simulate('click');
+      userEvent.click(container.querySelector('header button')!);
+      userEvent.click(screen.getByText(linkName));
       expect(pathFn).toHaveBeenCalledWith(expectedPath);
     };
 
     menuLinkClickAndExpect('Home', '/');
     menuLinkClickAndExpect('Manually Edit', '/edit');
     menuLinkClickAndExpect('Help', '/help');
-    wrapper.unmount();
   });
 });
